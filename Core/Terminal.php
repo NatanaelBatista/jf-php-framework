@@ -22,7 +22,6 @@ use JF\Session;
  */
 final class Terminal
 {
-
     /**
      * Inicia a aplicação.
      */
