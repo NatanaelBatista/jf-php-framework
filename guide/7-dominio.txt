@@ -1,0 +1,26 @@
+DOMÍNIO DA APLICAÇÃO
+====================
+
+
+Introdução
+----------
+
+    O domínio é o coração da aplicação. Nele ficam as classes que representam o negócio.
+    Enquanto os controllers são a porta de entrada das requisções HTTP e os models
+    são a porta de entrada para as tabelas nos bancos de dados, as classes de domínio
+    representam as entidades e processos do mundo real.
+
+    Imagine as seguintes situações: uma locadora e uma fábrica de veículos.
+
+    No primeiro caso, não haverá necessidades complexas sobre o objeto veículo.
+    Haverá ações para: adquirir, alugar, vistoriar, alugar, revisar, etc.
+
+    Já a fábrica de veículos terá uma sequência de várias etapas e vários componentes para
+    a montagem de um veículo, de diversos modelos, bem como procedimentos para
+    controle de qualidade.
+
+    Nesse caso, justifica não somente a existência de uma entidade abastrata Veiculo,
+    como também modelos de veículos em forma de entidades que herdam de Veiculo
+    (VeiculoModeloA extends Veiculo), componentes (Motor, Pneus, Chassi, etc) e
+    Helpers específicos (ControleDeQualidade, Almoxaridado, etc).
+

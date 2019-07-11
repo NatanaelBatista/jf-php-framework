@@ -1,0 +1,46 @@
+CONFIG
+======
+
+
+Invocar configurações
+---------------------
+
+	As vezes precisamos acessar as configurações da aplicação. Principalmente as configurações
+	personalizadas (app/config/custom.php).	Para acessá-las, utilizamos a sintaxe JF\Config::get( $path, $default = null, $opts = array() ).
+
+	Segue alguns exemplos de como utilizar esse método:
+
+	** Carregar todas as configuraçõesde um contexto **
+	$config_app 			= JF\Config::get( 'app' );
+
+	** Carregar configurações específicas de um contexto **
+	$config_env 			= JF\Config::get( 'app.env' );
+
+	** Informar um valor alternativo para configuração inexistente **
+	$config_var_inexistente = JF\Config::get( 'custom.var_inexistente', 'Valor alternativo' );
+
+	** Recarregar as informações de origem, quando alteradas **
+	$config_app 			= JF\Config::get( 'app' );
+	$config_app->env 		= 'qualquer valor';
+	
+	$env_alterada			= JF\Config::get( 'app.env' ); // Qualquer valor
+	$env_original 		    = JF\Config::get( 'app.env', null, ['reload' => true] );
+
+
+Alterar configurações
+---------------------
+
+	Pode ser necessário alterar o valor das configurações via código da aplicação.
+	Existem duas formas. Você pode alterar as configurações e depois salvar as alterações
+	ou você pode alterar as configurações definido salvamento automático.
+
+	** Alterar configurações e salvar depois **
+	$config_vars 			= JF\Config::get( 'views.vars' );
+	$config_vars->autor		= 'Nome do autor';
+	JF\Config::salve();
+
+	** Alterar configurações e salva automaticamente **
+	$config_vars 			= [
+		'autor'				=> 'Nome do autor',
+	];
+	JF\Config::set( 'views', $config_vars, true );

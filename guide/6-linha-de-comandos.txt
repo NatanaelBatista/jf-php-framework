@@ -1,0 +1,69 @@
+COMANDOS
+========
+
+
+Introdução
+----------
+
+	Vimos que as requisições HTTP são capturadas pelo framework e delegadas para
+	os controllers.	No caso de requisições feitas via linha de comando, as requisições
+	são delegadas aos commands.
+
+	Você terá acesso a todas as demais classes da aplicação, da mesma forma que
+	as requisições HTTP, com duas ressalvas:
+
+		1. Não serão montadas páginas HTML.
+		2. A definição do ambiente da aplicação só pode ser feita pelo método string.
+
+
+Execução de um comando
+----------------------
+	
+	Os comandos feitos em linha de comando obedecem à seguinte sintaxe:
+
+	PHP jfc app.command argN:valorN, onde:
+
+	PHP 		- caminho do programa PHP executável
+	jfc 		- arquivo do JF que dá acesso aos comandos
+	app.command - caminho e nome do comando
+	argN 		- nome de um argumento qualquer passado ao comando
+	argN 		- valor do argumento "argN" passado ao comando
+
+
+Definção dos comandos
+---------------------
+
+	Para criar um comando executável via linha de comando na aplicação, você deve
+	declarar as classes na pasta "app/commands", utilizar o namespace "App\Commands"
+	e estender à classe "JF\Command".
+	
+	Veja um exemplo abaixo:
+
+	<?php
+
+	namespace App\Commands;
+
+	use JF\Command;
+
+	/**
+	 * Pasta c:\xampp\htdocs\app.
+	 * 
+	 * php jfc app.teste p1:valor1 p2:valor2
+	 */
+	class Teste extends Command
+	{
+		/**
+		 * Método para executar o comando.
+		 */
+		public function execute( $args )
+		{
+			print_r( $args );
+
+			// imprime
+			// Array
+			// (
+			//     [p1] => valor1
+			//     [p2] => valor2
+			// )
+		}
+	}

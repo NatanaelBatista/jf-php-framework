@@ -1,0 +1,78 @@
+<?php
+
+namespace JF\HTTP\Responders;
+
+use JF\HTTP\Responder;
+
+/**
+ * Classe que formata e envia resposta das requisições ao cliente.
+ */
+class CSV_Responder extends Responder
+{
+    /**
+     * Armazena os header do tipo de resposta.
+     */
+    protected static $headers = ['application/csv'];
+
+    /**
+     * Instancia a classe da rota, executa e envia a resposta ao cliente.
+     */
+    public static function send( $data, $controller_obj, $action )
+    {
+        self::setHeader( 'csv', $controller_obj->charset );
+        $filename       = isset( $controller_obj->filename )
+            ? $controller_obj->filename . '.csv'
+            : $action . '.csv';
+        $data           = json_decode( json_encode( $data ), true );
+        $data           = gettype( current( $data ) ) !== 'array'
+            ? array( $data )
+            : $data;
+        $labels         = array_keys( current( $data ) );
+
+        foreach ( $controller_obj->csvMap as $old_label => $new_label )
+        {
+            unset( $controller_obj->csvMap[ $old_label ] );
+
+            $pos_label = array_search( $old_label, $labels );
+            
+            if ( $pos_label !== false )
+            {
+                $labels[ $pos_label ] = $new_label;
+            }
+        }
+        
+        $tmp_filename   = microtime( true ) * 10000;
+        $tmp_filename   = DIR_PRODUCTS . "/downloads/{$tmp_filename}.csv";
+        $file           = new \SplFileObject( $tmp_filename, 'w' );
+        
+        $file->fputcsv(
+            $labels,
+            $controller_obj->separator,
+            $controller_obj->enclosure
+        );
+
+        foreach ( $data as $row )
+        {
+            $file->fputcsv(
+                $row,
+                $controller_obj->separator,
+                $controller_obj->enclosure
+            );
+        }
+
+        $file           = null;
+
+        header( "Content-Disposition: attachment; filename='$filename'" );
+        header( "Content-Length: " . filesize( $tmp_filename ) );
+        readfile( $tmp_filename );
+        unlink( $tmp_filename );
+    }
+
+    /**
+     * Configura o header da resposta de acordo com o formato do arquivo.
+     */
+    public static function setHeader( $type = null, $charset = null )
+    {
+        parent::setHeader( 'csv', $charset );
+    }
+}

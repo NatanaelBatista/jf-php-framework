@@ -1,0 +1,430 @@
+PRIMEIROS PASSOS
+================
+
+
+Iniciando uma nova aplicação
+----------------------------
+
+    Não é necessário utilizar nenhuma ferramenta de gerenciamento de pacotes,
+    tal como o Composer. Para iniciar uma nova aplicação, basta seguir os seguintes passos:
+
+    1. Copie a pasta "newapp" para sua pasta de aplicações HTTP (htdocs ou www).
+    2. Copie a pasta do framework (jf) para dentro da pasta da "newapp".
+    3. Copie os pacotes de terceiros que você quiser da pasta "vendors" e "ui/vendors".
+    4. Renomeie a pasta "newapp" para o nome do seu projeto (ex: "meuprojeto").
+    5. Aponte o item "url_base" do arquivo "meuprojeto/app/config/routes.php" para a nova rota.
+
+    Essa decisão foi tomada porque algumas organizações têm políticas restrição de acesso
+    à internet, o que dificulta a utilização desses gerenciadores de pacotes. Esse método também
+    facilita muito o trabalho realizado por iniciantes em programação.
+
+
+Estrutura de pastas e arquivos
+------------------------------
+
+    [newapp]
+        [app]
+            [config]
+                [lang]
+                app.php
+                business.php
+                cache.php
+                custom.php
+                db.php
+                env.php
+                ftp.php
+                libs.php
+                routes.php
+                security.php
+                sessions.php
+                vendors.php
+                websockets.php
+                views.php
+            [controllers]
+            [entities]
+            [helpers]
+            [models]
+            [types]
+            [views]
+                [layouts]
+                [pages]
+                [partials]
+        [docs]
+            [backlog]
+            [features]
+            [messages]
+            [rules]
+            artifacts.txt
+        [jf]
+            [core]
+            [guide]
+            [newapp]
+            [temp]
+        [storage]
+        [ui]
+            [assets]
+                [css]
+                [fonts]
+                [img]
+                [js]
+                [vendors]
+        [vendors]
+        .htaccess
+        index.php
+        jfc
+
+    ** [app] **
+
+    Pasta dos arquivos do backend da aplicação.
+
+    ** [app/config] **
+
+    Pasta dos arquivos de configuração.
+
+    ** [app/config/lang] **
+
+    Pasta dos arquivos de configuração nas línguas não nativas da aplicação.
+    Os arquivos devem ficar em subpastas cujo nome coincida com a sigla da língua
+    (ex: en, es, fr, etc).
+
+    ** [app/config/app.php] **
+
+    Configurações gerais da aplicação.
+
+    ** [app/config/cache.php] **
+
+    Configurações de cache.
+
+    ** [app/config/custom.php] **
+
+    Configurações de negócio da aplicação.
+
+    ** [app/config/db.php] **
+
+    Configurações de acesso aos bancos-de-dados.
+
+    ** [app/config/ftp.php] **
+
+    Configurações de acesso a servidores FTP.
+
+    ** [app/config/routes.php] **
+
+    Configurações de rotas das requisições.
+
+    ** [app/config/security.php] **
+
+    Configurações de segurança.
+
+    ** [app/config/sessions.php] **
+
+    Configurações de gerenciamento de sessões.
+
+    ** [app/config/vendors.php] **
+
+    Configurações de gerenciamento de sessões.
+
+    ** [app/config/websocket.php] **
+
+    Configurações de websocket, para funcionalidades de chat.
+
+    ** [app/controllers] **
+
+    Manipuladores das requisições.
+
+    ** [app/controllers] **
+
+    Manipuladores das requisições. Para criar uma aplicação multi modularizada,
+    os controladores devem ficar em pastas ou subpastas, cujo caminho na URL será
+    precedido do nome da pasta/subspasta.
+
+    ** [app/domain] **
+
+    Pasta onde ficam as entidades de negócio da aplicação.
+
+    ** [app/helpers] **
+
+    Pasta onde ficam os componentes compartilhados da aplicação,
+    para funções auxiliares, como: envio de e-mail, formatação de textos, etc.
+
+    ** [app/models] **
+
+    Pasta dos modelos para acesso aos dados nos bancos-de-dados.
+
+    ** [app/rules] **
+
+    Pasta onde ficam as classes de regras de negócio.
+
+    ** [app/types] **
+
+    Pasta dos tipos de dados da aplicação, para automatização da interação dos models
+    com as tabelas (ex: App\Types\Sexo, App\ActiveRecords\CPF, etc)
+
+    ** [app/views] **
+
+    Pasta dos arquivos para montagem de páginas HTML.
+
+    ** [app/views/layouts] **
+
+    Pasta dos arquivos de layouts de página.
+
+    ** [app/views/pages] **
+
+    Pasta dos arquivos de página HTML.
+
+    ** [app/views/partials] **
+
+    Pasta dos arquivos de fragmentos HTML para inclusão nos layouts ou arquivos de página HTML.
+
+    ** [docs] **
+
+    Pasta onde fica a documentação da aplicação, que serão convertidos
+    em códigos automaticamente.
+
+    ** [docs/backlog] **
+
+    Pasta onde fica a documentação relativa a funcionalidades a serem implementadas em
+    futuras versões da aplicação.
+
+    ** [docs/features] **
+
+    Pasta onde fica a documentação relativa a funcionalidades implementadas ou
+    em processo de implementação.
+
+    ** [docs/messages] **
+
+    Pasta onde fica a documentação relativa a mensagens de retorno ao usuário da aplicação.
+
+    ** [docs/rules] **
+
+    Pasta onde fica a documentação relativa às regras de negócio da aplicação.
+
+    ** [docs/artifacts.txt] **
+
+    Arquivo onde ficam as definições dos artefatos para definição
+    das funcionalidades e regras de negócio.
+
+    ** [jf] **
+
+    Pasta do framework.
+
+    ** [jf/core] **
+
+    Pasta dos arquivos de classe do framework.
+
+    ** [jf/guide] **
+
+    Pasta da documentação do framework.
+
+    ** [jf/newapp] **
+
+    Pasta modelo para criação de novas aplicações.
+
+    ** [jf/temp] **
+
+    Pasta para armazenamento temporário de arquivos produzidos pelo framework,
+    tais como arquivos de cache, csv para resposta em .CSV, logs, sessões e uploads.
+
+    ** [storage] **
+
+    Pasta dos arquivos produzidos pela aplicação que devem ser persistidos.
+
+    ** [ui] **
+
+    Pasta dos arquivos de acesso público.
+
+    ** [ui/assets] **
+
+    Pasta dos arquivos de recursos públicos.
+
+    ** [ui/assets/css] **
+
+    Pasta dos arquivos de folha de estilo.
+
+    ** [ui/assets/fonts] **
+
+    Pasta dos arquivos de fontes.
+
+    ** [ui/assets/img] **
+
+    Pasta dos arquivos de imagens.
+
+    ** [ui/assets/js] **
+
+    Pasta dos arquivos javascript.
+
+    ** [ui/assets/vendors] **
+
+    Pasta dos arquivos ou bibliotecas de terceiros (tais como jquery, vue, bootstrap, etc).
+
+    ** [storage] **
+
+    Pasta dos documentos gerados em tempo de execução pela aplicação.
+    Pode também ser utilizada como pasta de backup enquanto não se define um local externo seguro.
+
+    ** [vendors] **
+
+    Pasta das bibliotecas externas e APIs.
+
+    ** [.htaccess] **
+
+    Arquivo de configuração do servidor Apache.
+
+    ** [index.php] **
+
+    Arquivo que invoca o framework e inicia a aplicação.
+
+    ** [jfc] **
+
+    Arquivo para executar tarefas em linha de comando.
+
+
+Configurando a aplicação
+------------------------
+
+    Para sua aplicação funcionar, você precisa configurá-la corretamente através
+    dos arquivos de configuração. Segue a lista de arquivos com comentários para
+    ajudá-lo no preenchimento:
+    
+    ** app.php **
+
+        'default_layout'    => 'main',
+        'vars'              => [
+            'app_name'      => (string) ex: 'Meu APP',
+            'description'   => (string) ex: 'O que meu APP faz',
+            'author'        => (string) ex: 'Nome [e-mail],
+            'since'         => (string) ex: 'Data de lançamento',
+            'keywords'      => (string) ex: 'app, producao, moda, beleza, etc',
+        ],
+        'env' => [
+            'method'    => 'string' ou 'ips' // Define o método de definição do ambiente
+            'string'    => 'dev', 'tests', 'accept' ou 'prod' // Se o método for 'string'
+            'ips'       => (array) all[ips], dev[ips], tests[ips], accept[ips] e prod[ips],
+                            // Se o método for 'ips'
+        ],
+        'timezone'      => (string) ex: 'America/Sao_Paulo',
+
+    ** business.php **
+
+        'requirement'           => 'REQUISITO',
+        'description'           => 'DESCRIÇÃO',
+        'scene_model'           => 'MODELO DE CENÁRIO',
+        'scene'                 => 'CENÁRIO',
+        'business_rule'         => 'REGRA',
+        'business_rules'        => 'REGRAS DE NEGÓCIO',
+        'artifacts'             => [
+            'feature'           => 'FUNCIONALIDADE',
+            'modules'           => 'MÓDULOS',
+            'modifiers'         => 'MODIFICADORES',
+            'operators'         => 'OPERADORES',
+            'qualifiable_types' => 'TIPOS QUALIFICÁVEIS',
+        ],
+
+    ** cache.php **
+
+        'default_expires'   => '24 hours',
+        'maxlength'         => '2000',
+
+    ** custom.php **
+
+        [Livre]
+
+    ** db.php **
+
+        'schemas' => [
+            'main' => [ // Nome do esquema padrão
+                'all' => [
+                    'driver'    => (string) ex: 'mysql',
+                    'hostname'  => (string) ex: 'localhost',
+                    'port'      => (int)    ex: 3306,
+                    'username'  => (string) ex: 'root',
+                    'dbname'    => (string) ex: 'minha_app',
+                    'password'  => (string) ex: 'senha123',
+                ],
+                [dev, tests, accept, prod]
+            ],
+            [outros esquemas],
+        ],
+
+    ** env.php **
+    
+        'method'    => 'ips', // 'ips' ou 'string'
+        'string'    => 'dev', // 'dev', 'accept', 'tests' ou 'prod'
+        'ips'       => [
+            'prod'  => '10.120.61.22', // (string) ou (array)
+        ],
+
+    ** ftp.php **
+        
+        'schemas' => [
+            'main' => [
+                'sftp'      => (bool)   ex: false,
+                'hostname'  => (string) ex: 'localhost',
+                'port'      => (int)    ex: 22,
+                'username'  => (string) ex: 'root',
+                'password'  => (string) ex: 'senha123',
+            ],
+        ],
+
+    ** routes.php **
+        
+        'url_base'      => [
+            'all'       => (string) ex: 'localhost/meuapp',
+            'dev'       => (string) ex: '10.120.1.1/meuapp',
+            'tests'     => (string) ex: 'tests.meuservidor/meuapp',
+            'accept'    => (string) ex: 'accpet.meuservidor/meuapp',
+            'prod'      => (string) ex: 'meuservidor/meuapp',
+        ],
+        'lang'              => [
+            'source'        => 'url', 'native' ou 'client'
+                                // url      - captura a língua da URL
+                                // native   - sempre usa o idioma nativo
+                                // client   - captura a língua do header [HTTP_ACCEPT_LANGUAGE]
+            'native'        => (string) ex: 'pt-br',
+            'accept'        => (array) ex: [
+                'pt-br'     => 'Português (Brasil)',
+                'en'        => 'English',
+                'es'        => 'Español',
+            ],
+            'translate_url' => 'true' ou 'false',
+                                // Deve traduzir o nome dos controladores, ações e parâmetros?
+        ],
+        'default'   => [
+            'controller'    => (string) ex: 'app',
+            'action'        => (string) ex: 'home',
+        ],
+
+    ** lang/[lang]/routes.php **
+
+        'default'   => [
+            'controller'    => (string) ex: 'app',
+            'action'        => (string) ex: 'home',
+        ],
+        'controllers'       => [
+            'app_inicio'    => 'app_start', // (exemplo)
+        ],
+        'errors'            => [
+            'controller_not_found'  => "Controller '%s' was not found or your namespace is incorrect!",
+            'no_lang_actions'       => "There are no ACTION's translations in english in the controller '%s'!",
+            'action_not_found'      => "Action '%s' not found!",
+        ],
+
+    ** security.php **
+
+        'ddos_timeout'  => 0.5,     // Limite de segundos após o qual uma mesma requisição
+                                    // não será considerada como um ataque DDoS
+        'force_https'   => false,   // Informa se deve forçar o uso do protocolo HTTPS
+
+    ** sessions.php **
+
+        'cache_expires' => 10,      // Tempo em minutos para expiração da sessão em cache 
+        'maxlifetime'   => 60 * 15, // tempo em segundos para expiração definitiva da sessão
+
+    ** vendors.php **
+        
+        'Dompdf\Dompdf' => 'dompdf/autoload.inc.php', (exemplo)
+                        // Irá carregar a classe Dompdf\Dompdf a partir do arquivo
+                        // [meuapp]/vendors/dompdf/autoload.inc.php
+
+    ** websocket.php **
+        
+        EM DESENVOLVIMENTO

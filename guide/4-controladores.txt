@@ -1,0 +1,261 @@
+CONTROLADORES
+=============
+
+
+Introdução
+----------
+
+    No JF, os controladores são apenas portas de acesso de um cliente HTTP
+    ao domínio da aplicação, pois a aplicação acontece, de fato, nas views e nos domains.
+
+    As requisições são processadas pelas actions dentro dos controladores. As actions
+    que montam página são prefixadas com a palavra "view_" e as actions que retornam dados
+    são prefixadas pela palavra "service_".
+
+    Existem também algumas situações em que operações devem ser executadas em todas ações,
+    ou na maioria delas, como é o caso do controle de acesso. Para evitar a repetição de código
+    nas ações, os controladores dispõem de um método especial, que é executado antes de todas
+    as ações, chamado `before()`.
+
+    No caso das actions que montam páginas, existem algumas operações específicas para todas
+    as páginas, como definição de layout (tais como menus). Essas actions contam com mais
+    um método especial invocado logo após o método before(), chamado `beforeView()`.
+
+
+Estrutura dos controladores
+---------------------------
+
+    Os *Controladores* devem ficar na pasta "app/controllers", seu namespace deve começar com
+    `App\Controllers` e devem estender à classe JF\HTTP\Controller.
+
+    As *Ações* são métodos públicos de instância dessa classe, cujo nome deverá ser precedido do prefixo "view_" (montar páginas) ou "service_" (retornar dados).
+
+    Segue abaixo um exemplo de uma declaração de uma classe para manipular
+    requisições de usuário.
+
+        <?php
+
+        namespace App\Controllers;
+
+        use App\Domain\Usuario;
+        use JF\HTTP\Controller;
+        use JF\HTTP\Input;
+
+        /**
+         * Arquivo meuapp/app/controllers/usuarios.php
+         */
+        class Usuarios extends Controller
+        {
+            /**
+             * Método executado antes de todas as actions.
+             */
+            public function before()
+            {
+                // Controle de acesso
+                // Contador de visitas
+            }
+
+            /**
+             * Método executado antes de todas as views.
+             */
+            public function beforeView()
+            {
+                // Montar menus
+                // Montar footer
+            }
+
+            /**
+             * Action da página HOME.
+             */
+            public function view_home()
+            {
+                // Liste os usuários e envie para a página
+                $usuarios = Usuario::listar()
+                
+                $this->set( 'titulo', 'Gestão de Usuários' );
+                $this->set( 'usuarios', $usuarios );
+            }
+
+            /**
+             * Serviço para CADASTRAR NOVO USUÁRIO.
+             */
+            public function service_cadastrar()
+            {
+                // Captura os dados enviados via post e cadastra o usuário
+                $dados          = Input::post();
+                $novo_usuario   = Usuario::cadastrar( $dados );
+                return $novo_usuario;
+            }
+
+            /**
+             * Serviço para ALTERAR UM USUÁRIO.
+             */
+            public function service_alterar()
+            {
+                // Captura os dados enviados via post e via URL
+                // e altera o cadastro do usuário
+                $id_usuario         = Input::args( 'id-usuario' );
+                $dados              = Input::post();
+                $usuario_alterado   = Usuario::alterar( $id_usuario, $dados );
+                return $usuario_alterado;
+            }
+
+            /**
+             * Serviço para EXCLUIR UM USUÁRIO.
+             */
+            public function service_excluir()
+            {
+                // Captura o id via URL e exclui o cadastro do usuário
+                $id_usuario         = Input::args( 'id-usuario' );
+                $usuario_excluido   = Usuario::excluir( $id_usuario );
+                return $usuario_excluido;
+            }
+        }
+
+
+Acessando dados enviados nas requisições
+----------------------------------------
+
+    Os dados informados poderão ser recuperados pelo componente JF\HTTP\Input.
+    Veja abaixo a relação de métodos dessa classe para recuperação de dados da requisição:
+
+    ** Input::args( $arg = null, $default = null ) **
+
+    Retorna dados enviados no formato de URLs amigáveis.
+    Se `$arg` não for informado, retorna todos os dados. Se o dado solicitado em `$arg` não constar
+    na lista de argumentos na URL, retorna o valor informado em `$default`.
+
+    ** Input::get( $arg = null, $default = null ) **
+
+    Retorna dados enviados via GET.
+    Se `$arg` não for informado, retorna todos os dados. Se o dado solicitado em `$arg` não constar na lista de argumentos na URL, retorna o valor informado em `$default`.
+
+    ** Input::post( $arg = null, $default = null ) **
+
+    Retorna dados enviados via POST.
+    Se `$arg` não for informado, retorna todos os dados. Se o dado solicitado em `$arg` não constar
+    na lista de argumentos enviados no corpo da requisição, retorna o valor informado em `$default`.
+
+    ** Input::file( $name, $dir = null ) **
+
+    Retorna um array de dados do upload de um array arquivos enviados sob o nome `$name`,
+    com os seguintes valores:
+        
+    $file = [
+        'error'         => código do erro,
+        'error_message' => mensagem de erro,
+        'size'          => tamanho do arquivo em bytes,
+        'human_size'    => tamanho humanizado do arquivo (Kb, Mb, Gb, Tb e Pb),
+        'name'          => nome de origem do arquivo,
+        'tmp_name'      => nome temporário do arquivo no servidor,
+        'saved_path'    => nome do caminho e arquivo salvo no servidor,
+        'saved_name'    => nome do arquivo salvo no servidor,
+        'extension'     => extensão do arquivo,
+        'type'          => mime type do arquivo,
+    ];
+
+    Se NÃO houver erro no salvamento do arquivo, o valor de 'error' será 0 e 'error_message'
+    será uma string vazia. Se houver erro e o arquivo não for salvo no servidor, 'error'
+    será preenchido com o código do erro e 'error_message' terá a mensagem de erro.
+
+    Segue as mensagens de erro possíveis:
+        
+        UPLOAD_ERR_OK           => '', // Upload realizado com sucesso
+        UPLOAD_ERR_INI_SIZE     => 'O arquivo enviado excede o limite definido no servidor de aplicação'
+        UPLOAD_ERR_FORM_SIZE    => 'O arquivo excede o limite definido em MAX_FILE_SIZE no formulário HTML'
+        UPLOAD_ERR_PARTIAL      => 'O upload do arquivo foi feito parcialmente'
+        UPLOAD_ERR_NO_FILE      => 'Nenhum arquivo foi enviado'
+        UPLOAD_ERR_NO_TMP_DIR   => 'Pasta temporária ausênte.'
+        UPLOAD_ERR_CANT_WRITE   => 'Falha em escrever o arquivo em disco'
+        UPLOAD_ERR_EXTENSION    => 'Uma extensão do servidor de aplicação interrompeu o upload do arquivo'
+    
+    Por padrão, os arquivos são salvos na pasta 'jf/temp/uploads'.
+    Para alterar a pasta de destino, informe o caminho da pasta no parâmetro `$dir`.
+
+
+Definindo o tipo de resposta
+----------------------------
+
+    Como mencionado na seção anterior, o formato padrão de resposta é HTML. Ou seja,
+    o framework irá direcionar as requisições para as view_action. Para retornar a resposta
+    em outros formatos, ele deve ser especificado na URL.
+
+    Ex 1: usuarios/listar       - executa o método `$usuarios->view_listar()`
+    
+    Ex 2: usuarios/listar.json  - executa o método `$usuarios->service_listar()`
+
+
+Retornando dados em HTML
+------------------------
+
+    As respostas em HTML retornam documentos de página HTML, cuja montagem será explicado
+    na sessão "PÁGINAS HTML" (paginas-html.txt).
+
+    Para enviar dados para as páginas os controladores dispõem do método
+    `$this->set( $key, $value )`. Os dados são sempre disponibilidades em formato de objeto.
+
+    Para redefinir uma parte dos dados, num subnível, você pode utilizar a sintaxe
+    `$this->set( $key.$subkey, $value )`.
+
+    Ex: // Definir um menu
+        $menu = [
+            'usuarios' => [
+                'cadastrar' => [
+                    'label' => 'Cadastrar um usuário',
+                    'href'  => URL_BASE . '/usuarios/cadastrar',
+                ],
+                'alterar' => [
+                    'label' => 'Alterar um usuário',
+                    'href'  => URL_BASE . '/usuarios/alterar',
+                ],
+            ],
+        ];
+        $this->set( 'menu', $menu );
+
+        // Alterar / incluir um item do menu
+        if ( $admin ) {
+            $menu_excluir = [
+                'label' => 'Excluir um usuário',
+                'href'  => URL_BASE . '/usuarios/excluir',
+            ];
+            $this->set( 'menu.usuarios.excluir', $menu_excluir );
+        }
+
+
+Retornando dados em outros formatos
+-----------------------------------
+
+    ** PHP, JSON ou TXT **
+
+    Pode retornar os dados em qualquer formato.
+
+    ** Forçar download e visualizar em PDF **
+
+    Retorne uma string com o nome do arquivo existente em disco.
+
+    ** CSV e XLS **
+    
+    Retorne um array simples de dados ou uma string para baixar um arquivo
+    com uma linha de dados. Para baixar um arquivo com múltiplas linhas,
+    retorne um array de arrays.
+
+    ** Nome do arquivo baixado para respostas em CSV, download forçado, PDF e XLS **
+
+    Respostas em CSV ou XLS baixam um arquivo com o mesmo nome da action
+    e incluem a respectiva extensão (.csv ou .xls).
+
+    Respostas em PDF ou com download forçado baixam o arquivo existente,
+    utilizando seu nome de origem.
+
+    Para alterar o nome do arquivo de retorno, informe um valor para a propriedade
+    `$this->filename`. Para alterar o valor para todas as respostas, redefina no nível
+    do controlador:
+
+        /**
+         * Define o nome do arquivo caso o tipo.
+         */
+        public $filename = null;
+
+
+    Atenção: os formatos CSV, XLS e PDF incluem sua respectiva extensão automaticamente
+    ao final do nome do arquivo, caso não tenha ou seja divergente.

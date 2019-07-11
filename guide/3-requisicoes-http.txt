@@ -1,0 +1,194 @@
+REQUISIÇÕES HTTP
+================
+
+
+Introdução
+----------
+
+	Antes de começar a codificar, é imprescindível conhecer como o JF Framework
+	trata as requisições e qual o fluxo ou sequência de arquivos,
+	classes e métodos acessados.
+	
+	Esse conhecimento te possibilitará:
+
+		1. Saber como definir as URLs da aplicação.
+		2. Saber onde criar os arquivos e classes.
+		3. Saber onde colocar cada trecho de código.
+		4. Saber onde e em que momento cada recurso do framework estará disponível.
+		5. Prevenir, isolar e localizar mais facilmente erros ocorridos na sua aplicação.
+
+
+Rotas
+-----
+
+	Todas as requisições HTTP feitas à sua aplicação são capturadas pelo framework (padrão FrontController) e sua execução é distribuída em cadamas multi modularizadas (HMVC).
+
+	As URLs são interpretadas da seguinte forma:
+	"[http|https]://[raiz-aplicacao]/[controller]/[action][.formato]//[params]".
+
+	Observe que os parâmetros são declarados após uma dupla barra (//).
+
+	Ex 1: URL para realizar uma consulta detalhada ao primeiro usuário cadastrado.
+	(GET) http://app1/usuarios/consulta//id/1/detalhado/sim, onde:
+		- http://app1 			- caminho para a raiz da aplicação.
+		- usuarios 				- nome do controlador (classe App\Controllers\Usuarios).
+		- consulta 				- nome da ação (método da classe).
+		- id/1/detalhado/sim 	- parâmetros da requisição (id = "1" e detalhado = "sim").
+
+	Ex 2: URL para cadastrar um novo usuário especial com parâmetros informados via POST.
+	(POST) http://app2/usuarios/especial/cadastrar, onde:
+		- http://app2 			- caminho para a raiz da aplicação.
+		- usuarios/especial 	- nome do módulo (classe App\Controllers\Usuarios\Especial).
+		- consulta 				- nome da ação (método da classe).
+
+	Quando o formato da resposta não for declarada na URL, será assumido o formato HTML.
+
+	Quando a *Ação* não for declarada na URL, será assumida a ação padrão declarada nas configurações (routes.default.action).
+
+	Quando o *Controlador* não for declarado, será assumido o controlador padrão
+	(routes.default.controller).
+
+	Suponha o arquivo app/config/routes.php:
+
+		<?php
+
+		return [
+			'default' => [
+				'controller' 	=> 'app',
+				'action' 		=> 'home',
+			],
+		];
+
+	Ex 1: Para a URL "http://sistema1/usuarios", serão considerados:
+		- http://sistema1		- caminho para a raiz da aplicação.
+		- usuarios 				- nome do controlador (classe App\Controllers\Usuarios).
+		- *home* 				- nome da ação (método da classe).
+
+	Ex 2: Para a URL "http://sistema1", serão considerados:
+		- http://sistema1		- caminho para a raiz da aplicação.
+		- *app* 				- nome do controlador (classe App\Controllers\App).
+		- *home* 				- nome da ação (método da classe).
+
+
+Idioma da requisição
+--------------------
+
+	O JF Framework dá suporte a aplicações internacionais (idiomas diferentes).
+	Existem 3 formas de capturar o idioma da requisição:
+
+		1. Idioma fixo - routes.lang.source = 'native'.
+			Nesse caso, o idioma será sempre o idioma nativo (routes.lang.native).
+			
+			Esse método é ideal quando houver hospedagem de aplicação dedicada
+			para um idioma específico.
+		
+		2. A partir do cliente/navegador - routes.lang.source = 'client'.
+			Nesse caso, o idioma será capturado dos idiomas informados pelo cliente
+			no header HTTP_ACCEPT_LANGUAGE por ordem de prioridade.
+		
+		3. A partir da URL (recomendado) - routes.lang.source = 'url'.
+			Nesse caso, o idioma será capturado da URL.
+
+	Se no arquivo de configurações de rotas, foi definida a URL como origem de captura do idioma
+	(routes.lang.source = 'url'), será esperado informar o idioma na URL, antes do controlador:
+	"[http|https]://[raiz-aplicacao]/[lang]/[controller]/[action]//[params]".
+
+	Ex: http://app1/pt-br/usuarios
+
+	Se a requisição informar apenas o caminho raiz da aplicação (não informou o idioma),
+	será considerado o idioma nativo (routes.lang.native).
+
+	O idioma considerado deverá constar na lista de idiomas aceitos na aplicação
+	(routes.lang.accept).
+
+
+Formatos de resposta
+--------------------
+
+	O framework utiliza a abordagem REST para as requisições. Isso significa que
+	o retorno da requisição	em JF Frameworok pode assumir os seguintes formatos:
+	    
+	    1. CSV (.csv)
+	    2. Forçar o download (.download)
+	    3. HTML (.html)
+	    4. JSON (.json)
+	    5. Visualizar arquivos PDF (.pdf)
+	    6. Serializado (.php)
+	    7. XLS (.xls)
+	    8. XML (.xml)
+	    9. Texto (.txt)
+
+	Por padrão, o formato de resposta de uma requisição é HTML (mas isso pode ser alterado).
+	Para mudar o formato de resposta, basta inserir o formato logo após a ação na URL.
+	Ex: http://meuservidor/meuapp/controle/acao.json.
+
+
+Enviando dados pela URL
+-----------------------
+
+    As requisições HTTP aceitam parâmetros via GET ou POST. O envio de dados via GET é bastante
+    conveniente, em muitos casos, devido ao envio de dados diretamente via URL.
+
+    Entretanto, como as URLs ficam com baixa legibilidade, é uma prática comum nos frameworks
+    capturar os parâmetros da URL separados por barras. Esse formato de URL é chamado de
+    "URL amigável".
+
+    No JF Framework, a rota é separada dos parâmetros na URL por duas barras (//).
+    Assim, fica mais fácil reconhecer os parâmetros em URLs de aplicações multi modularizadas
+    e deixa o processamento mais rápido.
+
+    Compare a diferença entre uma URL com envio de dados via GET e uma URL amigável.
+    Suponha o acesso ao controlador "Usuarios", ação "consultar" e dados "id = 1" e
+    "detalhado = sim". Veja como ficariam:
+    
+    URL GET         - http://meuapp/usuarios/consultar?id=1&detalhado=sim
+    URL amigável    - http://meuapp/usuarios/consultar//id/1/detalhado/sim
+
+    Você também pode utilizar parâmetros da URL juntamente com dados enviados via GET
+    (mas não recomendamos essa prática).
+    
+    Ex: http://meuapp/usuarios/consultar//id/1?detalhado=sim
+
+    Uma vantagem em utilizar os parâmetros em URLs amigáveis, é que você pode utilizá-las
+    tanto em requisições GET quanto em requisições POST.
+   
+
+Como manipular as requisições
+-----------------------------
+
+	Você viu que as requisições no JF Framework são capturadas e manipuladas no padrão HMVC.
+	Que todas as requisições são definidas em termos de:
+
+		1. Idioma (se definido routes.lang.source = 'url').
+		2. Controle
+		3. Ação.
+		4. Parâmetros.
+
+	No início dessa sessão, você viu também a importância de saber o fluxo ou sequência
+	de arquivos, classes e métodos acessados em cada requisição.
+	
+	Agora, vamos deixar claro esse fluxo.
+
+	Se for uma requisição HTML, para a página "app/home", por exemplo:
+
+		1. Requisição chega ao servidor e é capturada pelo framework.
+		2. A URL é interpretada e uma rota é definida: idioma*, controlador, ação e parâmetros.
+		3. O controlador é instanciado como um objeto.
+		4. É executado o método $controlador->before().
+		5. É executado o método $controlador->beforeView().
+		5. É executado o método $controlador->view_home().
+		6. Inclui o arquivo de layout e os fragmentos de layout.
+		7. Inclui o arquivo de página e os fragmentos da página.
+
+	Se NÃO for uma requisição HTML, para o servico "usuarios/obter", por exemplo:
+
+		1. Requisição chega ao servidor e é capturada pelo framework.
+		2. A URL é interpretada e uma rota é definida: idioma*, controlador, ação e parâmetros.
+		3. O controlador é instanciado como um objeto.
+		4. É executado o método $controlador->before().
+		5. É executado o método $controlador->service_obter().
+		6. Os dados são retornados.
+
+	Veja as pequenas diferenças nas requisições HTML. É executado o método adicional
+	`beforeView()` e montada uma página HTML a partir dos arquivos de layout, página
+	e fragmentos.

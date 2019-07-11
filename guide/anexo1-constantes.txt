@@ -1,0 +1,80 @@
+CONSTANTES
+==========
+
+
+De pastas
+---------
+
+DIR_CORE 	- Pasta do framework.
+DIR_BASE 	- Pasta raiz da aplicação.
+DIR_APP 	- Pasta dos arquivos de backend da aplicação;
+DIR_ASSETS 	- Pasta dos arquivos públicos da aplicação
+DIR_FILES 	- Pasta dos arquivos produzidos pela aplicação (relatórios em PDF, uploads, etc).
+DIR_LIBS 	- Pasta das bibliotecas externas.
+DIR_LOGS 	- Pasta dos logs de erro da aplicação.
+DIR_PAGES 	- Pasta das páginas HTML produzidas a partir dos templates.
+DIR_TMP 	- Pasta temporária.
+
+
+De HTML
+-------
+
+N 			- Quebra de linha.
+BR 			- Quebra de linha.
+
+
+De tamanhos de arquivo
+----------------------
+
+KB 			- 1 Kb
+MB 			- 1 Mb (1.024 Kb)
+GB 			- 1 Gb (1.024 Mb)
+TB 			- 1 Tb (1.024 Gb)
+PB 			- 1 Pb (1.024 Tb)
+
+
+De tempos
+---------
+
+SEG 		- 1.
+MILISEG 	- 1000.
+MIN 		- 60 segundos.
+MILIMIN 	- 60 milisegundos.
+HOUR 		- 60 minutos.
+MILIHOUR 	- 60 miliminutos.
+DAY 		- 24 horas.
+MILIDAY 	- 24 milihoras.
+
+
+De ambientes
+------------
+
+ENV 		- Ambiente ativo.
+ENV_DEV 	- Ambiente ativo é "dev" (desenvolvimento).
+ENV_TESTS 	- Ambiente ativo é "tests" (testes).
+ENV_ACCEPT 	- Ambiente ativo é "accept" (homologação).
+ENV_PROD 	- Ambiente ativo é "prod" (produção).
+
+
+Constantes de rota
+------------------
+
+CONTROLLER_CLASS 	- Nome da classe do controlador.
+CONTROLLER 			- Nome do controlador para utilizar em caminho de arquivos.
+ACTION 				- Nome da ação para utilizar em caminho de arquivos.
+ROUTE 				- Junção dos nomes do controlador com o da ação para utilizar em caminho de arquivos.
+PARAMS 				- Parâmetros da requisição em texto plano.
+LANG				- Língua utilizada na requisição.
+LANG_NATIVE 		- Língua nativa da aplicação.
+LANG_SOURCE 		- Origem da definição da língua da requisição.
+LANG_TRANS_URL 		- Informa se deve traduzir os componentes da URL para a língua nativa.
+
+
+Constantes de URL
+-----------------
+
+URL_BASE 		- URL raiz da aplicação.
+URL_ASSETS 		- URL dos arquivos públicos.
+URL_CONTROLLER 	- URL da ação padrão do controlador da requisição.
+URL_ACTION 		- URL da ação da requisição.
+URL_REQUEST 	- URL completa da requisição.

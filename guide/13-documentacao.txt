@@ -1,0 +1,84 @@
+DOCUMENTAÇÃO DA APLICAÇÃO
+=========================
+
+
+Introdução
+----------
+
+
+Tags gerais
+-----------
+
+    As tags abaixo aplicam-se às classes, constantes, propriedades e métodos:
+
+        @created
+            Indica a data da criação ou da inclusão do elemento.
+
+        @author
+            Indica o autor da criaçaõ ou da inclusão do elemento.
+
+        @rename
+            Indica que o nome utilizado no elemento não está adequado e deve ser revisto.
+
+
+Tags de classes
+---------------
+
+    @constant
+        Indica as constantes declaradas em uma classe, para melhorar a visualização
+        sumária das constantes da classe.
+
+    @property
+        Indica as propriedades declaradas em uma classe, para melhorar a visualização
+        sumária das propriedades da classe.
+
+    @magic-property
+        Indica as propriedades de uma classe que podem ser definidas ou resgatadas
+        pelos métodos mágicos "__get" e "__set".
+
+    @method
+        Indica os métodos declarados em uma classe, para melhorar a visualização
+        sumária dos métodos da classe.
+
+    @magic-method
+        Indica os métodos de uma classe que podem ser invocados pelos métodos mágicos
+        "__call" e "__callStatic".
+
+
+Tags de constantes / propriedades
+---------------------------------
+
+    @type
+        Indica o tipo de dado da constante ou propriedade.
+
+
+Tags de métodos
+---------------
+
+    @bug / @fix
+        Trechos de códigos que apresentam erros na execução ou
+        retornam valores incorretos ou em conflito.
+
+    @update
+        Trechos de códigos onde foi identificado depreciação de recursos da linguagem,
+        mudanças na implementação de recursos da linguagem, altereação nas
+        regras de negócio ou alteração de valores estáticos de variáveis locais.
+
+    @todo
+        Funcionalidade pendente de implementação.
+
+    @improve
+        Trechos de códigos que foram mal implementados (excesso de complexidade),
+        com situações não tratadas (possível ocorrência de erro de execução) ou
+        apresentam mal desempenho (lentidão).
+
+    @depend
+        Trechos de códigos que dependem de uma biblioteca externa ou API;
+        são importantes para verificar quais bibliotecas ou APIs estão sendo
+        subutilizadas ou não utilizadas e para realizar testes de compatibilidade de novas versões.
+
+    @param
+        Indica os parâmetros, em ordem, esperados na invocação de um método.
+
+    @return
+        Retorno resultante na execução de um método de classe.

@@ -1,0 +1,43 @@
+MANIPULANDO SESSÕES
+===================
+
+
+Introdução
+----------
+
+    Compartilhar dados entre requisições é necessário em muitas situações, tais como
+    dados de usuário logado, estado de menu exibível/ocultável, carrinho de compras,
+    dados de cadastro em andamento não finalizado e distribuíd em etapas, etc.
+
+    Existem situações em que mais de uma aplicação compartilham hospedagem no mesmo
+    servidor. Quando não devidamente configurado o servidor, sessões com memso nome
+    em aplicações diferentes são compartilhadas, causando conflito.
+
+    O PHP fornece uma solução possibilitando alterar a pasta de salvamento dos arquivos
+    de sessão (session.save_path). Mas essa solução, por vezes, deixa um lixo de arquivos
+    de sessão não excluidos, podendo sobrecarregar o disco.
+
+    Para resolver o problema, o JF Framework oferece uma solução simples: prefixos.
+    Todos os dados manipulados pela classe JF\Session utilizam como prefixo o nome da
+    pasta da aplicação.
+
+
+Métodos da classe JF\Session
+----------------------------
+
+    ** Session::get( $key, $default = null ) **
+
+    Resgata o valor de `$key` dos dados da sessão. Se a chave não existir,
+    retorna o valor definido em `$default`.
+
+    ** Session::get( $key, $value ) **
+
+    Define o valor `$value` para `$key` nos dados da sessão.
+    
+    ** Session::delete( $key ) **
+
+    Exclui `$key` dos dados da sessão.
+    
+    ** Session::prefix() **
+
+    Retorna o prefixo de sessões definidos em `app.sessions.prefix`.

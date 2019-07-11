@@ -1,0 +1,284 @@
+MONTANDO PÁGINAS HTML
+=====================
+
+
+Layout de página
+----------------
+
+    Por padrão, as páginas são montadas sobre layouts, cujo arquivo de layout padrão
+    é definido na configuração `app.default_layout`.
+
+    Você pode alterar o layout de páginas em um controlador, alterando sua propriedade ou
+    até mesmo surpimir o uso de layouts, informando uma string vazia. Veja:
+
+        <?php
+
+        namespace App\Controllers;
+
+        use JF\HTTP\Controller;
+
+        /**
+         * Arquivo meuapp/app/controllers/app.php
+         */
+        class App extends Controller
+        {
+            /**
+             * Redefine o layout de páginas padrão.
+             * Para suprimir o uso de layout, informe uma string vazia.
+             */
+            public $layout = 'landpage'; // Padrão null
+
+        }
+
+    Os arquivos de layout ficam na pasta 'app/views/layouts'.
+
+
+Utilizando dados na página
+--------------------------
+
+    Para enviar dados dinâmicos para página por meio dos controladores, utilizamos os método
+    `$this->set( $key, $value )`, conforme visto anteriormente. Mas também podemos enviar dados
+    estáticos para todas as páginas, independente do controlador ou ação. Esses dados devem ser
+    definidos em nas configuações `app.vars`.
+
+    Os dados enviados pelo controlador e os dados estáticos definidos nas configurações ficam
+    disponíveis nas páginas em forma de objetos:
+
+        1. $this->data - Dados enviados pelo controlador. Ex: 
+            
+            // Definimos o dado no controlador
+            $this->set( 'titulo', 'Título da página' );
+
+            // Imprimir na página 'Título da página'
+            <?= $this->data->titulo ?>
+
+        2. $this->data - Dados definidos nas configurações.
+            
+            // Definimos o dado no arquivo de configurações app/config/views.php
+            <?php
+
+            return [
+                'default_layout' => 'main',
+                'vars' => [
+                    'author'      => 'Márcio Jalber',
+                ],
+            ];
+
+            // Imprimir na página 'Márcio Jalber'
+            <?= $this->vars->author ?>
+
+    Para definir dados estáticos para utilizar nas páginas, informe os dados nas configurações (config.app.vars).
+    Para utilizar os dados nas páginas, utilize a sintaxe <?= $this->vars->varname ?>, onde "varname" é o nome da variável.
+
+
+Injetando conteúdo HTML
+-----------------------
+
+    No arquivo de layout, você pode inserir o HTML da página através do método
+    `<?= $this->content() ?>`, apenas uma única vez.
+
+    Para incluir fragmentos HTML dos arquivos existentes na pasta 'app/views/includes',
+    utilize o método `$this->partial( $filename )`. Esse método pode ser utilizado
+    quantas vezes você quiser, tanto no arqivo de layout quanto no de página, inclusive
+    inserindo o mesmo fragmento mais de uma vez.
+
+    Para evitar inclusão recursiva e consequnete travamento do código,
+    não é possível inserir um fragmento dentro dele mesmo, nem dentro de qualquer outro fragmento
+    aninhado. Ex:
+
+    // Arquivo 'app/views/includes/bars.php'
+    <?= $this->partial( 'topbar' ) ?>
+    <?= $this->partial( 'sidebar' ) ?>
+
+    // Imagine o código abaixo inserido dentro topbar.php, topbar.php ou sidebar.php.
+    <?= $this->partial( 'bars' ) ?>
+    
+    // Em vez de resultar em uma inclusão recursiva, aparecerá o comentário
+    // <!-- SOLICITAÇÃO DE INCLUSÃO RECURSIVA DO FRAGMENTO ../includes/bars.php -->
+
+
+Injetando arquivos CSS e JS atualizados
+---------------------------------------
+
+    É comum que os navegadores façam cache dos arquivos CSS e JS inseridos na página.
+    O problema é que também é comum que o navegador não atualize esses arquivos,
+    mesmo quando foram modificados no servidor.
+
+    Para evitar esse problema, o JF Framework possui dois métodos específicos que inserem
+    as respectivas tags, forçando o navegador a atualizar os arquivos quando modificados.
+
+        1. CSS - $this->css( $filename, $media = 'all' ).
+        1. JS - $this->js( $filename, $async = 0 ).
+
+    Esses métodos inserem a data de modificação como parâmetro da requisição, levando o navegador
+    a "acreditar" que se trata de um novo arquivo e fazendo uma nova solicitação para atualizá-lo.
+
+    O parâmetro `$async` do método `$this->js()` serve para definir o nível de bloqueio do script
+    na renderização da página, sendo:
+
+        0 - Requisição bloqueante
+            A renderização da página trava enquanto o script é baixado e processado.
+
+        1 - Requisição semi-bloqueante
+            A renderização da página continua enquanto o script é baixado, mas o processamento
+            do script ocorre imediatamente após o download. Se o navegador não suportar esse tipo
+            de requisição, automaticamente será adotada a requisição não-bloqueante.
+
+        2 - Requisição não-bloqueante
+            O script é baixado enquanto a página está sendo renderizada, mas o processamento
+            do script só ocorre após o fim da renderização da página.
+
+    Veja um exemplo:
+
+    // Métodos para inserir um arquivo CSS e outro JS
+    <?= $this->css( 'app.css' ) ?>
+    <?= $this->js( 'jquery.js' ) ?>
+    <?= $this->js( 'constantes.js', 1 ) ?>
+    <?= $this->js( 'app.js', 2 ) ?>
+
+    // Tags resultantes
+    <link rel="stylesheet" type="text/css" href="../assets/css/app.css?v=1495723631" media="all" />
+    <js src="../assets/js/jquery.js?v=1495723631"></script>
+    <js src="../assets/js/constantes.js?v=1495723631" defer></script>
+    <js src="../assets/js/app.js?v=1495723631" async defer></script>
+
+
+Injetando URL em outro idioma
+-----------------------------
+
+    Quando trabalhamos com múltiplos idiomas e optamos por tradução da URL para outra língua
+    (routes.lang.translate_url = true), por vezes é conveniente um link para a mesma URL
+    em outra língua.
+
+    Isso é possível através do método '<?= $this->urlToLang( $lang ) ?>'.
+
+    Ex:
+
+        // Arquivo app/config/routes.php
+        <?php
+
+        return [
+            ...
+            'lang'              => [
+                'source'        => 'url',
+                'native'        => 'pt-br',
+                'accept'        => [
+                    'pt-br'     => 'Português (Brasil)',
+                    'en'        => 'English',
+                ],
+                'translante_url'=> true,
+            ],
+            ...
+        ];
+
+        // Arquivo app/config/lang/en/routes.php
+        <?php
+
+        return [
+            ...
+            'controllers'       => [
+                'usuarios'      => 'users',
+            ],
+            ...
+        ];
+
+        // Arquivo app/controllers/usuarios.php
+        <?php
+
+        namespace App\Controllers;
+
+        use JF\HTTP\Controller;
+
+        /**
+         * Arquivo meuapp/app/controllers/usuarios.php
+         */
+        class Usuarios extends Controller
+        {
+            /**
+             * Define a tradução para as ACTIONs.
+             */
+            public static $lang_actions     = [
+                'en'                        => [
+                    'obter'                 => 'get',
+                ],
+            ];
+
+            /**
+             * Define a tradução para os parâmetros das requisições.
+             */
+            public static $lang_params      = [
+                'en'                        => [
+                    'obter'                 => ['nome' => 'name'],
+                ],
+            ];
+
+            /**
+             * Action da página home.
+             */
+            public function action_consultar()
+            {
+                $nome = Input::args( 'nome' );
+                $this->set( 'nome', $nome );
+            }
+        }
+
+        // Para a URL http://nomeapp/usuarios/obter//nome/marcio, o método abaixo irá traduzir
+        // para a URL http://nomeapp/users/get//name/marcio
+        <?= $this->urlToLang( 'en' ) ?>
+
+
+Injetando propriedades dos models
+---------------------------------
+
+    É comum utilizarmos ou referenciarmos um dado de uma tabela em mais de uma página.
+    Quando ocorre mudança na tabela do banco-de-dados, não queremos ter que atualizar todas as
+    páginas dependentes. Além de trabalhoso, podemos esquecer de alterar em algum lugar importante.
+
+    Tome como exemplo a coluna 'nome' na tabela 'usuarios', que era do tipo VARCHAR(35) e depois
+    passou para VARCHAR(50). Agora imagine ter que atualizar as propriedades `maxlength` dos
+    inputs e os contadores de caracteres nas páginas de cadastro, consulta e alteração. Ou ter que
+    alterar também a propriedade `title` ou `placeholder` para 'Máximo de caracteres: 50' em
+    todas as respectivas tags HTML.
+
+    Por vezes, será conveniente declarar essa propriedade apenas no model e replicar a informação nas tags das páginas dependentes. Isso é possível através do método
+    `<?= MODEL::props( $table_prop = null, $prop = null, $html = false ) ?>`.
+
+    Na sessão "MANIPULANDO BANCOS-DE-DADOS" iremos esclarecer como declarar um model.
+    Mas para ficar mais claro a utilização do método `modelProps()` no exemplo abaixo,
+    precisaremos dar um exemplo de um model com a propriedade que será utilizada.
+    
+    Segue o exemplo:
+
+    // Arquivo app/models/main/usuario.php
+    <?php
+
+    namespace App\ActiveRecords\Main;
+
+    use JF\DB\Model;
+
+    /**
+     * Model da tabela 'usuario'.
+     */
+    class Usuario extends Model
+    {
+        /**
+         * Definição das propriedades da tabela.
+         */
+        protected static $props = [
+            ...
+            'nome'      => [
+                'label'         => 'Nome do usuário',
+                'placeholder'   => 'Máximo de 20 caracteres',
+                'maxlength'     => 20,
+            ],
+            ...
+        ];
+    }
+
+    // Arquivo app/views/pages/usuarios/cadastro.php
+    <label for='usuario_nome'><?= App\ActiveRecords\Main\Usuario::props( 'nome', 'label' ) ?></label>
+    <input
+     id             = 'usuario_nome'
+     placeholder    = '<?= App\ActiveRecords\Main\Usuario::props( 'nome', 'placeholder' ) ?>'
+     maxlength      = '<?= App\ActiveRecords\Main\Usuario::props( 'nome', 'maxlength' ) ?>'
+     />

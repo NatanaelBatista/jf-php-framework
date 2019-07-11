@@ -1,0 +1,250 @@
+RECOMENDAÇÕES PARA CÓDIGO LIMPO
+===============================
+
+
+Introdução
+----------
+
+    Manter o código limpo é um assunto essencial atualmente, devido a:
+
+        1. Facilita a compreensão (e manutenção) do código pelos membros da equipe.
+        2. Facilita a compreensão (e manutenção) pelo próprio codificador, no futuro.
+        3. Facilita a detecção (e retirada) de códigos obsoletos ou desnecessários.
+        4. Facilita a detecção (e correção) de erros no código.
+        5. Facilita a detecção (e atualização) de recursos depreciados.
+        6. Facilita a detecção (e otimização) de códigos que causam mal desempenho.
+        7. Facilita a detecção (e migração) de códigos fora de contexto.
+
+    Muitos desenvolvedores (até experientes) desconhecem ou dão pouca importância
+    ao assunto. Por isso, esse anexo foi incluso à documentação do framework.
+
+    Mesmo com todas as recomendações abaixo, sempre será necessário o bom senso.
+
+
+PSRs
+----
+
+    Recomendo observar as seguintes PSRs (PHP Standard Recommendations):
+
+        1. PSR-1 (Basic Coding Standard),
+        ressalvando:
+            1.1. Sempre utilizar o estilo "$under_score" para as propriedades (4.2),
+            tanto para evidenciar que trata-se de uma propriedade quanto para
+            evitar conflitos quando houver conversão entre arrays e objetos.
+        2. PSR-2 (Coding Style Guide),
+        ressalvando:
+            2.1. Na declaração de parâmetros (métodos, funções e closures),
+            na declaração de argumentos (invocação de métodos e funções e
+            importação de variáveis via palavra-chave "use") e nas expressões
+            utilizada nas estruturas de controle (if/else, switch, for e foreach),
+            colocar um espaço em branco os parêntes e os parâmetros/argumentos,
+            visando sua melhor identificação e legibilidade do código.
+        3. PSR-5 (PHPDocumentator).
+
+
+Boas práticas para nomeação de elementos
+----------------------------------------
+
+    Recomendações para nomeação de variáveis, constantes, atributos de classe/objeto,
+    parâmetros e argumentos:
+
+        1. Utilizar o estilo "$under_score" para nomes compostos
+            (ex: certo - "$usuario_nome" / errado - "$usuarioNome").
+        2. Nomear como se fala no mundo real, sem artigos ou preposições básicas
+            - de, da, do, das, dos, em, ou, e, a, até
+            (ex: O nome do usuário = "$nome_usuario"),
+            exceto quando modificam seu conteúdo
+            (ex: "$nome_sem_acentos" e "$valor_com_decimal").
+        3. Utilizar nomes que evidenciem seu conteúdo
+            (ex: certo - "$nome_usuario" / errado - "$valor1" ).
+        4. Utilizar apenas siglas bastante conhecidas entre os desenvolvedores
+            ou precedidas de um identificar
+            (ex: certo - "$pericia_ax1" / errado - "$ax1").
+        5. Seguir a recomendação acima para utilizar abreviaturas
+            (ex: certo - "$msg_texto" / errado - "$val_nome" [valor ou validade?]).
+        6. Na construção de Framework, CMS e bibliotecas públicas e globais,
+            deve-se utilizar o idioma inglês.
+        7. Na construção de bibliotecas públicas nacionais ou regionais e
+            aplicações, deve-se utilizar o vernáculo.
+
+    Nomeação de funções e métodos:
+
+        1. Utilizar o estilo "$camelCase" para nomes compostos.
+        2. Nomear a função / método sempre iniciada com um verbo no infinitivo,
+            sem artigos ou preposições básicas
+            (ex: Alterar o nome do usuário = "alterarNomeUsuario()"),
+            exceto quando modificam seu entendimento
+            (ex: "informarNomeComSobrenome()").
+        3. Utilizar nomes que evidenciem o resultado da ação
+            (ex: "DB::connect()" e "$usuario->alterarNome()").
+        4. Utilizar apenas siglas bastante conhecidas entre os desenvolvedores
+            ou precedidas de um identificar
+            (ex: certo - "lancarPericiaAx1()" / errado - "lancarAx1()" )
+        5. Seguir a recomendação acima para utilizar abreviaturas
+            (ex: certo - "alterarMsgTexto()" / errado - "altNome()"
+            [alternar ou alterar?])
+        6. Na construção de Framework, CMS e bibliotecas públicas e globais,
+            deve-se utilizar o idioma inglês.
+        7. Na construção de bibliotecas públicas nacionais ou regionais e
+            aplicações, deve-se utilizar o vernáculo.
+
+    Nomeação de classes, interfaces e traits:
+
+        1. Utilizar o estilo "StudlyCaps" para nomes compostos.
+        2. Nomear como se fala no mundo real, sem as preposições
+            sem artigos ou preposições básicas
+            (ex: veículo "class Veiculo"),
+            exceto quando modificam seu conteúdo
+            (ex: veículo com rodas "class VeiculoComRodas").
+        3. Utilizar nomes que evidenciem o sujeito, de forma geral
+            (ex: certo - "class Usuario" / errado - "class UsuarioMarcio" ).
+        4. Utilizar apenas siglas bastante conhecidas entre os desenvolvedores
+            ou precedidas de um identificar
+            (ex: certo - "class PericiaAx1" / errado - "class AX1" )
+        5. Seguir a recomendação acima para utilizar abreviaturas
+            (ex: certo - "class MsgTexto" / errado - "class ValTexto"
+            [valor ou validade?])
+        6. Interfaces e traits devem ter como sufixo no nome o tipo de recurso
+            (ex: "VeiculoInterface" e "VeiculoTrait").
+        7. O nome deve estar no singular.
+        8. Na construção de Framework, CMS e bibliotecas públicas e globais,
+            deve-se utilizar o idioma inglês.
+        9. Na construção de bibliotecas públicas nacionais ou regionais e
+            aplicações, deve-se utilizar o vernáculo.
+
+    Nomeação de bancos, tabelas, views e colunas:
+
+        1. Não usar abreviações desnecessárias como prefixo no nome das tabelas,
+            tais como "tb_" ou "tab_".
+        2. Utilizar o prefixo "vw_" no nome das views.
+        3. O nome deve estar no singular.
+        4. Na construção de Framework, CMS e bibliotecas públicas e globais,
+            deve-se utilizar o idioma inglês.
+        5. Na construção de bibliotecas públicas nacionais ou regionais e
+            aplicações, deve-se utilizar o vernáculo.
+
+    Nomeação de qualquer elemento, em geral:
+        
+        1. Número de caracteres - Pelo menos 3, ideal 4 a 15 e, no máximo, 25.
+        2. Até 4 nomes elementos nos nomes compostos.
+        
+
+Boas práticas para comentários
+------------------------------
+
+    Os comentários são muito negligenciados pelos desenvolvedores. Algumas causas são:
+
+        1. Acreditam que o código é tão simples que não precisa de comentário.
+        2. A pressão dos prazos de entrega justifica a falta dos comentários.
+        3. Já têm tanta intimidade com o código que não precisam comentar.
+        4. Muitos comentários poluem o código.
+        5. Não sabem como comentar ou se expressar com clareza.
+
+    Cada um desses argumentos é válido, mas resultam em consequências indesejáveis.
+
+        1. A falta de comentário dá a impressão de que o código não foi finalizado.
+        2. Códigos não comentados geram retrabalho e demandam mais tempo de manutenção.
+        3. A falta de comentários no código são um dificultador quando analisados por
+            outros desenvolvedores ou pelo mesmo desenvolvedor depois de muito tempo
+            (provavelmente já evoluiu seu estilo de codificação).
+        4. É pior lidar com códigos sem comentários do que com muitos comentários.
+        5. É pior lidar com códigos sem comentários do que com comentários ruins.
+
+    Segue algumas dicas para comentar bem o código:
+
+        1. O comentário deve figurar o "que" o código faz; o "como"
+            deve estar explícito no próprio código.
+        2. O comentário deve ser simples, direto e passar a idéia geral.
+        3. Apenas códigos complexos devem ser detalhados como foram implementados.
+        4. Melhor um código simples e funcionando corretamente do que um código ruim
+            com comentários; se não consegue comentar, veja se é possível refatorar.
+        5. Deve haver comentário indicando trechos de códigos que não podem mudar
+            sua ordem de sua execução.
+
+    Não deixe de estudar a sessão "DOCUMENTAÇÃO DA APLICAÇÃO", pois os comentários que
+    resultam em tomadas de decisão de gestão são considerados, no JF Framework, como
+    parte da documentação da aplicação.
+
+    Isso se deve ao recurso de automação na geração de documentação pelo framework
+    a partir dos comentários existentes no DocBlock.
+
+
+Boas práticas para codificação
+------------------------------
+
+    Estude e pratique:
+
+        1. Estude bem a linguagem que você utiliza; existem códigos que podem
+            ser substituídos por recursos nativos da linguagem; a melhor forma de
+            aprender uma linguagem é construir um framework do zero nessa linguagem.
+        2. Estude boas práticas e tendências de desenvolvimento.    
+        3. Estude os recursos, paradigmas e sintaxe de novas linguagens,
+            frameworks e CMS.
+        4. Estude códigos de terceiros, inclusive de frameworks e CMS.
+        5. Compartilhe códigos e ideias com desenvolvedores mais experientes.
+        6. Periodicamente, refatore seu código; com a experiência, você identificará
+            recursos depreciados ou obsoletos e será capaz de otimizar processamentos
+            ou remover códigos desnecessários.
+        7. Por onde você passar, deixe rastros - os códigos que você tiver que manter,
+            deixe-o melhor do que encontrou.
+
+    Organização e distribuição de códigos:
+
+        1. Declare suas SQLs como propriedades de classe.
+        2. Verifique se métodos ou classes diferentes implementam trechos de código
+            que produzem o mesmo resultado; pode haver necessidade de produzir
+            componentes para reutilização de códigos ou obter componentes de terceiros.
+        3. Seus códigos devem ser ordenados como uma redação:
+            3.1. Primeiro declare as variáveis.
+            3.1. Depois valide os dados.
+            3.1. Em seguida processe os dados.
+            3.1. Por último retorne uma resposta.
+        4. Atente-se tanto à indentação esquerda quanto à direita - ex:
+                $var_um                 = '1';
+                $var_duzentos           = '200';
+                $var_mil_e_quinhetos    = '1500';
+        5. Utilize o operador ternário pra definir variáveis e em linhas separadas - ex:
+                $var = expressao
+                    ? true
+                    : false;
+    
+    Menos é mais:
+
+        1. Mantenha os métodos pequenos (até 50 linhas):
+            utilize o padrão Facade.    
+        2. Mantenha suas classes pequenas (até 500 linhas):
+            utilize o padrão Cadeia de Responsabilidades.
+        3. Mantenha sua lógica simples (até 2 níveis de identação):
+            3.1. Utilize poucos "ifs" aninhados - utilize condições negadas ou inversas.
+            3.1. Conheça e utilize o padrão Strategy (Estratégia).
+        4. Classes com apenas uma responsabilidade e métodos realizam apenas uma tarefa.
+        5. Quanto ao número de parâmetros na declaração de métodos:
+            1. Nenhum           - Ideal.
+            2. Um               - Normal.
+            3. Dois             - Aceitável.
+            4. Três             - Máximo.
+            5. Quatro ou mais   - Refatorar (ressalvadas exceções de contexto).
+        6. Se uma expressão dentro de um "if" ficar longa, guarde em variáveis ou
+            métodos o resultado dos testes lógicos e coloque-os na expressão do "if".
+    
+    Tratamento de erros:
+
+        1. Utilize TDD (Test Driven Development):
+            1. Escreva um teste que falhe.
+            2. Corrija e faça-o funcionar.
+            3. Refatore.
+            4. Repita o processo até terminar a tarefa.
+        2. Lance exceptions em vez de disparar erros.
+        3. Monitore os erros da aplicação e corrija-os.
+    
+    Paradigmas de desenvolvimento:
+
+        1. Utilize POO em vez de funções ou variáveis independentes.
+    
+    Códigos PHP não devem existir dentro de códigos de página HTML, ressalvado:
+
+        1. Instruções condicionais para exibição de trechos HTML ("if" ou "switch").
+        2. Instruções de interação sobre dados ("for" e "foreach", evitar "while").
+        3. Instruções de exibição de dados ("echo" ou "short-echo" - <?= ?>).
+        4. Métodos do framework específicos para utilização nas páginas.
+        5. Métodos de formatação de dados (preferível pré-formatar nos controladores).
