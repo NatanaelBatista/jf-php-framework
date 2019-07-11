@@ -48,6 +48,14 @@ class DTO
     }
 
     /**
+     * Retorna o nome do banco-de-dados.
+     */
+    public static function dbname()
+    {
+        return static::db()->config( 'dbname' );
+    }
+
+    /**
      * Retorna o nome da tabela do banco.
      */
     public static function table()

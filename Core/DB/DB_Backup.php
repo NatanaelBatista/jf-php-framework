@@ -14,7 +14,7 @@ class DB_Backup
     /**
      * Executa o backup de um banco-de-dados.
      */
-    public static function backup( $schema_name, $path )
+    public static function backup( $schema_name, $path, $options = [] )
     {
         if ( !$path )
         {
@@ -32,10 +32,18 @@ class DB_Backup
         $config         = $db->config();
         $username       = $config->username;
         $password       = !empty( $config->password )
-            ? ' -p' . $config->password
+            ? '-p' . $config->password
             : '';
+        $args           = [];
+
+        if ( !empty( $options[ 'noData' ] ) )
+        {
+            $args[]     = ' --no-data';
+        }
+
+        $args           = implode( ' ', $args );
         $dbname         = $config->dbname;
-        $dump_cmd       = "mysqldump -u{$username}{$password} {$dbname} > {$target}";
+        $dump_cmd       = "mysqldump {$args} -u{$username} {$password} {$dbname} > {$target}";
 
         return shell_exec( $dump_cmd );
     }

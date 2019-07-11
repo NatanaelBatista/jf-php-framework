@@ -162,7 +162,7 @@ class Routine
             'db/all.backups',
         ]);
 
-        if ( !$config || empty( $config->frequency ) || empty( $config->databases ) )
+        if ( !$config || empty( $config->frequency ) )
         {
             return;
         }
@@ -207,6 +207,11 @@ class Routine
     {
         $execution_filename = self::dbBackupLog();
         $now                = new \DateTime();
+        $env                = ENV;
+        $schemas            = Config::get( [
+            "db/$env.schemas",
+            'db/all.schemas',
+        ]);
 
         file_put_contents( $execution_filename, $now->format( 'Y-m-d H:i:s' ) );
         
@@ -218,9 +223,12 @@ class Routine
         set_time_limit( 0 );
         ini_set( 'memory_limit', -1 );
 
-        foreach ( $config->databases as $database )
+        foreach ( $schemas as $schema_name => $schema )
         {
-            DB_Backup::backup( $database, $destination );
+            $options        = $config->schemas[ $schema_name ]
+                ? []
+                : [ 'noData' => true ];
+            DB_Backup::backup( $schema_name, $destination, $options );
         }
         
         $env                = ENV;

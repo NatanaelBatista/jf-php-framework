@@ -129,14 +129,9 @@ final class Autoloader
         }
 
         $class_path     = str_replace( '\\', '/', $new_classname );
-
-        if ( substr( $class_path, 0, 3 ) != 'JF/' )
-        {
-            $filename   = DIR_BASE . '/' . $class_path . '.php';
-            return $filename;
-        }
-        
-        $filename       = DIR_CORE . '/' . substr( $class_path, 3 ) . '.php';
+        $filename       = substr( $class_path, 0, 3 ) != 'JF/'
+            ? DIR_BASE . '/' . $class_path . '.php'
+            : DIR_CORE . '/' . substr( $class_path, 3 ) . '.php';
 
         return $filename;
     }
