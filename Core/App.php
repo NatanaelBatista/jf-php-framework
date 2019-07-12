@@ -67,11 +67,11 @@ final class App
         define( 'WIN',              substr( PHP_OS, 0, 3 ) == 'WIN' );
 
         // Pastas da aplicação
+        define( 'DIR_CORE',             str_replace( '\\', '/', __DIR__ ) );
         $dirbase    = $dirbase
             ? str_replace( '\\', '/', $dirbase )
             : str_replace( '\\', '/', dirname( dirname( DIR_CORE ) ) );
         define( 'DIR_BASE',             $dirbase );
-        define( 'DIR_CORE',             str_replace( '\\', '/', __DIR__ ) );
         define( 'DIR_APP',              DIR_BASE . '/App' );
             define( 'DIR_CONTROLLERS',      DIR_APP  . '/Controllers' );
             define( 'DIR_DOMAIN',           DIR_APP  . '/Domain' );

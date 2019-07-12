@@ -219,13 +219,27 @@ class Routine
             ? $config->path
             : DIR_BACKUPS;
         $start              = $now->format( 'U.u' );
+        $localhost          = [ 'localhost', '127.0.0.1' ];
+        $hosts              = isset( $config->hosts )
+            ? array_merge( $config->hosts, $localhost )
+            : $localhost;
 
         set_time_limit( 0 );
         ini_set( 'memory_limit', -1 );
 
         foreach ( $schemas as $schema_name => $schema )
         {
-            $options        = $config->schemas[ $schema_name ]
+            if ( empty( $schema->hostname ) )
+            {
+                continue;
+            }
+
+            if ( !in_array( $schema->hostname, $hosts ) )
+            {
+                continue;
+            }
+
+            $options        = in_array( $schema_name, $config->schemas )
                 ? []
                 : [ 'noData' => true ];
             DB_Backup::backup( $schema_name, $destination, $options );
