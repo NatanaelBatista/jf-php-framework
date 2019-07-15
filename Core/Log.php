@@ -102,33 +102,28 @@ class Log
         $line           = $this->error[ 'line' ];
 
         // Prepara o texto do log
-        $log        = [];
-        $log[]      = '[' . uniqid( null, true ) . ']';
-        $log[]      = '';
-        $log[]      = 'date        = "' . date( 'Y-m-d' ) . '"';
-        $log[]      = 'time        = "' . date( 'H:i:s' ) . '"';
-        $log[]      = 'type        = "' . $this->error[ 'type' ] . '"';
-        $log[]      = 'message     = "' . $this->error[ 'message' ] . '"';
-        $log[]      = 'basepath    = "' . DIR_BASE . '"';
-        $log[]      = 'file        = "' . str_replace( DIR_BASE, '..', $filename ) . '"';
-        $log[]      = 'line        = "' . $this->error[ 'line' ] . '"';
-        $log[]      = 'ip          = "' . $ip. '"';
-        $log[]      = 'request     = "' . $request . '"';
-        $log[]      = 'referer     = "' . $http_referer . '"';
+        $log            = new IniMaker();
+        $log->addSection( uniqid( null, true )                                  );
+        $log->addLine( 'date',      date( 'Y-m-d' )                             );
+        $log->addLine( 'time',      date( 'H:i:s' )                             );
+        $log->addLine( 'type',      $this->error[ 'type' ]                      );
+        $log->addLine( 'message',   $this->error[ 'message' ]                   );
+        $log->addLine( 'basepath',  DIR_BASE                                    );
+        $log->addLine( 'file',      str_replace( DIR_BASE, '..', $filename )    );
+        $log->addLine( 'line',      $this->error[ 'line' ]                      );
+        $log->addLine( 'ip',        $ip                                         );
+        $log->addLine( 'request',   $request                                    );
+        $log->addLine( 'referer',   $http_referer                               );
         
         if ( !empty( $this->error[ 'stack' ] ) )
         {
             $trace  = $this->error[ 'stack' ];
             $trace  = str_replace( DIR_BASE, '..', $trace );
             $trace  = preg_replace( '@[\n\r]+@', '|', $trace );
-            $log[]  = 'trace       = "' . $trace . '"';
+            $log->addLine( 'trace',   $trace                                    );
         }
 
-        $log[]      = '';
-        $log        = implode( PHP_EOL, $log );
-
-        // Retorna o texto do log
-        $this->text = $log;
+        $this->text = $log->content();
     }
 
     /**
@@ -270,20 +265,16 @@ class Log
         $log_filename   = DIR_LOGS . '/routine/' . $name . '.log';
         $error          = preg_replace( '/[\r\n]+/', PHP_EOL . '           ', $this->error );
 
-        $log            = [];
-        $log[]          = '[' . uniqid( null, true ) . ']';
-        $log[]          = '';
-        $log[]          = 'DATE        = "' . date( 'Y-m-d' ) . '"';
-        $log[]          = 'START       = "' . $start . '"';
-        $log[]          = 'END         = "' . $end . '"';
-        $log[]          = 'DURATION    = "' . $duration . '"';
-        $log[]          = 'RESULT      = "' . $error . '"';
-        $log[]          = '';
-        $log[]          = '';
-        $log            = implode( PHP_EOL, $log );
+        $log            = new IniMaker();
+        $log->addSection( uniqid( null, true ) );
+        $log->addLine( 'DATE', date( 'Y-m-d' ) );
+        $log->addLine( 'START', $start );
+        $log->addLine( 'END', $end );
+        $log->addLine( 'DURATION', $duration );
+        $log->addLine( 'RESULT', $error );
 
         $log_file       = new \SplFileObject( $log_filename, 'a' );
-        $result         = $log_file->fwrite( $log );
+        $result         = $log_file->fwrite( $log->content() . PHP_EOL );
         $log_file       = null;
 
         return $result;

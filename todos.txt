@@ -1,0 +1,6 @@
+Revisar     Core\Routine.php
+Revisar     Reflection\DocPbLockParser.php
+Revisar     HTTP\Input.php
+Revisar     Guide
+Revisar     AutoDoc
+Implementar Doc em PDF

@@ -185,7 +185,14 @@ final class App
 
         $exists_log     = file_exists( $log_file );
 
-        if ( $exists_log && filemtime( $log_file ) + MIN > time() )
+        if ( $exists_log )
+        {
+            return;
+        }
+        
+        $expired_cach  = filemtime( $log_file ) + MIN > time();
+
+        if ( !$expired_cach )
         {
             return;
         }

@@ -343,10 +343,11 @@ class Cache
                 continue;
             }
 
-            $filename = $item->getPathname();
-            $filetime = filemtime( $filename );
+            $filename       = $item->getPathname();
+            $filetime       = filemtime( $filename );
+            $expired_cache  = time() - $filetime > self::timeExpires();
 
-            if ( time() - $filetime > self::timeExpires() )
+            if ( $expired_cache )
             {
                 unlink( $filename );
                 continue;
