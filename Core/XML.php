@@ -17,7 +17,8 @@ class XML
     {
         if ( is_scalar( $data ) )
         {
-            return simplexml_load_string( "<$element>$data</$element>\n" );
+            $basic_xml_body = "<$element>$data</$element>";
+            return simplexml_load_string( $basic_xml_body . N );
         }
 
         $xml = simplexml_load_string( "<$element/>" );
@@ -30,24 +31,50 @@ class XML
      */
     protected static function setContent( $xml, $data )
     {
-        foreach ( $data as $key => $value )
+        foreach ( $data as $i => $value )
         {
-            $key = is_integer( $key ) ? 'item' : $key;
+            $valid_tag          = !is_integer( $i ) && !preg_match( '@^\d@', $i );
+            $key                = !$valid_tag
+                ? 'item'
+                : $i;
+            $is_scalar_value    = is_null( $value ) || is_scalar( $value );
             
-            if ( is_null( $value ) || is_scalar( $value ) )
+            if ( $is_scalar_value )
             {
-                $xml->addChild( $key, $value );
+                self::addScalarItem( $xml, $key, $value, $valid_tag, $i );
+                continue;
             }
-            else if ( is_resource( $value ) )
+            
+            if ( is_resource( $value ) )
             {
-                $value = $value . ': ' . get_resource_type( $value );
-                $xml->addChild( $key, $value );
+                self::addResourceItem( $xml, $key, $value );
+                continue;
             }
-            else {
-                $child = $xml->addChild( $key );
-                self::setContent( $child, $value );
-            }
+
+            $child = $xml->addChild( $key );
+            self::setContent( $child, $value );
         }
     }
 
+    /**
+     * Adiciona um item scalar ao XML.
+     */
+    protected static function addScalarItem( $xml, $key, $value, $valid_tag, $i )
+    {
+        $item = $xml->addChild( $key, $value );
+
+        if ( !$valid_tag )
+        {
+            $item->addAttribute( 'key', $i );
+        }
+    }
+
+    /**
+     * Adiciona um item do tipo recurso ao XML.
+     */
+    protected static function addResourceItem( $xml, $key, $value )
+    {
+        $desc_resource = strval( $value ) . ': ' . get_resource_type( $value );
+        $xml->addChild( $key, $desc_resource );
+    }
 }
