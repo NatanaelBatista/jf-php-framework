@@ -12,7 +12,7 @@ final class Messager
      */
     public static function get( $context, $msg )
     {
-        $basename   = dirbase( DIR_CORE ) . '/messages/';
+        $basename   = dirname( DIR_CORE ) . '/messages/';
         $filename   = $basename . $context . '.php';
         $messages   = include $filename;
         $args       = array_slice( func_get_args(), 2 );
