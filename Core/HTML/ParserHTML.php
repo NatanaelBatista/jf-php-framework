@@ -107,8 +107,12 @@ final class ParserHTML
         $new_parse              = [
             'SERVER_ADDR'       => $_SERVER[ 'SERVER_ADDR' ],
             'DIR_BASE'          => DIR_BASE,
-            'config_servers'    => filemtime( $config_servers_path ),
-            'config_ui'         => filemtime( $config_ui_path ),
+            'config_servers'    => file_exists( $config_servers_path )
+                ? filemtime( $config_servers_path )
+                : null,
+            'config_ui'         => file_exists( $config_ui_path )
+                ? filemtime( $config_ui_path )
+                : null,
             'dependencies'      => $dependencies,
         ];
 

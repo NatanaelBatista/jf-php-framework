@@ -3,6 +3,7 @@
 namespace JF\HTML;
 
 use JF\Exceptions\ErrorException;
+use JF\FileSystem\Dir;
 use JF\HTML\ParserHTML;
 use JF\HTTP\Router;
 use JF\Messager;
@@ -24,9 +25,14 @@ class HTML_Responder
             return;
         }
 
+        if ( !file_exists( DIR_PAGES ) )
+        {
+            Dir::makeDir( DIR_PAGES );
+        }
+
         if ( !is_writable( DIR_PAGES ) )
         {
-            $msg = Messager::get( 'html', 'path_is_not_writable' );
+            $msg = Messager::get( 'html', 'path_is_not_writable', DIR_PAGES );
             throw new ErrorException( $msg );
         }
 

@@ -146,7 +146,7 @@ class Log
     protected function saveLogFeature()
     {
         // Se já salvou o log, não executa novo salvamento
-        if ( $this->saved )
+        if ( $this->saved || !( defined( 'ROUTE' ) && !ROUTE ) )
         {
             return;
         }

@@ -23,6 +23,11 @@ class Router
     protected static $defaultFormat = 'json';
 
     /**
+     * Formato padrão de resposta
+     */
+    protected static $homePage      = 'home.html';
+
+    /**
      * Captura e define as URLs base e a rota.
      */
     public static function basicDefines()
@@ -41,7 +46,7 @@ class Router
             'servers@default@rootOnDirapp'
         ], null, ['separator' => '@']);
         $base           = !$root_on_dirapp
-            ? '/' . basename( DIR_BASE )
+            ? BASE_APP
             : '';
         $base           = preg_replace( '@\/$@', '', $base );
         $url_base       = $scheme . '://' . $server . $base;        
@@ -56,7 +61,8 @@ class Router
 
         if ( !ROUTE )
         {
-            $page_target    = URL_PAGES . '/' . Config::get( 'app.default_route' );
+            $default_route  = Config::get( 'app.default_route', self::$homePage );
+            $page_target    = URL_PAGES . '/' . $default_route;
             Request::redirect( $page_target, true );
         }
     }
@@ -87,9 +93,11 @@ class Router
             $url_redirect   = is_array( $links->$route )
                 ? $links->$route[ 0 ]
                 : $links->$route;
+
             $remove_urlbase = is_array( $links->$route )
                 ? !empty( $links->$route[ 1 ] )
                 : false;
+
             Request::redirect( $url_redirect, $remove_urlbase );
         }
     }
@@ -117,12 +125,15 @@ class Router
         self::$route->route         = $request_format
             ? substr( ROUTE, 0, -$len_format )
             : ROUTE;
+
         self::$route->response_type = $request_format
             ? $request_format
             : self::$defaultFormat;
+
         self::$route->type          = self::$route->response_type == 'html'
             ? 'view'
             : 'service';
+
         self::$route->url_route     = URL_BASE . '/' . self::$route->route;
     }
 

@@ -2,7 +2,7 @@
 
 return [
     'path_is_not_writable' =>
-        'A pasta das páginas está sem permissão de escrita.',
+        'A pasta das páginas (%s) está sem permissão de escrita.',
 
     'page_not_created' =>
         'Não foi possível criar a página: o arquivo "%s" não foi encontrado.',

@@ -1,0 +1,28 @@
+Options -MultiViews
+
+php_value post_max_size         100M
+php_value upload_max_filesize   100M
+
+#rewriteStart {
+    RewriteEngine On
+# }
+
+#redirect {
+    RewriteRule ui/pages/(.*\.html)$ $1
+    RewriteCond %{REQUEST_URI} !ui/
+    RewriteCond %{REQUEST_URI} !robots.txt
+    RewriteCond %{REQUEST_URI} !sitemap.xml
+    RewriteCond %{REQUEST_URI} !favicon.ico
+    RewriteRule .* index.php
+# }
+
+#cache {
+    #ExpiresActive On
+    #ExpiresByType image/x-icon                 A2419200
+    #ExpiresByType application/x-javascript     A2419200
+    #ExpiresByType text/css                     A2419200
+# }
+
+#safety {
+    #Header set X-Content-Security-Policy "allow 'self';"
+# }

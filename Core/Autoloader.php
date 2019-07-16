@@ -116,7 +116,7 @@ final class Autoloader
             return $class_path;
         }
 
-        $namespaces     = Config::get( 'namespaces' );
+        $namespaces     = Config::get( 'namespaces', [] );
         $new_classname  = $classname;
 
         foreach ( $namespaces as $namespace => $path )

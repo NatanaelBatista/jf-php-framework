@@ -3,6 +3,7 @@
 namespace JF\HTML;
 
 use JF\Config;
+use JF\FileSystem\Dir;
 use JF\HTTP\Router;
 use JF\Messager;
 use JF\Exceptions\ErrorException;
@@ -77,6 +78,16 @@ final class PageMaker
      */
     public function makePage()
     {
+        if ( !file_exists( DIR_LAYOUTS ) )
+        {
+            Dir::makeDir( DIR_LAYOUTS );
+        }
+
+        if ( !file_exists( DIR_VIEWS ) )
+        {
+            Dir::makeDir( DIR_VIEWS );
+        }
+
         $view_path          = $this->getViewPath();
         $view_name          = substr( $view_path, strlen( DIR_BASE ) + 1 );
 

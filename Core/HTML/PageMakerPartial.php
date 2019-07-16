@@ -15,6 +15,11 @@ trait PageMakerPartial
      */
     public function partial( $filename, $shared = false )
     {
+        if ( !file_exists( DIR_PARTIALS ) )
+        {
+            Dir::makeDir( DIR_PARTIALS );
+        }
+
         $filename       = strtolower( $filename );
         $filename       = str_replace( '\\', '/', $filename ) . '.php';
         $context_path   = $shared

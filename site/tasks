@@ -1,0 +1,16 @@
+<?php
+
+while ( 1 )
+{
+    $proc = popen( "php jfc App.Commands.ExecutarRotinas", 'r' );
+
+    while ( !feof( $proc ) )
+    {
+        echo fread( $proc, 1024 );
+        flush();
+    }
+
+    pclose( $proc );
+
+    sleep( 1 );
+}

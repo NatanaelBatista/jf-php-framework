@@ -29,8 +29,8 @@ final class App
         self::setInitialHeaders();
         self::defines( $dirbase );
         self::configPHPEnv();
-        Env::setEnv();
         self::defineProductPaths();
+        Env::setEnv();
         Router::basicDefines();
         self::redirects();
         self::optimizeProcesses();
@@ -68,7 +68,8 @@ final class App
 
         // Pastas da aplicação
         define( 'DIR_CORE',             str_replace( '\\', '/', __DIR__ ) );
-        $dirbase    = $dirbase
+        $len_rootpath   = strlen( $_SERVER[ 'CONTEXT_DOCUMENT_ROOT' ] );
+        $dirbase        = $dirbase
             ? str_replace( '\\', '/', $dirbase )
             : str_replace( '\\', '/', dirname( dirname( DIR_CORE ) ) );
         define( 'DIR_BASE',             $dirbase );
@@ -104,6 +105,10 @@ final class App
         $server         = isset( $_SERVER[ 'SERVER_NAME' ] )
             ? $_SERVER[ 'SERVER_NAME' ]
             : null;
+
+        /*
+        */
+        define( 'BASE_APP', substr( DIR_BASE, $len_rootpath ) );
         define( 'SERVER',       $server );
         define( 'REQUEST_URI',  $_SERVER[ 'REQUEST_URI' ] );
     }
@@ -178,15 +183,14 @@ final class App
         $log_path       = DIR_PRODUCTS . '/executions';
         $log_file       = $log_path . '/queue-processes.log';
 
-        if ( !file_exists( $log_file ) )
+        if ( !file_exists( $log_path ) )
         {
             Dir::makeDir( $log_path );
         }
 
-        $exists_log     = file_exists( $log_file );
-
-        if ( $exists_log )
+        if ( !file_exists( $log_file ) )
         {
+            file_put_contents( $log_file, null );
             return;
         }
         
@@ -195,12 +199,6 @@ final class App
         if ( !$expired_cach )
         {
             return;
-        }
-
-        if ( !is_writable( DIR_PRODUCTS ) )
-        {
-            $msg = Messager::get( 'executions', 'path_is_not_writable' );
-            throw new ErrorException( $msg );
         }
 
         file_put_contents( $log_file, date( 'Y-m-d H:i:s' ) );

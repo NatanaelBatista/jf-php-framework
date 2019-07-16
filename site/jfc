@@ -1,0 +1,8 @@
+#!/usr/bin/env php
+<?php
+
+include '../jf/Core/Autoloader.php';
+include '../jf/Core/Config.php';
+include '../jf/Core/Terminal.php';
+
+JF\Terminal::run( $argv, __DIR__ );
