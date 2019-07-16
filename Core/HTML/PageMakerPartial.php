@@ -3,6 +3,7 @@
 namespace JF\HTML;
 
 use JF\Exceptions\ErrorException;
+use JF\FileSystem\Dir;
 use JF\Messager;
 
 /**

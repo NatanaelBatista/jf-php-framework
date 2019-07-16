@@ -49,7 +49,7 @@ final class Config
         }
 
         // Tenta retornar a configuração solicitada
-        $config = self::$config[ $context ];
+        $config         = self::$config[ $context ];
         
         if ( is_null( $config ) )
         {
@@ -58,7 +58,7 @@ final class Config
 
         foreach ( $path as $key )
         {
-            if ( !property_exists( $config, $key ) )
+            if ( !array_key_exists( $key, (array) $config ) )
             {
                 return $default;
             }
