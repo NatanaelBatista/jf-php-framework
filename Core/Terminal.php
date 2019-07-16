@@ -25,9 +25,9 @@ final class Terminal
     /**
      * Inicia a aplicação.
      */
-    public static function run( $args, $dirbase = null )
+    public static function run( $args, $dirbase = null, $document_root = null )
     {
-        self::defines( $dirbase );
+        self::defines( $dirbase, $document_root );
         self::configPHPEnv();
         self::defineIpServer();
         Env::setEnv();
@@ -46,14 +46,18 @@ final class Terminal
     /**
      * Define as constantes.
      */
-    private static function defines( $dirbase )
+    private static function defines( $dirbase, $document_root )
     {
         // Sistema operacional
         define( 'WIN',              substr( PHP_OS, 0, 3 ) == 'WIN' );
 
         // Pastas da aplicação
         define( 'DIR_CORE',             str_replace( '\\', '/', __DIR__ ) );
-        $dirbase    = $dirbase
+        $document_root  = $document_root
+            ? $document_root
+            : $_SERVER[ 'DOCUMENT_ROOT' ];
+        $len_rootpath   = strlen( $document_root );
+        $dirbase        = $dirbase
             ? str_replace( '\\', '/', $dirbase )
             : str_replace( '\\', '/', dirname( dirname( DIR_CORE ) ) );
         define( 'DIR_BASE',             $dirbase );
@@ -63,6 +67,7 @@ final class Terminal
                 define( 'DIR_FEATURES',     DIR_DOMAIN . '/Features' );
                 define( 'DIR_RULES',        DIR_DOMAIN . '/Rules' );
             define( 'DIR_ROUTINES',         DIR_APP  . '/Routines' );
+        define( 'DIR_CONFIG',               DIR_BASE . '/config' );
         define( 'DIR_MODELS',           DIR_APP  . '/Models' );
         define( 'DIR_TEMPLATES',        DIR_BASE . '/templates' );
             define( 'DIR_LAYOUTS',          DIR_TEMPLATES . '/html/layouts' );
@@ -85,6 +90,8 @@ final class Terminal
         define( 'MILIHOUR',     MILIMIN  * 60 );
         define( 'DAY',          HOUR     * 24 );
         define( 'MILIDAY',      MILIHOUR * 24 );
+
+        define( 'BASE_APP', substr( DIR_BASE, $len_rootpath ) );
     }
 
     /**

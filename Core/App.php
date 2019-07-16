@@ -8,6 +8,7 @@ use JF\Config;
 use JF\Doc\DocParserFeature;
 use JF\Domain\Tester;
 use JF\Env;
+use JF\ErrorHandler;
 use JF\FileSystem\Dir;
 use JF\HTML\HTML_Responder;
 use JF\HTTP\Request;
@@ -24,10 +25,10 @@ final class App
     /**
      * Inicia a aplicação.
      */
-    public static function run( $dirbase = null )
+    public static function run( $dirbase = null, $document_root = null )
     {
         self::setInitialHeaders();
-        self::defines( $dirbase );
+        self::defines( $dirbase, $document_root );
         self::configPHPEnv();
         self::defineProductPaths();
         Env::setEnv();
@@ -61,14 +62,17 @@ final class App
     /**
      * Define as constantes.
      */
-    private static function defines( $dirbase )
+    private static function defines( $dirbase, $document_root )
     {
         // Sistema operacional
         define( 'WIN',              substr( PHP_OS, 0, 3 ) == 'WIN' );
 
         // Pastas da aplicação
         define( 'DIR_CORE',             str_replace( '\\', '/', __DIR__ ) );
-        $len_rootpath   = strlen( $_SERVER[ 'CONTEXT_DOCUMENT_ROOT' ] );
+        $document_root  = $document_root
+            ? $document_root
+            : $_SERVER[ 'DOCUMENT_ROOT' ];
+        $len_rootpath   = strlen( $document_root );
         $dirbase        = $dirbase
             ? str_replace( '\\', '/', $dirbase )
             : str_replace( '\\', '/', dirname( dirname( DIR_CORE ) ) );
@@ -79,6 +83,7 @@ final class App
                 define( 'DIR_FEATURES',     DIR_DOMAIN . '/Features' );
                 define( 'DIR_RULES',        DIR_DOMAIN . '/Rules' );
             define( 'DIR_ROUTINES',         DIR_APP  . '/Routines' );
+        define( 'DIR_CONFIG',               DIR_BASE . '/config' );
         define( 'DIR_MODELS',           DIR_APP  . '/Models' );
         define( 'DIR_TEMPLATES',        DIR_BASE . '/templates' );
             define( 'DIR_LAYOUTS',          DIR_TEMPLATES . '/html/layouts' );
@@ -106,8 +111,6 @@ final class App
             ? $_SERVER[ 'SERVER_NAME' ]
             : null;
 
-        /*
-        */
         define( 'BASE_APP', substr( DIR_BASE, $len_rootpath ) );
         define( 'SERVER',       $server );
         define( 'REQUEST_URI',  $_SERVER[ 'REQUEST_URI' ] );
@@ -127,9 +130,7 @@ final class App
 
         // Registra manipuladores
         Autoloader::register();
-        register_shutdown_function( array( 'JF\\ErrorHandler', 'shutdown' )     );
-        set_error_handler(          array( 'JF\\ErrorHandler', 'error' )        );
-        set_exception_handler(      array( 'JF\\ErrorHandler', 'exception' )    );
+        ErrorHandler::register();
 
         // Outras operações de inicialização
         date_default_timezone_set( 'America/Sao_Paulo' );

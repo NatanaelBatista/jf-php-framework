@@ -3,6 +3,7 @@
 namespace JF;
 
 use JF\HTTP\Router;
+use JF\FileSystem\Dir;
 
 use JF\Exceptions\ErrorException;
 
@@ -195,6 +196,11 @@ final class Config
      */
     private static function load( $context )
     {
+        if ( !file_exists( DIR_CONFIG ) )
+        {
+            Dir::makeDir( DIR_CONFIG );
+        }
+
         $file_config                = self::path( $context );
         self::$config[ $context ]   = file_exists( $file_config )
             ? json_decode( json_encode( include $file_config ) )
@@ -206,6 +212,6 @@ final class Config
      */
     public static function path( $path )
     {
-        return DIR_BASE . '/config/' . $path . '.php';
+        return DIR_CONFIG . '/' . $path . '.php';
     }
 }

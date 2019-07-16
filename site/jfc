@@ -2,6 +2,7 @@
 <?php
 
 include '../jf/Core/Autoloader.php';
+include '../jf/FileSystem/Dir.php';
 include '../jf/Core/Config.php';
 include '../jf/Core/Terminal.php';
 

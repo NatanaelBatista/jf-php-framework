@@ -13,6 +13,24 @@ final class ErrorHandler
     /**
      * Disparado quando ocorrer erros fatais.
      */
+    public static function register()
+    {
+        static $registered  = false;
+
+        if ( $registered )
+        {
+            return;
+        }
+
+        $registered         = true;
+
+        register_shutdown_function( [ __CLASS__, 'shutdown' ] );
+        set_error_handler([ __CLASS__, 'error' ] );
+        set_exception_handler([ __CLASS__, 'exception' ] );
+    }
+    /**
+     * Disparado quando ocorrer erros fatais.
+     */
     public static function shutdown()
     {
         if ( !$error = error_get_last() )
