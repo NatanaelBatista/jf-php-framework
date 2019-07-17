@@ -177,9 +177,13 @@ class Responder
                 $feature::before();
                 $response   = [];
                 $instance   = new $feature();
+                $fn         = function( $matches ) {
+                    return strtoupper( $matches[ 1 ] );
+                };
 
                 foreach ( $args as $arg_name => $arg_value )
                 {
+                    $arg_name = preg_replace_callback( '@-(.)@', $fn, $arg_name );
                     $instance->set( $arg_name, $arg_value );
                 }
 
