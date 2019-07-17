@@ -69,6 +69,7 @@ final class App
 
         // Pastas da aplicação
         define( 'DIR_CORE',             str_replace( '\\', '/', __DIR__ ) );
+        define( 'DIR_GUIDE',            dirname( DIR_CORE ) . '/guide' );
         $document_root  = $document_root
             ? $document_root
             : $_SERVER[ 'DOCUMENT_ROOT' ];

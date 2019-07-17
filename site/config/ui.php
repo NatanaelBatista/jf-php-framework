@@ -15,7 +15,7 @@ return [
             'label'     => 'Introdução',
             'icon'      => 'home',
             'pages'     => [
-                'requisitos'    => 'Requisitos',
+                'conceitos'     => 'Conceitos Básicos',
                 'instalacao'    => 'Instalação',
                 'estrutura'     => 'Pastas e Arquivos',
                 'config'        => 'Configurações',
