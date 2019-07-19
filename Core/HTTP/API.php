@@ -36,8 +36,9 @@ class API
         }
 
         $uses       = class_uses( $feature );
+        $traits     = [ 'JF\\HTTP\\HTTP_Service_Trait', 'JF\\HTTP\\API_Trait' ];
 
-        if ( !in_array( 'JF\\HTTP\\API_Trait', $uses ) )
+        if ( !array_intersect( $traits, $uses ) )
         {
             return;
         }

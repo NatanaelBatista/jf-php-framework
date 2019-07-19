@@ -17,12 +17,15 @@ class CSV_Responder extends Responder
     /**
      * Instancia a classe da rota, executa e envia a resposta ao cliente.
      */
-    public static function send( $data, $controller_obj, $action )
+    public static function send( $data, $controller_obj )
     {
+        $parts          = explode( '\\', get_class( $controller_obj ) );
+        array_pop( $parts );
+        $control_name   = array_pop( $parts );
         self::setHeader( 'csv', $controller_obj->charset );
         $filename       = isset( $controller_obj->filename )
             ? $controller_obj->filename . '.csv'
-            : $action . '.csv';
+            : $control_name . '.csv';
         $data           = json_decode( json_encode( $data ), true );
         $data           = gettype( current( $data ) ) !== 'array'
             ? array( $data )
@@ -62,7 +65,7 @@ class CSV_Responder extends Responder
 
         $file           = null;
 
-        header( "Content-Disposition: attachment; filename='$filename'" );
+        header( "Content-Disposition: attachment; filename=$filename" );
         header( "Content-Length: " . filesize( $tmp_filename ) );
         readfile( $tmp_filename );
         unlink( $tmp_filename );
