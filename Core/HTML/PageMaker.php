@@ -38,11 +38,6 @@ final class PageMaker
     protected $config   = [];
 
     /**
-     * Documentação da página.
-     */
-    protected $doc      = [];
-
-    /**
      * Dependências da view.
      */
     protected $depends  = [];
@@ -127,7 +122,6 @@ final class PageMaker
         $result_components  = WebComponents\ComponentParser::parse( $this->html );
         $response           = [
             'depends'       => array_merge( $this->depends, $result_components->depends ),
-            'doc'           => implode( ' ', $this->doc ),
             'html'          => $result_components->html,
         ];
 
@@ -248,13 +242,5 @@ final class PageMaker
             : $relative_path;
         
         return $real_path;
-    }
-
-    /**
-     * Define o layout da página.
-     */
-    public function toDoc( $text )
-    {
-        $this->doc[] = $text;
     }
 }
