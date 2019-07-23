@@ -6,15 +6,15 @@
 <html lang = 'pt-Br'>
   <head>
     <title>
-      <?= $this->data->title ?> - <?= $this->data->module ?> | <?= $this->vars->app_name ?>
+      <?= $this->data->title ?> - <?= $this->data->module ?> | <?= $this->data->app_name ?>
     </title>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="theme-color" content="<?= $this->vars->theme_color ?>" />
+    <meta name="theme-color" content="<?= $this->data->theme_color ?>" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
-    <meta name="keywords" content="<?= $this->vars->keywords ?>" />
-    <meta name="description" content="<?= $this->vars->description ?>" />
-    <meta name="author" content="<?= $this->vars->author ?>" />
+    <meta name="keywords" content="<?= $this->data->keywords ?>" />
+    <meta name="description" content="<?= $this->data->description ?>" />
+    <meta name="author" content="<?= $this->data->author ?>" />
     
     <link href="<?= $this->ui( 'js/manifest.json' ) ?>" rel="manifest" />
     <link href="<?= $this->ui( 'img/favicon.png' ) ?>" rel="shortcut" type='image/png' />

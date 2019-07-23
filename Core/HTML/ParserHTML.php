@@ -16,7 +16,9 @@ final class ParserHTML
     public static function isUpdated( $route )
     {
         $html_path              = self::getPagePath( $route );
-        $log_path               = self::getLogPath( $route );
+        $log_path               = self::path( $route, '.build' );
+        $view_ini               = self::path( $route, 'view.ini' );
+        $view_md                = self::path( $route, 'view.md' );
 
         if ( !file_exists( $html_path ) || !file_exists( $log_path ) )
         {
@@ -31,6 +33,8 @@ final class ParserHTML
         $has_time_dependencies  = isset( $last_parse->dependencies );
         $has_SERVER_ADDR        = isset( $last_parse->SERVER_ADDR );
         $has_DIR_BASE           = isset( $last_parse->DIR_BASE );
+        $has_view_ini           = isset( $last_parse->view_ini );
+        $has_view_md            = isset( $last_parse->view_md );
 
         if ( !$has_SERVER_ADDR || $_SERVER[ 'SERVER_ADDR' ] != $last_parse->SERVER_ADDR )
         {
@@ -48,6 +52,16 @@ final class ParserHTML
         }
 
         if ( !$has_time_env || !$has_time_ui || !$has_time_dependencies )
+        {
+            return false;
+        }
+
+        if ( !$has_view_ini || !file_exists( $view_ini ) || filemtime( $view_ini ) < $last_parse->view_ini )
+        {
+            return false;
+        }
+
+        if ( !$has_view_md || !file_exists( $view_md ) || filemtime( $view_md ) < $last_parse->view_md )
         {
             return false;
         }
@@ -85,25 +99,25 @@ final class ParserHTML
     {
         $maker      = new PageMaker( $route );
         $result     = $maker->makePage();
-        $new_parse  = self::prepareParseLog( $result->depends );
+        $new_parse  = self::prepareParseLog( $route, $result->depends );
 
         self::makePagePath( $route );
         $page_path  = self::getPagePath( $route );
-        $doc_path   = self::getDocPath( $route );
-        $log_path   = self::getLogPath( $route );
+        $log_path   = self::path( $route, '.build' );
 
         file_put_contents( $page_path, $result->html );
-        file_put_contents( $doc_path, $result->doc );
         file_put_contents( $log_path, json_encode( $new_parse ) );
     }
 
     /**
      * Prepara o arquivo de log de construção da página.
      */
-    public static function prepareParseLog( $dependencies )
+    public static function prepareParseLog( $route, $dependencies )
     {
         $config_servers_path    = Config::path( 'servers' );
         $config_ui_path         = Config::path( 'ui' );
+        $view_ini               = self::path( $route, 'view.ini' );
+        $view_md                = self::path( $route, 'view.md' );
         $new_parse              = [
             'SERVER_ADDR'       => $_SERVER[ 'SERVER_ADDR' ],
             'DIR_BASE'          => DIR_BASE,
@@ -112,6 +126,12 @@ final class ParserHTML
                 : null,
             'config_ui'         => file_exists( $config_ui_path )
                 ? filemtime( $config_ui_path )
+                : null,
+            'view_ini'          => file_exists( $view_ini )
+                ? filemtime( $view_ini )
+                : null,
+            'view_md'           => file_exists( $view_md )
+                ? filemtime( $view_md )
                 : null,
             'dependencies'      => $dependencies,
         ];
@@ -140,16 +160,8 @@ final class ParserHTML
     /**
      * Retorna o caminho para o log de construção da página.
      */
-    public static function getDocPath( $route )
+    public static function path( $route, $filename )
     {
-        return DIR_VIEWS . "/$route/.document";
-    }
-
-    /**
-     * Retorna o caminho para o log de construção da página.
-     */
-    public static function getLogPath( $route )
-    {
-        return DIR_VIEWS . "/$route/.build";
+        return DIR_VIEWS . "/$route/$filename";
     }
 }

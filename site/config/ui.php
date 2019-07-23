@@ -2,7 +2,7 @@
 
 return [
     'default_layout'    => 'main',
-    'vars'              => [
+    'data'              => [
         'theme_color'   => "#b3d4fc",
         'app_name'      => 'JF Framework',
         'description'   => 'Framework PHP simples e versátil',

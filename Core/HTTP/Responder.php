@@ -174,9 +174,9 @@ class Responder
             {
                 $feature    = $api_request->feature;
                 $args       = $api_request->args;
-                $feature::before();
                 $response   = [];
                 $instance   = new $feature();
+                $instance->before();
                 $fn         = function( $matches ) {
                     return strtoupper( $matches[ 1 ] );
                 };
@@ -198,7 +198,7 @@ class Responder
                 ], $response );
 
                 self::sendSpecificResponse( $response, $controller );
-                $feature::after();
+                $instance->after();
                 exit();
             }
         }

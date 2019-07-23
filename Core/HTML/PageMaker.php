@@ -20,57 +20,51 @@ final class PageMaker
     /**
      * Rota da página.
      */
-    protected $route = null;
+    protected $route    = null;
 
     /**
      * Ação da rota.
      */
-    protected $action = null;
-
-    /**
-     * Nome do arquivo de layout.
-     */
-    protected $layout = null;
-
-    /**
-     * Variáveis estáticas.
-     */
-    protected $vars = null;
+    protected $action   = null;
 
     /**
      * Conteúdo da página.
      */
-    protected $html = null;
+    protected $html     = null;
+
+    /**
+     * Configurações da página.
+     */
+    protected $config   = [];
 
     /**
      * Documentação da página.
      */
-    protected $doc = [];
+    protected $doc      = [];
 
     /**
      * Dependências da view.
      */
-    protected $depends = [];
+    protected $depends  = [];
 
     /**
      * Inicia uma instância do objeto página.
      */
     public function __construct( $route )
     {
-        $this->route        = $route;
-        $this->layout       = Config::get( 'ui.default_layout' );
-        $this->vars         = Config::get( 'ui.vars' );
-
-        $data               = (object) array(
+        $data               = [
             'route'         => $route,
-            'url'           => (object) array(
+            'url'           => [
                 'base'      => URL_BASE,
                 'ui'        => URL_UI,
                 'pages'     => URL_PAGES,
                 'route'     => URL_PAGES . '/' . $route,
-            ),
-        );
-        $this->data         = $data;
+            ],
+        ];
+
+        $this->data         = array_merge( $data, (array) Config::get( 'ui.data' ) );
+        $this->route        = $route;
+        $this->config       = [ 'layout' => Config::get( 'ui.default_layout' ) ];
     }
             
     /**
@@ -99,11 +93,27 @@ final class PageMaker
 
         $this->depends[ $view_name ] = filemtime( $view_path );
         
+        $view_ini           = DIR_VIEWS . '/' . $this->route . '/view.ini';
+        
+        if ( file_exists( $view_ini ) )
+        {
+            $ini            = parse_ini_file( $view_ini, true );
+            $this->config   = isset( $ini[ 'CONFIG' ] )
+                ? array_merge( $this->config, $ini[ 'CONFIG' ] )
+                : $this->config;
+            $this->data     = isset( $ini[ 'DATA' ] )
+                ? array_merge( (array) $this->data, $ini[ 'DATA' ] )
+                : $this->data;
+        }
+
+        $this->config       = json_decode( json_encode( $this->config ) );
+        $this->data         = json_decode( json_encode( $this->data ) );
+
         ob_start();
         include $view_path;
         $this->html         = ob_get_clean();
 
-        $layout_filename    = DIR_LAYOUTS . '/' . $this->layout . '.php';
+        $layout_filename    = DIR_LAYOUTS . '/' . $this->config->layout . '.php';
         $layout_source      = substr( $layout_filename, strlen( DIR_BASE ) + 1 );
 
         if ( file_exists( $layout_filename ) )
@@ -169,15 +179,6 @@ final class PageMaker
         $data = json_encode( $this->data );
         return "<script>var {$data_name} = {$data}</script>";
     }
-    
-    /**
-     * Inclue os dados do controller na página.
-     */
-    public function vars( $vars_name )
-    {
-        $vars = json_encode( $this->vars );
-        return "<script>var {$vars_name} = {$vars}</script>";
-    }
 
     /**
      * Retorna o caminho para o arquivo de página.
@@ -200,7 +201,7 @@ final class PageMaker
      */
     public function setLayout( $layout )
     {
-        $this->layout = $layout;
+        $this->config->layout = $layout;
     }
     
     /**
