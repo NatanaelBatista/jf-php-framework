@@ -74,10 +74,30 @@ class Router
     {
         self::$route            = new \StdClass();
         
-        self::checkRedirectToLink();
-        self::getRouteParts();
-        self::validateRequestFormat();
+        self::checkCallForJFTool();
+        
+        if ( !JFTOOL )
+        {
+            self::checkRedirectToLink();
+            self::getRouteParts();
+            self::validateRequestFormat();
+        }
+        
         self::defineArgs();
+    }
+
+    /**
+     * Captura a URL da rota.
+     */
+    private static function checkCallForJFTool()
+    {
+        $prefix     = 'jftools/';
+        $lenprefix  = strlen( $prefix );
+        $jftool     = substr( ROUTE, 0, $lenprefix ) == $prefix
+            ? substr( ROUTE, $lenprefix )
+            : null;
+        
+        define( 'JFTOOL', $jftool );
     }
 
     /**

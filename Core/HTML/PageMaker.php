@@ -20,48 +20,63 @@ final class PageMaker
     /**
      * Rota da página.
      */
-    protected $route    = null;
+    protected $route        = null;
 
     /**
      * Ação da rota.
      */
-    protected $action   = null;
+    protected $action       = null;
 
     /**
      * Conteúdo da página.
      */
-    protected $html     = null;
+    protected $html         = null;
+
+    /**
+     * Documentador ativado.
+     */
+    protected $documentator = false;
 
     /**
      * Configurações da página.
      */
-    protected $config   = [];
+    protected $config       = [];
 
     /**
      * Dependências da view.
      */
-    protected $depends  = [];
+    protected $depends      = [];
 
     /**
      * Inicia uma instância do objeto página.
      */
-    public function __construct( $route )
+    public function __construct( $route_content, $documentator = false )
     {
+        if ( $documentator )
+        {
+            $this->data     = (object) Config::get( 'doc.data' );
+            $this->config   = (object) [
+                'layout'    => Config::get( 'doc.default_layout', 'layout' ),
+            ];
+            $this->html     = $route_content;
+            return;
+        }
+
         $data               = [
-            'route'         => $route,
+            'route'         => $route_content,
             'url'           => [
                 'base'      => URL_BASE,
                 'ui'        => URL_UI,
                 'pages'     => URL_PAGES,
-                'route'     => URL_PAGES . '/' . $route,
+                'route'     => URL_PAGES . '/' . $route_content,
             ],
         ];
 
         $this->data         = array_merge( $data, (array) Config::get( 'ui.data' ) );
-        $this->route        = $route;
-        $this->config       = [ 'layout' => Config::get( 'ui.default_layout' ) ];
+        $this->route        = $route_content;
+        $this->config       = [ 'layout' => Config::get( 'ui.default_layout', 'main' ) ];
     }
-            
+    
     /**
      * Monta uma página HTML.
      */
@@ -127,6 +142,22 @@ final class PageMaker
 
         return (object) $response;
     }
+    
+    /**
+     * Monta uma página HTML.
+     */
+    public function makeDoc()
+    {
+        $layout_filename    = DIR_TEMPLATES . '/doc/' . $this->config->layout . '.php';
+
+        ob_start();
+        include $layout_filename;
+        $this->html         = ob_get_clean();
+
+        $response           = [ 'html' => $this->html ];
+
+        return (object) $response;
+    }
 
     /**
      * Inclue o conteúdo da página.
@@ -158,6 +189,11 @@ final class PageMaker
      */
     public function ui( $filepath = '' )
     {
+        if ( JFTOOL )
+        {
+            return '../ui/' . $filepath;
+        }
+
         $route      = explode( '/', Router::get( 'route' ) );
         $num_route  = count( $route );
         $server     = $_SERVER[ 'SERVER_NAME' ];
