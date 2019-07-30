@@ -44,7 +44,7 @@ final class App
         HTML_Responder::send();
         
         // @todo hijacking desativado
-        Session::init();
+        // Session::init();
         // DocParserFeature::parse();
         // Tester::execute();
         Responder::sendResponse();
