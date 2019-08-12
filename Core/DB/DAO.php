@@ -89,12 +89,14 @@ class DAO
         $columns        = !empty( $opts[ 'columns' ] )
             ? $opts[ 'columns' ]
             : null;
+        $pk             = $dto::primaryKey();
         $columns        = $dto::columns( $opts );
         $sql            = SQL::select( $columns )
             ->from( $dto::table() )
             ->sql();
         $result         = DB::instance( $dto::schema() )
             ->execute( $sql->sql, $sql->data )
+            ->indexBy( $pk )
             ->all( $dto::dbOptions() );
 
         return $result;
