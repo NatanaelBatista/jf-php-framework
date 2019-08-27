@@ -61,12 +61,22 @@ class SQLInsert extends SQLBuilder
     public function id()
     {
         $dto    = $this->dto;
+        $pk     = $dto::primaryKey();
         $sql    = $this->sql();
-        $id     = DB::instance( $dto::schema() )
-            ->execute( $sql->sql, $sql->data )
-            ->insertId();
+        $data   = $sql->data;
+        $db     = DB::instance( $dto::schema() )->execute( $sql->sql, $data );
+        $count  = $db->count();
 
-        return $id;
+        if ( !$count )
+        {
+            return null;
+        }
+
+        $id     = $db->insertId();
+        
+        return $id
+            ? $id
+            : $this->values[ $pk ];
     }
 
     /**

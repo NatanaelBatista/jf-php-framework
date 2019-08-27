@@ -223,6 +223,7 @@ class DB
         // Guarda informações locais e retorna o objeto
         $this->success  = $stmt->execute( $this->data );
         $this->stmt     = $stmt;
+
         return $this;
     }
 
