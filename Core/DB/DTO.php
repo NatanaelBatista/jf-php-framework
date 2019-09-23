@@ -202,7 +202,7 @@ class DTO
 
         $data   = array_intersect_key( $data, static::$columns );
 
-        return $data;
+        return (object) $data;
     }
 
     /**

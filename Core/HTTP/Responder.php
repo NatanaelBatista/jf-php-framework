@@ -209,7 +209,7 @@ class Responder
                 'text'  => $except->getMessage(),
             ];
             self::sendSpecificResponse( $response, $controller );
-            $feature::after();
+            $instance->after();
             exit();
         }
         catch ( WarningException $except )
@@ -219,7 +219,7 @@ class Responder
                 'text'  => $except->getMessage(),
             ];
             self::sendSpecificResponse( $response, $controller );
-            $feature::after();
+            $instance->after();
             exit();
         }
         catch ( ErrorException $except )
@@ -229,7 +229,7 @@ class Responder
                 'text'  => $except->getMessage(),
             ];
             self::sendSpecificResponse( $response, $controller );
-            $feature::after();
+            $instance->after();
             exit();
         }
     }
