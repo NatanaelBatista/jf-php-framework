@@ -3,6 +3,7 @@
 namespace JF\HTTP\Responders;
 
 use JF\HTTP\Responder;
+use JF\FileSystem\Dir;
 
 /**
  * Classe que formata e envia resposta das requisições ao cliente.
@@ -44,8 +45,10 @@ class CSV_Responder extends Responder
             }
         }
         
+        $tmp_dir        = DIR_PRODUCTS . "/temp";
+        file_exists( $tmp_dir ) || Dir::makeDir( $tmp_dir );
         $tmp_filename   = microtime( true ) * 10000;
-        $tmp_filename   = DIR_PRODUCTS . "/downloads/{$tmp_filename}.csv";
+        $tmp_filename   = "{$tmp_dir}/{$tmp_filename}.csv";
         $file           = new \SplFileObject( $tmp_filename, 'w' );
         
         $file->fputcsv(
@@ -68,6 +71,7 @@ class CSV_Responder extends Responder
         header( "Content-Disposition: attachment; filename=$filename" );
         header( "Content-Length: " . filesize( $tmp_filename ) );
         readfile( $tmp_filename );
+        sleep(2);
         unlink( $tmp_filename );
     }
 
