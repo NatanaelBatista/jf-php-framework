@@ -13,7 +13,7 @@ class CSV_Responder extends Responder
     /**
      * Armazena os header do tipo de resposta.
      */
-    protected static $headers = ['application/csv'];
+    protected static $headers = [ 'text/csv' ];
 
     /**
      * Instancia a classe da rota, executa e envia a resposta ao cliente.
