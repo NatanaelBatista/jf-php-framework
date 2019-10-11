@@ -30,6 +30,7 @@ class API
         {
             return;
         }
+        
         if ( !is_subclass_of( $feature, 'JF\\Domain\\Feature') )
         {
             return;

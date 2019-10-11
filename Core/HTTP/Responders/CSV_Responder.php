@@ -71,7 +71,6 @@ class CSV_Responder extends Responder
         header( "Content-Disposition: attachment; filename=$filename" );
         header( "Content-Length: " . filesize( $tmp_filename ) );
         readfile( $tmp_filename );
-        sleep(2);
         unlink( $tmp_filename );
     }
 
