@@ -48,6 +48,11 @@ final class PageMaker
     protected $depends      = [];
 
     /**
+     * Permissões utilizadas na página.
+     */
+    protected $permissions  = [];
+
+    /**
      * Inicia uma instância do objeto página.
      */
     public function __construct( $route_content, $documentator = false )
@@ -137,6 +142,7 @@ final class PageMaker
         $result_components  = WebComponents\ComponentParser::parse( $this->html );
         $response           = [
             'depends'       => array_merge( $this->depends, $result_components->depends ),
+            'permissions'   => $this->permissions,
             'html'          => $result_components->html,
         ];
 
@@ -278,5 +284,14 @@ final class PageMaker
             : $relative_path;
         
         return $real_path;
+    }
+
+    /**
+     * Invoca uma permissão para a tela.
+     */
+    public function permission( $permission )
+    {
+        $this->permissions[ $permission ] = $permission;
+        return "usuario.permissoes.includes( '$permission' )";
     }
 }
