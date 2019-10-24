@@ -170,4 +170,12 @@ class DAO
         
         return $sql;
     }
+
+    /**
+     * Limpa os dados da tabela.
+     */
+    public function truncate()
+    {
+        return static::db()->truncate( static::table() );
+    }
 }
