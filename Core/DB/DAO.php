@@ -176,6 +176,8 @@ class DAO
      */
     public function truncate()
     {
-        return static::db()->truncate( static::table() );
+        $dto    = $this->dto;
+        $db     = $dto::db();
+        return $db->truncate( $dto::table() );
     }
 }
