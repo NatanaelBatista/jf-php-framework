@@ -33,11 +33,9 @@ class Router
     public static function basicDefines()
     {
         if ( defined( 'URL_BASE' ) )
-        {
             return;
-        }
 
-        $scheme         = !empty( $_SERVER[ 'HTTPS' ] ) && !HTTPS
+        $scheme         = !empty( $_SERVER[ 'HTTPS' ] ) || HTTPS
             ? 'https'
             : 'http';
         $server         = SERVER;
@@ -59,12 +57,12 @@ class Router
         define( 'URL_PAGES',    URL_UI . '/pages' );
         define( 'ROUTE',        urldecode( $url_route ) );
 
-        if ( !ROUTE )
-        {
-            $default_route  = Config::get( 'app.default_route', self::$homePage );
-            $page_target    = URL_PAGES . '/' . $default_route;
-            Request::redirect( $page_target, true );
-        }
+        if ( ROUTE )
+            return;
+
+        $default_route  = Config::get( 'app.default_route', self::$homePage );
+        $page_target    = URL_PAGES . '/' . $default_route;
+        Request::redirect( $page_target, true );
     }
 
     /**

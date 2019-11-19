@@ -61,6 +61,21 @@ class DAO
     }
 
     /**
+     * Retorna o total de registros da tabela.
+     */
+    public function count( $opts = [] )
+    {
+        $dto    = $this->dto;
+        $table  = $dto::table();
+        $sql    = "SELECT COUNT(1) `total` FROM $table";
+        $result = (object) DB::instance( $dto::schema() )
+            ->execute( $sql )
+            ->one();
+
+        return $result->total;
+    }
+
+    /**
      * Pesquisa simples por um registro na tabela.
      */
     public function one( $opts = [] )

@@ -174,7 +174,7 @@ final class App
 
         $url = 'https://' . SERVER . REQUEST_URI;
 
-        Request::redirect( $url_redirect, true );
+        Request::redirect( $url, true );
     }
 
     /**
