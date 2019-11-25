@@ -124,7 +124,7 @@ class DAO
     {
         $dto        = $this->dto;
         
-        return SQL::insert( $dto )->values( $values );
+        return SQL::insert( $dto )->values( (array) $values );
     }
 
     /**
