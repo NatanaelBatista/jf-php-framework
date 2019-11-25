@@ -53,9 +53,7 @@ trait SQL_Where
     public function getWhere()
     {
         if ( !$this->where )
-        {
             return [1, []];
-        }
 
         $where  = [];
         $data   = [];

@@ -33,9 +33,7 @@ trait SQL_Join
     public function getJoin()
     {
         if ( !$this->joins )
-        {
             return '';
-        }
 
         $joins  = [];
 

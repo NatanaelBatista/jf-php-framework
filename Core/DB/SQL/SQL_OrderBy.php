@@ -31,9 +31,7 @@ trait SQL_OrderBy
     public function getOrderBy()
     {
         if ( !$this->orders )
-        {
             return '';
-        }
 
         $orders         = [];
         $alias          = $this->getAlias();

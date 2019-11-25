@@ -24,9 +24,7 @@ class SQLDelete extends SQLBuilder
         $this->dto = $dto;
 
         if ( $dto )
-        {
             $this->from( $dto::table() );
-        }
     }
 
     /**
@@ -40,14 +38,10 @@ class SQLDelete extends SQLBuilder
         $sql                    = "DELETE FROM `$this->table` WHERE $where";
 
         if ( $offset )
-        {
             $sql   .= ' OFFSET ' . $offset;
-        }
 
         if ( $limit )
-        {
             $sql   .= ' LIMIT ' . $limit;
-        }
 
         return (object) [
             'action'    => 'delete',

@@ -47,14 +47,10 @@ trait SQL_Select
         }
         
         if ( !$columns )
-        {
             $columns    = '*';
-        }
 
         if ( is_string( $columns ) )
-        {
             return $columns;
-        }
 
         foreach ( $columns as $column )
         {

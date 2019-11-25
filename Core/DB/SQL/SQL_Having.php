@@ -31,9 +31,7 @@ trait SQL_Having
     public function getHaving()
     {
         if ( !$this->havings )
-        {
             return [null, []];
-        }
 
         $havings        = [];
         $data           = [];

@@ -61,14 +61,10 @@ class SQLUpdate extends SQLBuilder
         $sql                    = "UPDATE `$this->table` `$alias` SET $values WHERE $where";
 
         if ( $offset )
-        {
             $sql   .= ' OFFSET ' . $offset;
-        }
 
         if ( $limit )
-        {
             $sql   .= ' LIMIT ' . $limit;
-        }
 
         return (object) [
             'action'    => 'update',

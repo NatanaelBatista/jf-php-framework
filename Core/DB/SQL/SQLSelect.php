@@ -30,9 +30,7 @@ class SQLSelect extends SQLBuilder
         $this->select( $columns );
 
         if ( $dto )
-        {
             $this->from( $dto::table() );
-        }
     }
 
     /**
@@ -65,9 +63,7 @@ class SQLSelect extends SQLBuilder
         $data                   = $data1;
 
         if ( $group )
-        {
             $sql   .= ' GROUP BY ' . $group;
-        }
 
         if ( $having )
         {
@@ -76,19 +72,13 @@ class SQLSelect extends SQLBuilder
         }
 
         if ( $order )
-        {
             $sql   .= ' ORDER BY ' . $order;
-        }
 
         if ( $limit )
-        {
             $sql   .= ' LIMIT ' . $limit;
-        }
 
         if ( $offset )
-        {
             $sql   .= ' OFFSET ' . $offset;
-        }
 
         return (object) [
             'action'    => 'select',
@@ -119,9 +109,11 @@ class SQLSelect extends SQLBuilder
     {
         $opts   = array_merge( $opts, $this->opts );
         $dto    = $this->dto;
+        $pk     = $dto::primaryKey();
         $sql    = $this->sql( $opts );
         $result = DB::instance( $dto::schema() )
             ->execute( $sql->sql, $sql->data )
+            ->indexBy( $pk )
             ->all( $dto::dbOptions( $opts ) );
 
         return $result;

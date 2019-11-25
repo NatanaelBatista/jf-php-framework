@@ -28,9 +28,7 @@ trait SQL_GroupBy
     public function getGroupBy()
     {
         if ( !$this->groups )
-        {
             return '';
-        }
 
         $groups         = [];
         $alias          = $this->getAlias();

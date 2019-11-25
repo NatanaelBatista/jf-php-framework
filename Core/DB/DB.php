@@ -362,13 +362,11 @@ class DB
             ? $this->stmt->fetchAll( $fetch )
             : $this->stmt->fetchAll( \PDO::FETCH_CLASS, $fetch );
         $response       = [];
-        $has_index      = isset( $opts[ 'index' ] );
+        $has_index      = !empty( $opts[ 'index' ] );
         $index          = null;
 
         if ( !$result )
-        {
             return $response;
-        }
 
         if ( $has_index )
         {

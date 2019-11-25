@@ -22,9 +22,7 @@ class SQLInsert extends SQLBuilder
         $this->dto = $dto;
 
         if ( $dto )
-        {
             $this->into( $dto::table() );
-        }
     }
 
     /**
@@ -68,9 +66,7 @@ class SQLInsert extends SQLBuilder
         $count  = $db->count();
 
         if ( !$count )
-        {
             return null;
-        }
 
         $id     = $db->insertId();
         
@@ -88,9 +84,7 @@ class SQLInsert extends SQLBuilder
         $id     = $this->id();
 
         if ( !$id )
-        {
             return null;
-        }
 
         return $dto::dao()->find( $id );
     }
