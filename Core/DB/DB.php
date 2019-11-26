@@ -354,7 +354,7 @@ class DB
         $opts           = is_array( $opts )
             ? $opts
             : [];
-        $opts           = array_merge( $opts, $this->opts );
+        $opts           = array_merge( $this->opts, $opts );
 
         // Captura os resultados
         $fetch          = self::getFetchStyle( $opts );
