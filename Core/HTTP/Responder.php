@@ -133,9 +133,7 @@ class Responder
             : self::DEFAULT_CHARSET;
         
         foreach ( $content_type as $ct )
-        {
             header( "Content-Type: $ct; charset=$charset" );
-        }
 
         // Define os demais atributos do header
         $plain_formats  = array( 'html', 'json', 'php', 'xml', 'txt' );

@@ -19,7 +19,9 @@ class Error_Responder extends Responder
      */
     public static function send( $exception )
     {
-        http_response_code( 404 );
+        if ( !headers_sent() )
+            http_response_code( 404 );
+
         self::setHeader();
         
         // Define as mensagens de erro da requisição
@@ -36,7 +38,9 @@ class Error_Responder extends Responder
             $exception[ 'message' ]
         );
 
-        header( 'Content-Type: application/json' );
+        if ( !headers_sent() )
+            header( 'Content-Type: application/json' );
+
         echo json_encode( array( 'error' => $error_msg ) );
         exit();
     }
@@ -46,6 +50,7 @@ class Error_Responder extends Responder
      */
     public static function setHeader( $type = null, $charset = null )
     {
-        parent::setHeader( 'json', $charset );
+        if ( !headers_sent() )
+            parent::setHeader( 'json', $charset );
     }
 }
