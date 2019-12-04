@@ -15,9 +15,19 @@ use JF\Messager;
 class Routine
 {
     /**
+     * Última execução da rotina.
+     */
+    public $lastExecution;
+
+    /**
+     * Diferença entre a últma execução da rotina e a data atual.
+     */
+    public $diff;
+    
+    /**
      * Verifica se a rotina deve ser executada.
      */
-    public function expired( $last_execution, $diff )
+    public function expired()
     {
 
     }
@@ -54,12 +64,8 @@ class Routine
             $namespaces         = Config::get( 'namespaces' );
 
             foreach ( $namespaces as $namespace => $local )
-            {
                 if ( strpos( $routine_class, $local ) === 0 )
-                {
                     $routine_class = $namespace . substr( $routine_class, strlen( $local ) );
-                }
-            }
 
             $routine_class      = str_replace( '/', '\\', $routine_class );
             $len_start          = strlen( 'Routines\\' );
@@ -81,23 +87,17 @@ class Routine
             }
 
             if ( !$old_timestamps || $run_docparser )
-            {
                 goto nextStep;
-            }
 
             $has_timestamp      = isset( $old_timestamps[ $routine_class ] );
 
             if ( !$has_timestamp || $timestamp > $old_timestamps[ $routine_class ] )
-            {
                 $run_docparser  = true;
-            }
 
             nextStep:
 
             if ( !file_exists( $execution_filename ) )
-            {
                 file_put_contents( $execution_filename, null );
-            }
 
             $last_execution     = file_get_contents( $execution_filename );
             $last_execution     = $last_execution
@@ -108,11 +108,11 @@ class Routine
                 ? $now->diff( $last_execution )
                 : null;
             $routine            = new $routine_class();
+            $routine->lastExecution = $last_execution;
+            $routine->diff          = $diff;
 
             if ( $last_execution && !$routine->expired( $last_execution, $diff ) )
-            {
                 continue;
-            }
             
             file_put_contents( $execution_filename, $now->format( 'Y-m-d H:i:s' ) );
             
@@ -163,9 +163,7 @@ class Routine
         ]);
 
         if ( !$config || empty( $config->frequency ) )
-        {
             return;
-        }
 
         $frequency          = $config->frequency;
         $frequency_measure  = $frequency[ 0 ];
@@ -173,16 +171,12 @@ class Routine
         $execution_filename = self::dbBackupLog();
 
         if ( !file_exists( $execution_filename ) )
-        {
             file_put_contents( $execution_filename, null );
-        }
 
         $last_execution     = file_get_contents( $execution_filename );
         
         if ( !$last_execution )
-        {
             return self::executeBackupDB( $config );
-        }
         
         $last_execution     = new \DateTime( $last_execution );
         $hours              = $frequency_measure !== 'd'
@@ -195,9 +189,7 @@ class Routine
         $diff               = $now->diff( $last_execution );
 
         if ( $diff->$frequency_measure >= $frequency_value )
-        {
             return self::executeBackupDB( $config );
-        }
     }
 
     /**
@@ -230,14 +222,10 @@ class Routine
         foreach ( $schemas as $schema_name => $schema )
         {
             if ( empty( $schema->hostname ) )
-            {
                 continue;
-            }
 
             if ( !in_array( $schema->hostname, $hosts ) )
-            {
                 continue;
-            }
 
             $options        = in_array( $schema_name, $config->schemas )
                 ? []
@@ -252,9 +240,7 @@ class Routine
         ]);
 
         if ( !$keep )
-        {
             return;
-        }
 
         $keep_measure   = strtoupper( $keep[ 0 ] );
         $time_separator = in_array( $keep_measure, array( 'H', 'M', 'S' ) )
@@ -275,9 +261,7 @@ class Routine
             $pathname = str_replace( '\\', '/', $backup->getPathName() );
 
             if ( $filename <= $date_limit )
-            {
                 unlink( $pathname );
-            }
         }
     }
 
