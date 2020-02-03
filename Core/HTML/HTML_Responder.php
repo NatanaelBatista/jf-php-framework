@@ -26,14 +26,10 @@ class HTML_Responder
         $route      = Router::get( 'route' );
 
         if ( Router::get( 'type' ) != 'view' )
-        {
             return;
-        }
 
         if ( !file_exists( DIR_PAGES ) )
-        {
             Dir::makeDir( DIR_PAGES );
-        }
 
         if ( !is_writable( DIR_PAGES ) )
         {
@@ -42,9 +38,7 @@ class HTML_Responder
         }
 
         if ( !ParserHTML::isUpdated( $route ) )
-        {
             ParserHTML::parseView( $route );
-        }
         
         http_response_code( 200 );
         header( 'Content-Type: text/html; charset=UTF-8' );

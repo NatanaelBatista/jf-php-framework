@@ -41,7 +41,9 @@ class Error_Responder extends Responder
         if ( !headers_sent() )
             header( 'Content-Type: application/json' );
 
-        echo json_encode( array( 'error' => $error_msg ) );
+        $legible_text = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+        
+        echo json_encode( array( 'error' => $error_msg ), $legible_text );
         exit();
     }
 

@@ -2,7 +2,7 @@
 
 namespace JF\HTML;
 
-use JF\Exceptions\ErrorException;
+use JF\Exceptions\ErrorException as Error;
 use JF\FileSystem\Dir;
 use JF\Messager;
 
@@ -17,9 +17,7 @@ trait PageMakerPartial
     public function partial( $filename, $shared = false )
     {
         if ( !file_exists( DIR_PARTIALS ) )
-        {
             Dir::makeDir( DIR_PARTIALS );
-        }
 
         $filename       = strtolower( $filename );
         $filename       = str_replace( '\\', '/', $filename ) . '.php';
@@ -34,7 +32,12 @@ trait PageMakerPartial
         $file_partial   = substr( $file_path, strlen( DIR_BASE ) + 1 );
         $file_caller    = DIR_VIEWS . '/' . $this->route . '/view.php';
 
-        $this->testIfExistsFile( $file_path, $file_caller );
+        if ( !file_exists( $file_path ) )
+        {
+            $msg        = Messager::get( 'html', 'file_partial_not_found', $file_caller, $file_partial );
+            throw new Error( $msg );
+        }
+
         $this->testIncludindPartialRecursivly( $file_path, $file_caller );
 
         $this->including[ $file_path ] = true;
@@ -43,22 +46,6 @@ trait PageMakerPartial
         unset( $this->including[ $file_path ] );
     }
 
-    /**
-     * Testa se o arquivo solicitado existe.
-     */
-    public function testIfExistsFile( $file_path, $file_caller )
-    {
-        if ( !file_exists( $file_path ) )
-        {
-            $msg        = Messager::get(
-                'html',
-                'file_partial_not_found',
-                $file_caller,
-                $file_path
-            );
-            throw new ErrorException( $msg );
-        }
-    }
 
     /**
      * Testa se está tentando chamar o fragmento de página recursivamente.
@@ -76,7 +63,7 @@ trait PageMakerPartial
             $msg        = 
                 "Erro ao interpretar o arquivo '{$file_caller}': " .
                 "solicitação recursiva em '$file_path'!";
-            throw new ErrorException( $msg );
+            throw new Error( $msg );
         }
     }
 }

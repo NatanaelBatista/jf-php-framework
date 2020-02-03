@@ -25,4 +25,7 @@ return [
 
     'key_not_exists' =>
         'A propriedade "%s", indicada como chave-primária do model "%s", não existe.',
+
+    'column_not_exists_to_validate' =>
+        'A coluna "%s" não foi declarada no DTO "%s".',
 ];

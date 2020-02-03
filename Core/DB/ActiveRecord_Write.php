@@ -37,14 +37,10 @@ trait ActiveRecord_Write
             ->insert( $values, $unsafe );
 
         if ( !empty( $opts[ 'get_sql' ] ) || $id_record === false )
-        {
             return $id_record;
-        }
 
         if ( $id_record )
-        {
             return static::find( $id_record );
-        }
 
         self::checkConflit( $values );
 

@@ -20,37 +20,37 @@ final class PageMaker
     /**
      * Rota da página.
      */
-    protected $route        = null;
+    protected $route            = null;
 
     /**
      * Ação da rota.
      */
-    protected $action       = null;
+    protected $action           = null;
 
     /**
      * Conteúdo da página.
      */
-    protected $html         = null;
+    protected $html             = null;
 
     /**
      * Documentador ativado.
      */
-    protected $documentator = false;
+    protected $documentator     = false;
 
     /**
      * Configurações da página.
      */
-    protected $config       = [];
+    protected $config           = [];
 
     /**
      * Dependências da view.
      */
-    protected $depends      = [];
+    protected $depends          = [];
 
     /**
      * Permissões utilizadas na página.
      */
-    protected $permissions  = [];
+    protected $permissions      = [];
 
     /**
      * Inicia uma instância do objeto página.
@@ -139,11 +139,10 @@ final class PageMaker
             $this->html     = ob_get_clean();
         }
         
-        $result_components  = WebComponents\ComponentParser::parse( $this->html );
         $response           = [
-            'depends'       => array_merge( $this->depends, $result_components->depends ),
+            'depends'       => $this->depends,
             'permissions'   => $this->permissions,
-            'html'          => $result_components->html,
+            'html'          => $this->html,
         ];
 
         return (object) $response;
@@ -293,5 +292,69 @@ final class PageMaker
     {
         $this->permissions[ $permission ] = $permission;
         return "usuario.permissoes.includes( '$permission' )";
+    }
+
+    /**
+     * Imprime o script com os WebComponents.
+     */
+    public function webComponents()
+    {
+        $components    = new \FileSystemIterator( DIR_TEMPLATES . '/html/webcomponents' );
+
+        echo '<script>' . N . '<!-- COMPONENTS -->' . N;
+        foreach ( $components as $item )
+        {
+            $this->parsePathComponents( $item );
+        }
+        echo '</script>';
+    }
+
+    /**
+     * Imprime o script com os WebComponents.
+     */
+    protected function parsePathComponents( $item )
+    {
+        $base_len = strlen( DIR_BASE ) + 1;
+
+        if ( $item->isFile() && $item->getFilename() == 'component.js' )
+        {
+            $pathname   = str_replace( '\\', '/', $item->getPathName() );
+            $wc_path    = dirname( $pathname );
+            $tag        = basename( $wc_path );
+            $js_name    = preg_replace_callback( '@-(.)@', function( $matches ) {
+                return strtoupper( $matches[ 1 ] );
+            }, $tag );
+
+            if ( !preg_match( "@<$tag@", $this->html ) )
+                return;
+
+            $file_component     = $wc_path . '/component.js';
+            $file_template      = $wc_path . '/template.html';
+
+            $wc_content         = trim( file_get_contents( $file_component ) );
+
+            $depend_component   = substr( $file_component, $base_len );
+            $this->depends[ $depend_component ] = filemtime( $file_component );
+
+            if ( file_exists( $file_template ) )
+            {
+                $template       = N . trim( file_get_contents( $file_template ) );
+                $wc_content     = str_replace( '{$template}', $template, $wc_content );
+                $depend_template                    = substr( $file_template, $base_len );
+                $this->depends[ $depend_template ]  = filemtime( $file_template );
+            }
+
+            echo \App\App::registerWebComponent( $tag, $js_name, $wc_content ) . N;
+        }
+
+        if ( !$item->isDir() )
+            return;
+
+        $path   = new \FileSystemIterator( $item->getPathName() );
+
+        foreach ( $path as $item )
+        {
+            $this->parsePathComponents( $path );
+        }
     }
 }

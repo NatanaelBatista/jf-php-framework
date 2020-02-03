@@ -280,9 +280,7 @@ class DB
     public function insertId()
     {
         if ( !$this->success )
-        {
             return null;
-        }
 
         return $this->pdo->lastInsertId();
     }

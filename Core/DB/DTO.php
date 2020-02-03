@@ -3,6 +3,7 @@
 namespace JF\DB;
 
 use JF\DB\DB;
+use JF\Exceptions\ErrorException as Error;
 
 /**
  * Data Object Transfer - Classe representativa de um registro dda tabela.
@@ -64,6 +65,72 @@ class DTO
     }
 
     /**
+     * Retorna a estrutura de colunas do model.
+     */
+    public static function structure()
+    {
+        return static::$columns;
+    }
+
+    /**
+     * Retorna a estrutura de colunas do model.
+     */
+    public static function validateData( $colname, $value, $params = [] )
+    {
+        if ( !isset( static::$columns[ $colname ] ) )
+        {
+            $msg = Messager::get( 'db', 'column_not_exists_to_validate', $column, get_called_class() );
+            throw new Error( $msg );
+        }
+
+        $column     = static::$columns[ $colname ];
+        $required   = $column[ 'required' ]     ?? false;
+        $min        = $column[ 'min' ]          ?? null;
+        $max        = $column[ 'max' ]          ?? null;
+        $minlength  = $column[ 'minlength' ]    ?? null;
+        $maxlength  = $column[ 'maxlength' ]    ?? null;
+        $options    = $column[ 'options' ]      ?? null;
+
+        if ( $required && isset( $params[ 'required' ] ) && ( $value === null || $value === '' || $value === [] ) )
+            throw new Error( $params[ 'required' ] );
+
+        if ( !is_null( $min ) && isset( $params[ 'min' ] ) && $value < $min )
+        {
+            $msg = $params[ 'min' ];
+            $msg = str_replace( ':min', $min, $msg );
+            $msg = str_replace( ':value', $value, $msg );
+            throw new Error( $msg );
+        }
+
+        if ( !is_null( $max ) && isset( $params[ 'max' ] ) && $value > $max )
+        {
+            $msg = $params[ 'max' ];
+            $msg = str_replace( ':max', $max, $msg );
+            $msg = str_replace( ':value', $value, $msg );
+            throw new Error( $msg );
+        }
+
+        if ( !is_null( $minlength ) && isset( $params[ 'minlength' ] ) && !isset( $value[ $minlength ] ) )
+        {
+            $msg = $params[ 'minlength' ];
+            $msg = str_replace( ':minlength', $minlength, $msg );
+            $msg = str_replace( ':len', strlen( $value ), $msg );
+            throw new Error( $msg );
+        }
+
+        if ( !is_null( $maxlength ) && isset( $params[ 'maxlength' ] ) && isset( $value[ $maxlength ] ) )
+        {
+            $msg = $params[ 'maxlength' ];
+            $msg = str_replace( ':maxlength', $maxlength, $msg );
+            $msg = str_replace( ':len', strlen( $value ), $msg );
+            throw new Error( $msg );
+        }
+
+        if ( !is_null( $options ) && isset( $params[ 'options' ] ) && !in_array( $value, $options ) )
+            throw new Error( $params[ 'options' ] );
+    }
+
+    /**
      * Retorna os campos de dado sensíveis do DTO ou se um campo específico é sensível.
      */
     public static function hide( $column = null )
@@ -97,14 +164,10 @@ class DTO
             $col_hide   = in_array( $column, static::$hide );
 
             if ( !$unsafe && $col_hide )
-            {
                 continue;
-            }
 
             if ( $columns && !in_array( $column, $columns ) )
-            {
                 continue;
-            }
 
             $response[]  = $column;
         }
@@ -196,9 +259,7 @@ class DTO
         unset( $data[ '_changed' ] );
         
         if ( $unsafe )
-        {
             return $data;
-        }
 
         $data   = array_intersect_key( $data, static::$columns );
 
@@ -259,19 +320,21 @@ class DTO
     public function save()
     {
         if ( !$this->changed() )
-        {
             return false;
-        }
+
+        if ( $this->_status == 'created' )
+            $values         = $this->values();
+
+        if ( $this->_status != 'created' )
+            $values         = array_intersect_key( (array) $this->values(), $this->_changed );
 
         $key                = static::primaryKey();
         $count              = static::dao()
-            ->update( $this->$key, $key, $this->values() )
+            ->update( $this->$key, $key, $values )
             ->count();
 
         if ( $count )
-        {
             $this->_status  = 'saved';
-        }
 
         return $count;
     }

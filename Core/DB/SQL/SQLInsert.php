@@ -78,7 +78,7 @@ class SQLInsert extends SQLBuilder
     /**
      * Retorna todos os registros da operação.
      */
-    public function one()
+    public function one( $opts = [] )
     {
         $dto    = $this->dto;
         $id     = $this->id();
@@ -86,6 +86,6 @@ class SQLInsert extends SQLBuilder
         if ( !$id )
             return null;
 
-        return $dto::dao()->find( $id );
+        return $dto::dao()->find( $id, null, $opts );
     }
 }

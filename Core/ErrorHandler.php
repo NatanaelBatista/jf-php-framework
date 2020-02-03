@@ -18,9 +18,7 @@ final class ErrorHandler
         static $registered  = false;
 
         if ( $registered )
-        {
             return;
-        }
 
         $registered         = true;
 

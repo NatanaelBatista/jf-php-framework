@@ -21,9 +21,7 @@ final class ParserHTML
         $view_md                = self::path( $route, 'view.md' );
 
         if ( !file_exists( $html_path ) || !file_exists( $log_path ) )
-        {
             return false;
-        }
 
         $last_parse             = json_decode( file_get_contents( $log_path ) );
         $config_servers_path    = Config::path( 'servers' );
@@ -37,44 +35,28 @@ final class ParserHTML
         $has_view_md            = isset( $last_parse->view_md );
 
         if ( !$has_SERVER_ADDR || $_SERVER[ 'SERVER_ADDR' ] != $last_parse->SERVER_ADDR )
-        {
             return false;
-        }
 
         if ( !$has_DIR_BASE || DIR_BASE != $last_parse->DIR_BASE )
-        {
             return false;
-        }
 
         if ( !$has_time_env || !$has_time_ui || !$has_time_dependencies )
-        {
             return false;
-        }
 
         if ( !$has_time_env || !$has_time_ui || !$has_time_dependencies )
-        {
             return false;
-        }
 
         if ( !$has_view_ini || !file_exists( $view_ini ) || filemtime( $view_ini ) < $last_parse->view_ini )
-        {
             return false;
-        }
 
         if ( !$has_view_md || !file_exists( $view_md ) || filemtime( $view_md ) < $last_parse->view_md )
-        {
             return false;
-        }
 
         if ( $last_parse->config_servers < filemtime( $config_servers_path ) )
-        {
             return false;
-        }
 
         if ( $last_parse->config_ui < filemtime( $config_ui_path ) )
-        {
             return false;
-        }
 
         foreach ( $last_parse->dependencies as $file_source => $file_time )
         {
@@ -84,9 +66,7 @@ final class ParserHTML
                 : null;
             
             if ( !$file_time || !$file_new_time || $file_time < $file_new_time )
-            {
                 return false;
-            }
         }
 
         return true;
@@ -121,6 +101,7 @@ final class ParserHTML
         $view_ini               = self::path( $route, 'view.ini' );
         $view_md                = self::path( $route, 'view.md' );
         $new_parse              = [
+            'time'              => time(),
             'SERVER_ADDR'       => $_SERVER[ 'SERVER_ADDR' ],
             'DIR_BASE'          => DIR_BASE,
             'config_servers'    => file_exists( $config_servers_path )

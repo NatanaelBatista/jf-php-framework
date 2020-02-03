@@ -16,13 +16,13 @@ trait PageMakerCSS
         // Verifica se existe o arquivo de estilo
         $min        = !empty( $options[ 'min' ] );
         $prefix     = $min
-            ? 'design/css/'
+            ? 'css/'
             : '';
         $sufix      = $min
             ? '.min.css'
             : '';
-        $file_source    = $prefix . $filename . $sufix;
-        $filepath       = DIR_UI . '/' . $file_source;
+        $file_source    = 'ui/' . $prefix . $filename . $sufix;
+        $filepath       = DIR_BASE . '/' . $file_source;
 
         if ( $min && ENV_DEV )
         {

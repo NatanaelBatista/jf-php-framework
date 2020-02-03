@@ -215,17 +215,13 @@ class SQLQuery
     public static function insert( SQL $sql, $data = array(), $unsafe = false )
     {
         if ( $data )
-        {
             $sql->set( $data );
-        }
         
         $source     = $sql->source;
         $sql_data   = SQLBuilder::build( $sql, 'insert', $unsafe );
 
         if ( !empty( $sql->opts[ 'get_sql' ] ) )
-        {
             return $sql_data;
-        }
 
         $id_record  = DB::instance( $source::schemaName() )
             ->execute( $sql_data[ 0 ], $sql_data[ 1 ] )
