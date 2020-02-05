@@ -4,6 +4,7 @@ namespace JF\DB;
 
 use JF\DB\DB;
 use JF\Exceptions\ErrorException as Error;
+use JF\Types\DateTime__Type;
 
 /**
  * Data Object Transfer - Classe representativa de um registro dda tabela.
@@ -75,7 +76,7 @@ class DTO
     /**
      * Retorna a estrutura de colunas do model.
      */
-    public static function validateData( $colname, $value, $params = [] )
+    public static function validateData( $label, $colname, $value, $params = [] )
     {
         if ( !isset( static::$columns[ $colname ] ) )
         {
@@ -85,49 +86,74 @@ class DTO
 
         $column     = static::$columns[ $colname ];
         $required   = $column[ 'required' ]     ?? false;
+        $type       = $column[ 'type' ]     ?? false;
+        $decimals   = $column[ 'decimals' ]     ?? 0;
         $min        = $column[ 'min' ]          ?? null;
         $max        = $column[ 'max' ]          ?? null;
         $minlength  = $column[ 'minlength' ]    ?? null;
         $maxlength  = $column[ 'maxlength' ]    ?? null;
+        $currency   = $column[ 'currency' ]     ?? null;
         $options    = $column[ 'options' ]      ?? null;
+        $range      = $column[ 'range' ]        ?? null;
 
-        if ( $required && isset( $params[ 'required' ] ) && ( $value === null || $value === '' || $value === [] ) )
-            throw new Error( $params[ 'required' ] );
+        if ( !$required && ( $value === null || $value === '' || $value === [] ) )
+            return;
 
-        if ( !is_null( $min ) && isset( $params[ 'min' ] ) && $value < $min )
+        if ( $required && ( $value === null || $value === '' || $value === [] ) )
         {
-            $msg = $params[ 'min' ];
-            $msg = str_replace( ':min', $min, $msg );
-            $msg = str_replace( ':value', $value, $msg );
-            throw new Error( $msg );
+            if ( isset( $params[ 'required' ] ) )
+                throw new Error( $params[ 'required' ] );
+            
+            throw new Error( App\App::textInvalidatedRequired( $label ) );
         }
 
-        if ( !is_null( $max ) && isset( $params[ 'max' ] ) && $value > $max )
+        if ( !is_null( $type ) && $type == 'date' && !DateTime__Type::validateDate( $value ) )
+            throw new Error( App\App::textInvalidatedDate( $label ) );
+
+        if ( !is_null( $type ) && $type == 'time' && !DateTime__Type::validateTime( $value ) )
+            throw new Error( App\App::textInvalidatedTime( $label ) );
+
+        if ( !is_null( $type ) && $type == 'email' && !filter_var( $value, FILTER_VALIDATE_EMAIL ) )
+            throw new Error( App\App::textInvalidatedEmail( $label ) );
+
+        if ( !is_null( $min ) && $value < $min )
         {
-            $msg = $params[ 'max' ];
-            $msg = str_replace( ':max', $max, $msg );
-            $msg = str_replace( ':value', $value, $msg );
-            throw new Error( $msg );
+            $value_formated     = number_format( $value, $decimals, ',', '.' );
+            $min_formated       = number_format( $min, $decimals, ',', '.' );
+            throw new Error( App\App::textInvalidatedMin( $label, $value_formated, $min_formated, $currency ) );
         }
 
-        if ( !is_null( $minlength ) && isset( $params[ 'minlength' ] ) && !isset( $value[ $minlength ] ) )
+        if ( !is_null( $max ) && $value > $max )
         {
-            $msg = $params[ 'minlength' ];
-            $msg = str_replace( ':minlength', $minlength, $msg );
-            $msg = str_replace( ':len', strlen( $value ), $msg );
-            throw new Error( $msg );
+            $value_formated     = number_format( $value, $decimals, ',', '.' );
+            $max_formated       = number_format( $max, $decimals, ',', '.' );
+            throw new Error( App\App::textInvalidatedMax( $label, $value_formated, $max_formated, $currency ) );
         }
 
-        if ( !is_null( $maxlength ) && isset( $params[ 'maxlength' ] ) && isset( $value[ $maxlength ] ) )
+        if ( !is_null( $minlength ) && !isset( $value[ $minlength ] ) )
         {
-            $msg = $params[ 'maxlength' ];
-            $msg = str_replace( ':maxlength', $maxlength, $msg );
-            $msg = str_replace( ':len', strlen( $value ), $msg );
-            throw new Error( $msg );
+            $len_formated       = number_format( strlen( $value ), 0, ',', '.' );
+            $minlength_formated = number_format( $minlength, 0, ',', '.' );
+            throw new Error( App\App::textInvalidatedMinlength( $label, strlen( $value ), $minlength_formated ) );
         }
 
-        if ( !is_null( $options ) && isset( $params[ 'options' ] ) && !in_array( $value, $options ) )
-            throw new Error( $params[ 'options' ] );
+        if ( !is_null( $maxlength ) && isset( $value[ $maxlength ] ) )
+        {
+            $len_formated       = number_format( strlen( $value ), 0, ',', '.' );
+            $maxlength_formated = number_format( $maxlength, 0, ',', '.' );
+            throw new Error( App\App::textInvalidatedMaxlength( $label, strlen( $value ), $maxlength_formated ) );
+        }
+
+        if ( !is_null( $options ) && !isset( $options[ $value ] ) )
+        {
+            if ( isset( $params[ 'option' ] ) )
+                throw new Error( $params[ 'option' ] );
+            
+            throw new Error( App\App::textInvalidatedOption( $label ) );
+        }
+
+        if ( !is_null( $range ) && ( $value < $range[0] || $value > $range[1] ) )
+            throw new Error( App\App::textInvalidatedRange( $label, $range[0], $range[1] ) );
     }
 
     /**

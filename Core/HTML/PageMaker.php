@@ -20,37 +20,47 @@ final class PageMaker
     /**
      * Rota da página.
      */
-    protected $route            = null;
+    protected $route                = null;
 
     /**
      * Ação da rota.
      */
-    protected $action           = null;
+    protected $action               = null;
 
     /**
      * Conteúdo da página.
      */
-    protected $html             = null;
+    protected $html                 = null;
 
     /**
      * Documentador ativado.
      */
-    protected $documentator     = false;
+    protected $documentator         = false;
 
     /**
      * Configurações da página.
      */
-    protected $config           = [];
+    protected $config               = [];
 
     /**
      * Dependências da view.
      */
-    protected $depends          = [];
+    protected $depends              = [];
 
     /**
      * Permissões utilizadas na página.
      */
-    protected $permissions      = [];
+    protected $permissions          = [];
+
+    /**
+     * Permissões utilizadas na página.
+     */
+    protected $webcomponents        = [];
+
+    /**
+     * Permissões utilizadas na página.
+     */
+    protected $usedWebcomponents    = [];
 
     /**
      * Inicia uma instância do objeto página.
@@ -88,14 +98,10 @@ final class PageMaker
     public function makePage()
     {
         if ( !file_exists( DIR_LAYOUTS ) )
-        {
             Dir::makeDir( DIR_LAYOUTS );
-        }
 
         if ( !file_exists( DIR_VIEWS ) )
-        {
             Dir::makeDir( DIR_VIEWS );
-        }
 
         $view_path          = $this->getViewPath();
         $view_name          = substr( $view_path, strlen( DIR_BASE ) + 1 );
@@ -299,52 +305,53 @@ final class PageMaker
      */
     public function webComponents()
     {
-        $components    = new \FileSystemIterator( DIR_TEMPLATES . '/html/webcomponents' );
+        static $parsed  = false;
 
-        echo '<script>' . N . '<!-- COMPONENTS -->' . N;
-        foreach ( $components as $item )
+        if ( $parsed )
+            return;
+
+        $parsed         = true;
+        $path           = new \FileSystemIterator( DIR_TEMPLATES . '/html/webcomponents' );
+        $wc_content     = [];
+        $base_path      = DIR_BASE . '/templates/html/webcomponents/';
+
+        foreach ( $path as $item )
+            $this->discoverWebComponents( $base_path, $item );
+
+        foreach ( $this->webcomponents as $tag => $wc_path )
         {
-            $this->parsePathComponents( $item );
+            $content        = $this->declareUsedComponents( $base_path, $tag, $wc_path, $this->html );
+
+            if ( !$content )
+                continue;
+
+            $wc_content[]   = $content;
         }
-        echo '</script>';
+
+        sort( $this->usedWebcomponents );
+        $used_wc        = implode( "\n   ", $this->usedWebcomponents );
+        $wc_content     = "/*\nUSED WEB COMPONENTS:\n   {$used_wc}\n*/" . N . N . implode( N, $wc_content );
+        $wc_file        = DIR_UI . '/pages/' . $this->route . '/webcomponents.js';
+        $wc_link        = basename( $this->route ) . '/webcomponents.js';
+        file_put_contents( $wc_file, $wc_content );
+
+        echo "<script src='$wc_link'></script>";
     }
 
     /**
-     * Imprime o script com os WebComponents.
+     * Descobre os componentes da aplicação.
      */
-    protected function parsePathComponents( $item )
+    protected function discoverWebComponents( $base_path, $item )
     {
-        $base_len = strlen( DIR_BASE ) + 1;
+        $base_len = strlen( $base_path );
 
         if ( $item->isFile() && $item->getFilename() == 'component.js' )
         {
-            $pathname   = str_replace( '\\', '/', $item->getPathName() );
-            $wc_path    = dirname( $pathname );
-            $tag        = basename( $wc_path );
-            $js_name    = preg_replace_callback( '@-(.)@', function( $matches ) {
-                return strtoupper( $matches[ 1 ] );
-            }, $tag );
-
-            if ( !preg_match( "@<$tag@", $this->html ) )
-                return;
-
-            $file_component     = $wc_path . '/component.js';
-            $file_template      = $wc_path . '/template.html';
-
-            $wc_content         = trim( file_get_contents( $file_component ) );
-
-            $depend_component   = substr( $file_component, $base_len );
-            $this->depends[ $depend_component ] = filemtime( $file_component );
-
-            if ( file_exists( $file_template ) )
-            {
-                $template       = N . trim( file_get_contents( $file_template ) );
-                $wc_content     = str_replace( '{$template}', $template, $wc_content );
-                $depend_template                    = substr( $file_template, $base_len );
-                $this->depends[ $depend_template ]  = filemtime( $file_template );
-            }
-
-            echo \App\App::registerWebComponent( $tag, $js_name, $wc_content ) . N;
+            $pathname           = str_replace( '\\', '/', $item->getPathName() );
+            $wc_path            = dirname( $pathname );
+            $tag                = basename( $wc_path );
+            
+            $this->webcomponents[ $tag ] = substr( $wc_path, $base_len );
         }
 
         if ( !$item->isDir() )
@@ -353,8 +360,54 @@ final class PageMaker
         $path   = new \FileSystemIterator( $item->getPathName() );
 
         foreach ( $path as $item )
+            $this->discoverWebComponents( $base_path, $path );
+    }
+
+    /**
+     * Obtém o conteúdo dos componentes invocados na página.
+     */
+    protected function declareUsedComponents( $base_path, $tag, $wc_path, $source, $deep = false )
+    {
+        $file_component = $base_path . $wc_path . '/component.js';
+        $file_template  = $base_path . $wc_path . '/template.html';
+        $base_len       = strlen( DIR_BASE ) + 1;
+        $depend_js      = substr( $file_component, $base_len );
+        $depend_html    = substr( $file_template, $base_len );
+        $response       = [];
+
+        if ( !preg_match( "@<$tag@", $source ) || in_array( $tag, $this->usedWebcomponents ) )
+            return;
+
+        $wc_content     = trim( file_get_contents( $file_component ) );
+        $this->depends[ $depend_js ]        = filemtime( $file_component );
+        $this->usedWebcomponents[]          = $tag;
+
+        if ( file_exists( $file_template ) )
         {
-            $this->parsePathComponents( $path );
+            $template                       = N . trim( file_get_contents( $file_template ) );
+            $wc_content                     = str_replace( '{$template}', $template, $wc_content );
+            $this->depends[ $depend_html ]  = filemtime( $file_template );
         }
+
+        if ( !$deep )
+        {
+            foreach ( $this->webcomponents as $tag_deep => $wc_path_deep )
+            {
+                $content    = $this->declareUsedComponents( $base_path, $tag_deep, $wc_path_deep, $wc_content, true );
+
+                if ( !$content )
+                    continue;
+
+                $response[] = $content;
+            }
+        }
+
+        $js_name        = preg_replace_callback( '@-(.)@', function( $matches ) {
+            return strtoupper( $matches[ 1 ] );
+        }, $tag );
+
+        $response[] = \App\App::registerWebComponent( $tag, $js_name, $wc_content ) . N;
+        
+        return implode( N, $response );
     }
 }
