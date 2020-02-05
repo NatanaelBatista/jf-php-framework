@@ -1,4 +1,5 @@
-#JF Framework PHP
+JF Framework PHP
+===
 
 O JF Framework é um framework PHP HMVC desenhado para ser simples e poderoso, defendendo as seguintes premissas:
 
