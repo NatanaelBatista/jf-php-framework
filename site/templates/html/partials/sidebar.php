@@ -30,7 +30,7 @@
           </v-list-tile>
         </template>
         <?php foreach ( $module->pages as $pg_name => $page ) { ?>
-          <v-list-tile href="<?= URL_PAGES . '/' . $mod_name . '/' . $pg_name . '.html' ?>">
+          <v-list-tile href="<?= URL_PAGES . "/$mod_name/$pg_name.html" ?>">
             <v-list-tile-content class="primary--text"><?= $page ?></v-list-tile-content>
           </v-list-tile>
         <?php } ?>

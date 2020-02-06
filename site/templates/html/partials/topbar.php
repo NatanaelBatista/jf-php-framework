@@ -13,7 +13,7 @@
       class   = "clickable"
       slot    = "activator"
     >
-      <?= $this->vars->app_name ?> - <?= $this->data->module ?>
+      <?= $this->data->app_name ?> - <?= $this->data->module ?>
       <span class="hidden-sm-and-down">
         |
         <small class="light-blue--text text--lighten-2"><?= $this->data->title ?></small>
