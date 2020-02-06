@@ -1,0 +1,21 @@
+{
+    "name": "marciojalber/jf",
+    "description": "Framework para aplicações web simples, prático e robusto",
+    "homepage": "https://github.com/marciojalber",
+    "type": "project",
+    "keywords": ["framework","php","fdd"],
+    "authors": [
+        {
+            "name": "Márdcio Jalber",
+            "email": "marciojalber@gmail.com",
+            "homepage": "https://www.linkedin.com/in/marciojalber/",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "support@example.org",
+    },
+    "require": {
+        "php": "^7.0",
+    }
+}
