@@ -59,4 +59,4 @@ Está construído sob a arquitetura mais moderna da atualidade - FDD (*Feature-d
 Documentação
 ---
 
-A documentação pode ser encontrada na pasta [guide](https://github.com/marciojalber/jf/tree/master/guide) do próprio framework. Boa leitura.
+A documentação pode ser encontrada na pasta [guide](guide) do próprio framework. Boa leitura.
