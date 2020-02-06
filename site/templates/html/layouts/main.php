@@ -19,11 +19,11 @@
     <link href="<?= $this->ui( 'js/manifest.json' ) ?>" rel="manifest" />
     <link href="<?= $this->ui( 'img/favicon.png' ) ?>" rel="shortcut" type='image/png' />
     <link href="<?= $this->ui( 'img/favicon.png' ) ?>" rel="shortcut icon" type='image/png' />
-    <link href="<?= $this->ui( 'vendors/vuetify/vuetify.min.css' ) ?>" rel="stylesheet" type="text/css" />
+    <link href="<?= $this->ui( 'vendors/vuetify/vuetify-2.2.8.min.css' ) ?>" rel="stylesheet" type="text/css" />
     <link href="<?= $this->ui( 'vendors/google/md/googlefonts.min.css' ) ?>" rel="stylesheet" type="text/css" />
     <?= $this->css( 'css/jf.css' ) ?>
     <script src="<?= $this->ui( 'vendors/vuejs/vue.min.js' ) ?>"></script>
-    <script src="<?= $this->ui( 'vendors/vuetify/vuetify.min.js' ) ?>"></script>
+    <script src="<?= $this->ui( 'vendors/vuetify/vuetify-2.2.8.min.js' ) ?>"></script>
   </head>
   <body>
     <div id="app">
