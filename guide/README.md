@@ -1,8 +1,8 @@
 Sobre a Documentação
 ===
 
-A documentação foi escrita na sintaxe markdown e pode ser consultada diretamente ou através do site da sua aplicação,
-através do endereço http://localhost/jf.
+A documentação foi escrita na sintaxe markdown e pode ser consultada diretamente ou através do site da sua aplicação.
+Se você seguiu a recomendação padrão de instalação do framework, o endereço web da documentação é http://localhost/jf.
 
 A documentação está organizada nos seguintes tópicos:
 
