@@ -1,6 +1,6 @@
 {
     "name": "marciojalber/jf",
-    "description": "Framework para aplicações web simples, prático e robusto",
+    "description": "Framework para criar aplicações web simples, prático e robusto",
     "homepage": "https://github.com/marciojalber",
     "type": "project",
     "keywords": ["framework","php","fdd"],
@@ -16,6 +16,6 @@
         "email": "support@example.org",
     },
     "require": {
-        "php": "^7.0",
+        "php": ">=7.0",
     }
 }
