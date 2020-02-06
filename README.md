@@ -21,17 +21,13 @@ Filosofias e premissas do framework
 
 Assim nasceu a necessidade de criar o framework que atendesse aos critérios acima mencionados. Ao longo do desenvolvimento, algumas sacadas foram sendo percebidas e implementadas, que o torna diferente de qualquer outro que você já conheceu:
 
-- não usamos MVC - onde ficam as regras de negócio, no controller ou no model? Nem em um nem em outro, ficam nas features.
-- não precisamos de controllers - as chamadas são feitas diretamente às features.
-- arquivos de artefatos relacionados devem ficar próximos (controller, domain e ).
-- arquivos dos modelos de dados próximos sua arquivos da funcionalidades
-
+- Menos camadas é mais simples e melhor pra manter
+- arquivos de artefatos relacionados devem ficar próximos.
 - os melhores padrões de projeto são os mais simples de entender.
 - o core do framework deve ser simples o suficiente para ser facilmente entendido por quem não o escreveu.
 - PHP cuida do backend e HTML, CSS e Javascript cuidam do frontend.
 - Coisas óbvias devem ser automatizadas.
 - Heranças e traits funcionam melhor que interfaces.
-
 
 Alguns dos recursos mais interessantes que tornam o desenvolvimento com JF Framework uma experiência única:
 ---
