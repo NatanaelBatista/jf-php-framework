@@ -1,23 +1,62 @@
-#JF Framework PHP
+JF Framework PHP
+================
 
-O JF Framework é um framework PHP HMVC desenhado para ser simples e poderoso, defendendo as seguintes premissas:
+O JF Framework é um framework para apaixonados por programação em PHP, combinando simplicidade, praticidade, produtividade e robustez. Foi construído para programadores intensos em suas crenças e profundos em suas convicções.
 
-##Estrutura de projeto simples de montar e fácil de entender.
-Fácil e rápido de aprender sua abordagem e sua utilização.
-Aplicações de alto desempenho.
-Exigência mínima de codificação.
-Exigência mínima de uso de bibliotecas externas.
+Motivação
+---------
 
-##Arquitetura
-O framework adota a arquitetura HMVC (Hierarquical Model View Controller) enriquecida - ou seja, tem camadas básicas na forma de multinível e ainda possui outras 3 camadas:
+Em 2015, precisei definir o framework oficial para os próxmos projetos da equipe. A equipe era pequena (3 pessoas ao todo) e a rotatividade dos estagiários era alta. Estabelecemos alguns critérios de seleção do framework:
+- **fácil e rápido pra instalar** - não pode depender do composer, um simples dowload resolve.
+- **fácil e rápido pra configurar** - pouca configuração para começar a codificar.
+- **fácil e rápido de aprender** - utilizar poucos componentes e menos linhas de código.
+- **fácil de manter** - os artefatos devem estar bem distribuídos e ser fáceis de modificar.
+- **todo tipo de aplicação** - simples o suficiente para aplicações pequenas, robusto e flexível o bastante para grandes aplicações.
+- **documentação suficiente** - a documentação deve ser suficiente para aprender, sem precisar recorrer à comunidade.
 
-Model - Camada modelo de dados (acesso às tabelas de dados).
-View - Camada de apresentação da aplicação.
-Controller - Camada de processamento das requisições HTTP.
-Tem ainda outras duas camadas:
+Nenhum framework de mercado passou no crivo.
 
-Types - Camada onde estão definidos tipos de dados específicos da aplicação, para sanitização e validação automática de dados dos models.
-Helpers - Camada onde estão definidos componentes auxiliares da aplicação, para execução de tarefas compartilhadas.
+Alguns prinípios do framework
+-----------------------------
 
-##Documentação
-A documentação do framework pode ser encontrada na pasta guide. Boa leitura.
+Ao longo do desenvolvimento, algunss princípios foram estabelecidos para guiar o crescimento do framwork:
+
+- Menos camadas é mais simples e melhor pra manter.
+- arquivos de artefatos relacionados devem ficar próximos.
+- os melhores padrões de projeto são os mais simples de entender.
+- o core do framework deve ser simples o suficiente para ser facilmente entendido por quem não o escreveu.
+- PHP cuida do backend e HTML, CSS e Javascript cuidam do frontend.
+- Coisas óbvias devem ser automatizadas.
+- Heranças e traits funcionam melhor que interfaces.
+
+
+Codificar se tornou apaixonante
+-------------------------------
+
+Alguns dos recursos mais interessantes que tornam o desenvolvimento com JF Framework uma experiência única:
+
+- Rotas automáticas
+- Classe única por chamada HTTP
+- Classes individuais para cada regra de negócio
+- Automação na validação de dados informados pelo usuário
+- Montador de documentação automática
+- Montar templates de páginas complexas como um lego
+- WebComponents modularizado nativo
+- Micro ORM
+- Frontend portátil (se você copiar a pasta do frontend pra sua área de trabalho, as páginas funcionam)
+- Criação de páginas HTML estáticas
+- Interpretador inteligente de inputs (GET/POST/ARGS) e formatos de resposta das requisições (TEXT/PHP/JSON/XML/CSV/XLS/DOWNLOAD)
+
+Arquitetura
+-----------
+
+Está construído sob a arquitetura mais moderna da atualidade - FDD (*Feature-driven development*). Está distribuído em 3 camadas principais: Features, DTOs e Views (templates).
+
+- **Features** - Funcionalidades (C do MVC).
+- **DTOs** - Acesso a dados (M do MVC).
+- **Templates** - Montagem de páginas (V do MVC).
+
+Documentação
+------------
+
+A documentação pode ser encontrada na pasta [guide](guide) do próprio framework. Boa leitura.
