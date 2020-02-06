@@ -1,8 +1,10 @@
-# JF Framework PHP #
+JF Framework PHP
+================
 
 O JF Framework é um framework para apaixonados por programação em PHP, combinando simplicidade, praticidade, produtividade e robustez. Foi construído para programadores intensos em suas crenças e profundos em suas convicções.
 
-## Motivação
+Motivação
+---------
 
 Em 2015, precisei definir o framework oficial para os próxmos projetos da equipe. A equipe era pequena (3 pessoas ao todo) e a rotatividade dos estagiários era alta. Estabelecemos alguns critérios de seleção do framework:
 - **fácil e rápido pra instalar** - não pode depender do composer, um simples dowload resolve.
@@ -15,7 +17,7 @@ Em 2015, precisei definir o framework oficial para os próxmos projetos da equip
 Nenhum framework de mercado passou no crivo.
 
 Alguns prinípios do framework
----
+-----------------------------
 
 Ao longo do desenvolvimento, algunss princípios foram estabelecidos para guiar o crescimento do framwork:
 
@@ -29,7 +31,7 @@ Ao longo do desenvolvimento, algunss princípios foram estabelecidos para guiar 
 
 
 Codificar se tornou apaixonante
----
+-------------------------------
 
 Alguns dos recursos mais interessantes que tornam o desenvolvimento com JF Framework uma experiência única:
 
@@ -46,7 +48,7 @@ Alguns dos recursos mais interessantes que tornam o desenvolvimento com JF Frame
 - Interpretador inteligente de inputs (GET/POST/ARGS) e formatos de resposta das requisições (TEXT/PHP/JSON/XML/CSV/XLS/DOWNLOAD)
 
 Arquitetura
----
+-----------
 
 Está construído sob a arquitetura mais moderna da atualidade - FDD (*Feature-driven development*). Está distribuído em 3 camadas principais: Features, DTOs e Views (templates).
 
@@ -55,6 +57,6 @@ Está construído sob a arquitetura mais moderna da atualidade - FDD (*Feature-d
 - **Templates** - Montagem de páginas (V do MVC).
 
 Documentação
----
+------------
 
 A documentação pode ser encontrada na pasta [guide](guide) do próprio framework. Boa leitura.
