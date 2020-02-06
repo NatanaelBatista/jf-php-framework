@@ -16,12 +16,12 @@ Em 2015, precisei definir o framework oficial para os próxmos projetos da equip
 
 Nenhum framework de mercado passou no crivo.
 
-Filosofias e premissas do framework
+Alguns prinípios do framework
 ---
 
-Assim nasceu a necessidade de criar o framework que atendesse aos critérios acima mencionados. Ao longo do desenvolvimento, algumas sacadas foram sendo percebidas e implementadas, que o torna diferente de qualquer outro que você já conheceu:
+Ao longo do desenvolvimento, algunss princípios foram estabelecidos para guiar o crescimento do framwork:
 
-- Menos camadas é mais simples e melhor pra manter
+- Menos camadas é mais simples e melhor pra manter.
 - arquivos de artefatos relacionados devem ficar próximos.
 - os melhores padrões de projeto são os mais simples de entender.
 - o core do framework deve ser simples o suficiente para ser facilmente entendido por quem não o escreveu.
@@ -29,8 +29,11 @@ Assim nasceu a necessidade de criar o framework que atendesse aos critérios aci
 - Coisas óbvias devem ser automatizadas.
 - Heranças e traits funcionam melhor que interfaces.
 
-Alguns dos recursos mais interessantes que tornam o desenvolvimento com JF Framework uma experiência única:
+
+Codificar se tornou apaixonante
 ---
+
+Alguns dos recursos mais interessantes que tornam o desenvolvimento com JF Framework uma experiência única:
 
 - Rotas automáticas
 - Classe única por chamada HTTP
