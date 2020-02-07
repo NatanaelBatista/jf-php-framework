@@ -1,5 +1,10 @@
 JF Framework PHP
 ================
+[Build Status]
+[Total Downloads]
+[Latest Stable Version]
+[Latest Unstable Version]
+[License]
 
 O JF Framework é um framework para apaixonados por programação em PHP, combinando simplicidade, praticidade, produtividade e robustez. Foi construído para programadores intensos em suas crenças e profundos em suas convicções.
 
