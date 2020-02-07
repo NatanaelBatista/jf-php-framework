@@ -1,19 +1,21 @@
 {
     "name": "marciojalber/jf",
     "description": "Framework para criar aplicações web simples, prático e robusto",
-    "homepage": "https://github.com/marciojalber",
-    "type": "project",
+    "homepage": "https://github.com/marciojalber/jf",
+    "version": "0.0.1",
+    "license": "MIT",
+    "type": "package",
     "keywords": ["framework","php","fdd"],
     "authors": [
         {
             "name": "Márcio Jalber",
             "email": "marciojalber@gmail.com",
-            "homepage": "https://www.linkedin.com/in/marciojalber/",
+            "homepage": "https://www.linkedin.com/in/marciojalber",
             "role": "Developer"
         }
     ],
     "support": {
-        "email": "marciojalber@gmail.com",
+        "email": "marciojalber@gmail.com"
     },
     "require": {
         "php": ">=7.0",
