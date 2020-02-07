@@ -3,6 +3,7 @@
     "description": "Framework para criar aplicações web simples, prático e robusto",
     "homepage": "https://github.com/marciojalber/jf",
     "version": "0.0.2",
+    "minimum-stability": "master",
     "license": "MIT",
     "type": "package",
     "keywords": ["framework","php","fdd"],
