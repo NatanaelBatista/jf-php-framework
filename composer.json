@@ -5,7 +5,7 @@
     "version": "0.0.2",
     "minimum-stability": "0.0.1",
     "license": "MIT",
-    "type": "package",
+    "type": "project",
     "keywords": ["framework","php","fdd"],
     "authors": [
         {
