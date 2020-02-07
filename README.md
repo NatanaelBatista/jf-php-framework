@@ -1,10 +1,5 @@
 JF Framework PHP
 ================
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://packagist.org/packages/marciojalber/jf-php)
-[![Total Downloads](https://poser.pugx.org/laravel/lumen-framework/d/total.svg)](https://packagist.org/packages/marciojalber/jf-php)
-[![Latest Stable Version](https://poser.pugx.org/laravel/lumen-framework/v/stable.svg)](https://packagist.org/packages/marciojalber/jf-php)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/lumen-framework/v/unstable.svg)](https://packagist.org/packages/marciojalber/jf-php)
-[![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://packagist.org/packages/marciojalber/jf-php)
 
 O JF Framework é um framework para apaixonados por programação em PHP, combinando simplicidade, praticidade, produtividade e robustez. Foi construído para programadores intensos em suas crenças e profundos em suas convicções.
 
