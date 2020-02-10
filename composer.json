@@ -1,9 +1,9 @@
 {
     "name": "marciojalber/jf-php-framework",
     "description": "Framework para criar aplicações web simples, prático e robusto",
-    "homepage": "https://github.com/marciojalber/jf",
-    "version": "dev",
-    "minimum-stability": "dev",
+    "homepage": "https://github.com/marciojalber/jf-php-framework",
+    "version": "v0.1",
+    "minimum-stability": "v0.1",
     "license": "MIT",
     "type": "project",
     "keywords": ["framework","php","fdd"],
