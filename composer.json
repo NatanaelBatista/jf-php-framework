@@ -1,5 +1,5 @@
 {
-    "name": "marciojalber/jf-php-framework",
+    "name": "marciojalber/jf",
     "description": "Framework para criar aplicações web simples, prático e robusto",
     "homepage": "https://github.com/marciojalber/jf-php-framework",
     "version": "dev",
@@ -7,9 +7,6 @@
     "license": "MIT",
     "type": "project",
     "keywords": ["framework","php"],
-    "config": {
-        "vendor-dir": "."
-    },
     "authors": [
         {
             "name": "Márcio Jalber Martins Ferreira",

@@ -56,6 +56,11 @@ Está construído sob a arquitetura mais moderna da atualidade - FDD (*Feature-d
 - **DTOs** - Acesso a dados (M do MVC).
 - **Templates** - Montagem de páginas (V do MVC).
 
+Instalação
+----------
+
+composer create-project marciojalber/jf-php-app
+
 Documentação
 ------------
 
