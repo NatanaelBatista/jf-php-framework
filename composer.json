@@ -7,6 +7,9 @@
     "license": "MIT",
     "type": "project",
     "keywords": ["framework","php","fdd"],
+    "config": {
+        "vendor-dir": "."
+    },
     "authors": [
         {
             "name": "Márcio Jalber Martins Ferreira",
