@@ -6,7 +6,7 @@
     "minimum-stability": "v0.1",
     "license": "MIT",
     "type": "project",
-    "keywords": ["framework","php","fdd"],
+    "keywords": ["framework","php"],
     "config": {
         "vendor-dir": "."
     },
