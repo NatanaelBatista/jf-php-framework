@@ -195,21 +195,26 @@ final class PageMaker
     }
 
     /**
-     * Inclue um script marcando o tempo de modificação do arquivo,
-     * para forçar atualização pelo navegador do cliente.
+     * Inclue um link para um arquivo público.
      */
     public function ui( $filepath = '' )
     {
         if ( JFTOOL )
-        {
             return '../ui/' . $filepath;
-        }
 
         $route      = explode( '/', Router::get( 'route' ) );
         $num_route  = count( $route );
         $server     = $_SERVER[ 'SERVER_NAME' ];
         
         return str_repeat( '../', $num_route ) . $filepath;
+    }
+
+    /**
+     * Inclue um link para uma página.
+     */
+    public function page( $filepath = '' )
+    {
+        return $this->ui( $filepath . '/' );
     }
 
     /**
@@ -328,10 +333,17 @@ final class PageMaker
             $wc_content[]   = $content;
         }
 
+        if ( !$this->usedWebcomponents )
+            return;
+        
         sort( $this->usedWebcomponents );
         $used_wc        = implode( "\n   ", $this->usedWebcomponents );
         $wc_content     = "/*\nUSED WEB COMPONENTS:\n   {$used_wc}\n*/" . N . N . implode( N, $wc_content );
-        $wc_file        = DIR_UI . '/pages/' . $this->route . '/webcomponents.js';
+        $wc_path        = DIR_UI . '/pages/' . $this->route;
+
+        Dir::makeDir( $wc_path );
+        
+        $wc_file        = $wc_path . '/webcomponents.js';
         $wc_link        = basename( $this->route ) . '/webcomponents.js';
         file_put_contents( $wc_file, $wc_content );
 
