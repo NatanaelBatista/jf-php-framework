@@ -331,9 +331,7 @@ class DB
         $record = $this->stmt->fetch();
 
         if ( !$record )
-        {
             return null;
-        }
 
         if ( is_string( $fetch ) && isset( $opts[ 'class_start' ] ) )
         {
@@ -389,14 +387,10 @@ class DB
             $val_index = $i;
 
             if ( $index && is_array( $record ) )
-            {
-                $val_index              = $record[ $index ];
-            }
+                $val_index = $record[ $index ];
 
             if ( $index && is_object( $record ) )
-            {
-                $val_index              = $record->$index;
-            }
+                $val_index = $record->$index;
 
             $response[ $val_index ]   = $record;
         }

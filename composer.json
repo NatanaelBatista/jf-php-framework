@@ -19,6 +19,7 @@
         "email": "marciojalber@gmail.com"
     },
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.0",
+        "erusev/parsedown": "^2.0"
     }
 }

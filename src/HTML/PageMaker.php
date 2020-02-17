@@ -63,6 +63,11 @@ final class PageMaker
     protected $usedWebcomponents    = [];
 
     /**
+     * Permissões utilizadas na página.
+     */
+    protected $wcToken              = null;
+
+    /**
      * Inicia uma instância do objeto página.
      */
     public function __construct( $route_content, $documentator = false )
@@ -145,6 +150,8 @@ final class PageMaker
             $this->html     = ob_get_clean();
         }
         
+        $this->parseWebComponents();
+
         $response           = [
             'depends'       => $this->depends,
             'permissions'   => $this->permissions,
@@ -310,9 +317,19 @@ final class PageMaker
      */
     public function webComponents()
     {
-        static $parsed  = false;
+        if ( $this->wcToken )
+            return;
 
-        if ( $parsed )
+        $this->wcToken  = uniqid( null, true );
+        echo "{{wc_$this->wcToken}}";
+    }
+
+    /**
+     * Imprime o script com os WebComponents.
+     */
+    protected function parseWebComponents()
+    {
+        if ( !$this->wcToken )
             return;
 
         $parsed         = true;
@@ -347,7 +364,7 @@ final class PageMaker
         $wc_link        = basename( $this->route ) . '/webcomponents.js';
         file_put_contents( $wc_file, $wc_content );
 
-        echo "<script src='$wc_link'></script>";
+        $this->html     = str_replace( "{{wc_$this->wcToken}}", "<script src='$wc_link'></script>", $this->html );
     }
 
     /**

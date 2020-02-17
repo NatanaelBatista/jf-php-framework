@@ -42,6 +42,8 @@ trait ActiveRecord_Write
         if ( $id_record )
             return static::find( $id_record );
 
+        return;
+
         self::checkConflit( $values );
 
         return $values[ static::primaryKey() ];
@@ -67,16 +69,12 @@ trait ActiveRecord_Write
         }
 
         if ( !$check_conflict )
-        {
             return;
-        }
 
         $has_conflit    = $sql->one();
 
         if ( $has_conflit )
-        {
             throw new ErrorException( 'Tentativa de inclusão de registro duplicado!' );
-        }
     }
 
     /**
@@ -88,22 +86,16 @@ trait ActiveRecord_Write
         $record = static::find( $id, $opts );
 
         if ( !empty( $opts[ 'get_sql' ] ) )
-        {
             return $record;
-        }
 
         if ( !$record )
-        {
             return null;
-        }
 
         // Aplica as regras de validação
         $record->set( $data );
 
         if ( !$record->modified() )
-        {
             return 0;
-        }
 
         // Tenta atualizar o registro e retorna o resultado
         $id_name    = static::primaryKey();
@@ -127,9 +119,7 @@ trait ActiveRecord_Write
         $is_new_record      = in_array( $this->status, $new_records_status );
         
         if ( $is_new_record )
-        {
             return $this->add( $opts );
-        }
 
         $id_name        = static::primaryKey();
         $unsafe         = true;
@@ -141,14 +131,10 @@ trait ActiveRecord_Write
             ->update( $unsafe );
 
         if ( !empty( $opts[ 'get_sql' ] ) )
-        {
             return $updated;
-        }
 
         if ( $updated )
-        {
             $this->saved_values = array();
-        }
 
         return $updated;
     }
@@ -173,9 +159,7 @@ trait ActiveRecord_Write
     {
         // Certifica que o status do registro permite a atualização
         if ( $this->status === 'created' )
-        {
             throw new ErrorException( 'O registro ainda não foi salvo na tabela!' );
-        }
 
         if ( $this->status === 'deleted' )
         {
