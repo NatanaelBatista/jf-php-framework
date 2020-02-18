@@ -2,8 +2,7 @@
 
 namespace JF\HTTP;
 
-use JF\Exceptions\InfoException;
-use JF\Exceptions\ErrorException;
+use JF\Exceptions\ErrorException as Error;
 
 /**
  * Classe que manipula requisições HTTP.
@@ -27,22 +26,16 @@ class API
         $feature    = "Features\\{$feature}\Feature";
 
         if ( !class_exists( $feature ) )
-        {
             return;
-        }
         
         if ( !is_subclass_of( $feature, 'JF\\Domain\\Feature') )
-        {
             return;
-        }
 
         $uses       = class_uses( $feature );
         $traits     = [ 'JF\\HTTP\\HTTP_Service_Trait', 'JF\\HTTP\\API_Trait' ];
 
         if ( !array_intersect( $traits, $uses ) )
-        {
             return;
-        }
 
         $method     = $_SERVER[ 'REQUEST_METHOD' ];
         $methods    = $feature::acceptHTTPMethods();
@@ -56,8 +49,8 @@ class API
 
         if ( !in_array( $method, $methods ) )
         {
-            $msg        = "Método $method não permitido para a chamada do serviço {$request->r}.";
-            throw new ErrorException( $msg );
+            $msg        = "Método $method não permitido para a chamada do serviço \"{$route}\".";
+            throw new Error( $msg );
         }
 
         return (object) [

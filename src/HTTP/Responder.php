@@ -89,9 +89,7 @@ class Responder
     public static function parseInputs( $ctrl_obj, $controller_class )
     {
         if ( empty( $controller_class::$expect ) )
-        {
             return;
-        }
 
         $method             = $controller_class::$post
             ? 'post'
@@ -165,6 +163,7 @@ class Responder
     {
         try
         {
+            $instance       = null;
             $controller     = (object) ['charset' => 'utf-8'];
             $api_request    = API::parse();
 
@@ -207,7 +206,7 @@ class Responder
                 'text'  => $except->getMessage(),
             ];
             self::sendSpecificResponse( $response, $controller );
-            $instance->after();
+            $instance && $instance->after();
             exit();
         }
         catch ( WarningException $except )
@@ -217,7 +216,7 @@ class Responder
                 'text'  => $except->getMessage(),
             ];
             self::sendSpecificResponse( $response, $controller );
-            $instance->after();
+            $instance && $instance->after();
             exit();
         }
         catch ( ErrorException $except )
@@ -227,7 +226,7 @@ class Responder
                 'text'  => $except->getMessage(),
             ];
             self::sendSpecificResponse( $response, $controller );
-            $instance->after();
+            $instance && $instance->after();
             exit();
         }
     }
