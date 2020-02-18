@@ -244,9 +244,8 @@ class Input
                 $var        = $_POST;
                 $post_json  = json_decode( file_get_contents( 'php://input' ), true );
         
-                if ( $post_json ) {
+                if ( $post_json )
                     $var    = array_merge( $var, $post_json );
-                }
         
                 break;
             
