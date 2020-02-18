@@ -189,10 +189,15 @@ class Responder
                     ? $response
                     : [];
 
-                $response   = array_merge( [
-                    'type'  => 'success',
-                    'text'  => $instance->msg(),
-                ], $response );
+                $response_type      = Router::get( 'response_type' );
+
+                if ( !in_array( $response_type, ['download', 'pdf'] ) )
+                {
+                    $response   = array_merge( [
+                        'type'  => 'success',
+                        'text'  => $instance->msg(),
+                    ], $response );
+                }
 
                 self::sendSpecificResponse( $response, $controller );
                 $instance->after();
