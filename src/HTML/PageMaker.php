@@ -221,7 +221,7 @@ final class PageMaker
      */
     public function page( $filepath = '' )
     {
-        return $this->ui( $filepath . '/' );
+        return $this->ui( 'pages/' . $filepath );
     }
 
     /**
