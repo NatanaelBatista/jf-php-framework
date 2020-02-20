@@ -9,7 +9,7 @@ return [
         'Não foi encontrado o campo "%s" para indexar o resultado da consulta.',
 
     'invalid_schema' =>
-        'Não foi possível conectar com o banco-de-dados usando o esquema %s: %s.',
+        'Não foi possível conectar no banco-de-dados do esquema "%s" no ambiente "%s": %s.',
 
     'missing_schema_config' =>
         'Esquema de conexão "%s" não definido.',

@@ -3,7 +3,7 @@
 namespace JF\DB;
 
 use JF\Config;
-use JF\Exceptions\ErrorException;
+use JF\Exceptions\ErrorException as Error;
 use JF\Messager;
 
 /**
@@ -96,7 +96,7 @@ class DB
                 return null;
             }
 
-            throw new ErrorException( $msg );
+            throw new Error( $msg );
         }
 
         $instance->config       = $config;
@@ -117,16 +117,17 @@ class DB
             );
             $pdo        = new \PDO( $dsn, $username, $password, $options );
         }
-        catch ( ErrorException $e )
+        catch ( \Exception $e )
         {
             $error      = $e->getMessage();
             $msg        = Messager::get(
                 'db',
                 'invalid_schema',
                 $schema_name,
+                ENV,
                 $error
             );
-            throw new ErrorException( $msg );
+            throw new Error( $msg );
         }
         
         $instance->pdo                      = $pdo;
@@ -217,7 +218,7 @@ class DB
             $hostname   = $this->config->hostname;
             $error      = $error[ 2 ] . " (host {$hostname}) - {$sql}";
 
-            throw new ErrorException( $error );
+            throw new Error( $error );
         }
         
         // Guarda informações locais e retorna o objeto
@@ -247,7 +248,7 @@ class DB
         if ( is_resource( $value ) )
         {
             $msg    = Messager::get( 'db', 'when_using_resource_as_data_query' );
-            throw new ErrorException( $msg );
+            throw new Error( $msg );
         }
 
         $new_keys   = array();
@@ -373,7 +374,7 @@ class DB
         if ( $has_index && !in_array( $index, $indexes ) )
         {
             $msg        = Messager::get( 'db', 'missing_informed_index', $index );
-            throw new ErrorException( $msg );
+            throw new Error( $msg );
         }
         
         foreach ( $result as $i => $record )
