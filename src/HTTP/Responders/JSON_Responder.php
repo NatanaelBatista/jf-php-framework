@@ -19,7 +19,7 @@ class JSON_Responder extends Responder
      */
     public static function send( $data, $controller_obj )
     {
-        self::setHeader( 'json', $controller_obj->charset );
+        self::setHeader( 'json', $controller_obj->charset() );
         echo json_encode( $data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
     }
 

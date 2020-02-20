@@ -164,7 +164,6 @@ class Responder
         try
         {
             $instance       = null;
-            $controller     = (object) ['charset' => 'utf-8'];
             $api_request    = API::parse();
 
             if ( $api_request )
@@ -191,7 +190,7 @@ class Responder
 
                 $response_type      = Router::get( 'response_type' );
 
-                if ( !in_array( $response_type, ['download', 'pdf'] ) )
+                if ( in_array( $response_type, ['json', 'php', 'txt'] ) )
                 {
                     $response   = array_merge( [
                         'type'  => 'success',
@@ -199,7 +198,7 @@ class Responder
                     ], $response );
                 }
 
-                self::sendSpecificResponse( $response, $controller );
+                self::sendSpecificResponse( $response, $instance );
                 $instance->after();
                 exit();
             }

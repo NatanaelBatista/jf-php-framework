@@ -23,7 +23,7 @@ class CSV_Responder extends Responder
         $parts          = explode( '\\', get_class( $controller_obj ) );
         array_pop( $parts );
         $control_name   = array_pop( $parts );
-        self::setHeader( 'csv', $controller_obj->charset );
+        self::setHeader( 'csv', $controller_obj->charset() );
         $filename       = isset( $controller_obj->filename )
             ? $controller_obj->filename . '.csv'
             : $control_name . '.csv';
@@ -33,9 +33,9 @@ class CSV_Responder extends Responder
             : $data;
         $labels         = array_keys( current( $data ) );
 
-        foreach ( $controller_obj->csvMap as $old_label => $new_label )
+        foreach ( $controller_obj->csvMap() as $old_label => $new_label )
         {
-            unset( $controller_obj->csvMap[ $old_label ] );
+            unset( $controller_obj->csvMap()[ $old_label ] );
 
             $pos_label = array_search( $old_label, $labels );
             
@@ -53,16 +53,16 @@ class CSV_Responder extends Responder
         
         $file->fputcsv(
             $labels,
-            $controller_obj->separator,
-            $controller_obj->enclosure
+            $controller_obj->separator(),
+            $controller_obj->enclosure()
         );
 
         foreach ( $data as $row )
         {
             $file->fputcsv(
                 $row,
-                $controller_obj->separator,
-                $controller_obj->enclosure
+                $controller_obj->separator(),
+                $controller_obj->enclosure()
             );
         }
 

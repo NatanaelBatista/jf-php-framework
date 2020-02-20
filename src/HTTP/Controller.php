@@ -187,6 +187,38 @@ class Controller
     }
     
     /**
+     * Retorna o charset do controlador.
+     */
+    public function charset()
+    {
+        return $this->charset;
+    }
+    
+    /**
+     * Retorna o separador de campos nas respostas em CSV.
+     */
+    public function separator()
+    {
+        return $this->separator;
+    }
+    
+    /**
+     * Retorna o encapsulador dos campos nas respostas em CSV.
+     */
+    public function enclosure()
+    {
+        return $this->enclosure;
+    }
+    
+    /**
+     * Retorna o mapeamento dos campos para respostas em CSV.
+     */
+    public function csvMap()
+    {
+        return $this->csvMap;
+    }
+    
+    /**
      * Executa a requisição e envia a resposta ou exceção lançada.
      */
     public function wrapper( callable $fn )
