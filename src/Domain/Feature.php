@@ -170,30 +170,22 @@ class Feature
         foreach ( $props as $prop )
         {
             if ( !$prop->isPublic() || $prop->isStatic() )
-            {
                 continue;
-            }
 
             $comment    = $prop->getDocComment();
             $tags       = DocBlockParser::parse( $comment )->getTags();
 
             if ( empty( $tags[ 'entity' ] ) )
-            {
                 continue;
-            }
             
             $entities[] = $prop->name;
         }
 
         foreach ( $entities as $entity )
-        {
             $this->$entity->validate();
-        }
 
         foreach ( $this->_steps as $step )
-        {
             $this->$step();
-        }
 
         return $this->execution();
     }

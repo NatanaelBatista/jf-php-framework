@@ -32,9 +32,7 @@ final class ErrorHandler
     public static function shutdown()
     {
         if ( !$error = error_get_last() )
-        {
             return;
-        }
         
         $error[ 'type' ] = 'FATAL';
         Log::register( $error, 'error' );
@@ -57,9 +55,7 @@ final class ErrorHandler
         Log::register( $error, 'error' );
 
         if ( ENV_DEV )
-        {
             Error_Responder::send( $error );
-        }
     }
 
     /**

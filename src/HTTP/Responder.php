@@ -5,9 +5,9 @@ namespace JF\HTTP;
 use JF\Doc\ServiceDocParser;
 use JF\HTTP\Input;
 use JF\HTTP\API;
-use JF\Exceptions\InfoException;
-use JF\Exceptions\WarningException;
-use JF\Exceptions\ErrorException;
+use JF\Exceptions\InfoException as Info;
+use JF\Exceptions\WarningException as Warning;
+use JF\Exceptions\ErrorException as Error;
 use JF\Messager;
 use JF\Config;
 
@@ -138,16 +138,10 @@ class Responder
         $plain_format   = in_array( $type, $plain_formats );
 
         if ( $type === 'event' )
-        {
-            header( 'Cache-Control: no-cache' );
-            return;
-        }
+            return header( 'Cache-Control: no-cache' );
         
         if ( $plain_format )
-        {
-            return;
-            header( 'Cache-Control: public, must-revalidate, proxy-revalidate' );
-        }
+            return header( 'Cache-Control: public, must-revalidate, proxy-revalidate' );
         
         header( 'Cache-Control: public, must-revalidate, post-check=0, pre-check=0' );
         header( 'Content-Description: File Transfer' );
@@ -166,70 +160,70 @@ class Responder
             $instance       = null;
             $api_request    = API::parse();
 
-            if ( $api_request )
+            if ( !$api_request )
+                return;
+
+            $feature    = $api_request->feature;
+            $args       = $api_request->args;
+            $response   = [];
+            $instance   = new $feature();
+            $instance->before();
+            $fn         = function( $matches ) {
+                return strtoupper( $matches[ 1 ] );
+            };
+
+            foreach ( $args as $arg_name => $arg_value )
             {
-                $feature    = $api_request->feature;
-                $args       = $api_request->args;
-                $response   = [];
-                $instance   = new $feature();
-                $instance->before();
-                $fn         = function( $matches ) {
-                    return strtoupper( $matches[ 1 ] );
-                };
-
-                foreach ( $args as $arg_name => $arg_value )
-                {
-                    $arg_name = preg_replace_callback( '@-(.)@', $fn, $arg_name );
-                    $instance->set( $arg_name, $arg_value );
-                }
-
-                $response   = $instance->execute();
-                $response   = $response
-                    ? $response
-                    : [];
-
-                $response_type      = Router::get( 'response_type' );
-
-                if ( in_array( $response_type, ['json', 'php', 'txt'] ) )
-                {
-                    $response   = array_merge( [
-                        'type'  => 'success',
-                        'text'  => $instance->msg(),
-                    ], $response );
-                }
-
-                self::sendSpecificResponse( $response, $instance );
-                $instance->after();
-                exit();
+                $arg_name = preg_replace_callback( '@-(.)@', $fn, $arg_name );
+                $instance->set( $arg_name, $arg_value );
             }
+
+            $response   = $instance->execute();
+            $response   = $response
+                ? $response
+                : [];
+
+            $response_type      = Router::get( 'response_type' );
+
+            if ( in_array( $response_type, ['json', 'php', 'txt'] ) )
+            {
+                $response   = array_merge( [
+                    'type'  => 'success',
+                    'text'  => $instance->msg(),
+                ], $response );
+            }
+
+            self::sendSpecificResponse( $response, $instance );
+            $instance->after();
+            exit();
         }
-        catch ( InfoException $except )
+        catch ( Info $except )
         {
             $response   = [
                 'type'  => 'info',
                 'text'  => $except->getMessage(),
             ];
-            self::sendSpecificResponse( $response, $controller );
+            self::sendSpecificResponse( $response, $instance );
             $instance && $instance->after();
             exit();
         }
-        catch ( WarningException $except )
+        catch ( Warning $except )
         {
             $response   = [
                 'type'  => 'warning',
                 'text'  => $except->getMessage(),
             ];
-            self::sendSpecificResponse( $response, $controller );
+            self::sendSpecificResponse( $response, $instance );
             $instance && $instance->after();
             exit();
         }
-        catch ( ErrorException $except )
+        catch ( Error $except )
         {
             $response   = [
                 'type'  => 'error',
                 'text'  => $except->getMessage(),
             ];
-            self::sendSpecificResponse( $response, $controller );
+            self::sendSpecificResponse( $response, $instance );
             $instance && $instance->after();
             exit();
         }
