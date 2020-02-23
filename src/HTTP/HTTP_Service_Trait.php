@@ -12,7 +12,7 @@ trait HTTP_Service_Trait
      */
     public static function acceptHTTPMethods()
     {
-        return ['get', 'post'];
+        return [ 'GET', 'POST' ];
     }
     
     /**

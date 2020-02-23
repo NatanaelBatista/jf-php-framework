@@ -48,10 +48,9 @@ class API
         });
 
         if ( !in_array( $method, $methods ) )
-        {
-            $msg        = "Método $method não permitido para a chamada do serviço \"{$route}\".";
-            throw new Error( $msg );
-        }
+            throw new Error( "Método $method não permitido para a chamada do serviço \"{$route}\"." );
+
+        \JF\Domain\DocFeature::instance( $feature )->make();
 
         return (object) [
             'feature'   => $feature,

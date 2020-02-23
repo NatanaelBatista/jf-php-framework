@@ -357,7 +357,6 @@ final class PageMaker
         sort( $this->usedWebcomponents );
         $used_wc        = implode( "\n   ", $this->usedWebcomponents );
         $wc_content     = implode( N, $wc_content );
-        $wc_content     = \App\App::minifyJS( $wc_content );
         $wc_content     = "/*\nUSED WEB COMPONENTS:\n   {$used_wc}\n*/" . N . $wc_content;
         $wc_path        = DIR_UI . '/pages/' . $this->route;
 
@@ -410,7 +409,7 @@ final class PageMaker
         if ( !preg_match( "@<$tag@", $source ) || in_array( $tag, $this->usedWebcomponents ) )
             return;
 
-        $wc_content     = trim( file_get_contents( $file_component ) );
+        $wc_content     = file_get_contents( $file_component );
         $this->depends[ $depend_js ]        = filemtime( $file_component );
         $this->usedWebcomponents[]          = $tag;
 
@@ -439,7 +438,9 @@ final class PageMaker
             return strtoupper( $matches[ 1 ] );
         }, $tag );
 
-        $response[] = \App\App::registerWebComponent( $tag, $js_name, $wc_content ) . N;
+        $wc_content = \App\App::registerWebComponent( $tag, $js_name, $wc_content );
+        $wc_content = \App\App::minifyJS( $wc_content );
+        $response[] = $wc_content;
         
         return implode( N, $response );
     }

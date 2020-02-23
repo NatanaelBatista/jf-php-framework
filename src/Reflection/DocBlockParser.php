@@ -55,23 +55,17 @@ class DocBlockParser
     public function getDescription()
     {
         if ( $this->description !== null )
-        {
             return $this->description;
-        }
 
         $desc = [];
 
         foreach ( $this->lines as $line )
         {
             if ( !$line )
-            {
                 continue;
-            }
             
             if ( $this->lineStartTag( $line ) )
-            {
                 break;
-            }
             
             $desc[] = trim( $line );
         }
@@ -87,14 +81,10 @@ class DocBlockParser
     public function getTAGs( $map = [] )
     {
         if ( is_null( $this->tags ) )
-        {
             $this->parseTags();
-        }
 
         if ( !$map )
-        {
             return $this->tags;
-        }
 
         $tags = [];
 
@@ -132,16 +122,12 @@ class DocBlockParser
         foreach ( $this->lines as $line )
         {
             if ( !$line )
-            {
                 continue;
-            }
             
             if ( $this->lineStartTag( $line ) )
             {
                 if ( $this->tag )
-                {
                     $this->addTagContent();
-                }
 
                 $name       = preg_replace( '/^@|[\s\t].*/', '', $line );
                 $content    = preg_replace( '/^(@[\w\d-]+)?.*?[\s\t]*/', '', $line );
@@ -155,17 +141,13 @@ class DocBlockParser
             }
             
             if ( !$this->tag )
-            {
                 continue;
-            }
 
             $this->tag[ 'content' ]  .= ' ' . trim( $line );
         }
 
         if ( $this->tag )
-        {
             $this->addTagContent();
-        }
     }
 
     /**
@@ -177,9 +159,7 @@ class DocBlockParser
         $content                    = $this->tag[ 'content' ];
 
         if ( empty( $this->tags[ $name ] ) )
-        {
             $this->tags[ $name ]    = [];
-        }
 
         $this->tags[ $name ][]      = $content;
     }

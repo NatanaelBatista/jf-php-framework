@@ -15,9 +15,7 @@ final class Autoloader
         static $running = false;
 
         if ( $running )
-        {
             return;
-        }
         
         $running = true;
 
@@ -50,9 +48,7 @@ final class Autoloader
         $vendors = Config::get( 'vendors' );
         
         if ( !$vendors )
-        {
             return;
-        }
         
         // Itera sobre as bibliotecas cadastradas
         foreach ( $vendors as $class_vendor => $file_vendor )
@@ -60,9 +56,7 @@ final class Autoloader
             $found = self::tryLoadVendor( $class, $file_vendor, $class_vendor );
 
             if ( $found )
-            {
                 break;
-            }
         }
     }
 
@@ -74,9 +68,8 @@ final class Autoloader
         $class_vendor = str_replace( '.', '\\', $class_vendor );
         
         if ( !$file_vendor || $class_vendor !== $class )
-        {
             return false;
-        }
+
         $vendor_path    = DIR_VENDORS . '/' . $file_vendor;
         $auload_fns     = spl_autoload_functions();
         
@@ -88,9 +81,7 @@ final class Autoloader
         
         // Se achou a classe
         if ( class_exists( $class ) )
-        {
             return true;
-        }
         
         // Se a classe não estiver diretamente declarada no arquivo, chama novamente o autoload
         $new_auload_fns = spl_autoload_functions();
@@ -106,16 +97,6 @@ final class Autoloader
      */
     public static function getClassFilename( $classname )
     {
-        $ns_component   = 'WebComponents\\';
-
-        if ( strpos( $classname, $ns_component ) === 0 )
-        {
-            $classname  = str_replace( '\\', '/', $classname );
-            $class_path = DIR_TEMPLATES . '/html/' . $classname . '.php';
-
-            return $class_path;
-        }
-
         $namespaces     = Config::get( 'namespaces', [] );
         $new_classname  = $classname;
 
