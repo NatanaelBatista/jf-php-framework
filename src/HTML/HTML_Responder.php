@@ -38,7 +38,10 @@ class HTML_Responder
         }
 
         if ( !ParserHTML::isUpdated( $route ) )
+        {
+            ParserHTML::makeDoc( $route );
             ParserHTML::parseView( $route );
+        }
         
         http_response_code( 200 );
         header( 'Content-Type: text/html; charset=UTF-8' );
@@ -55,9 +58,7 @@ class HTML_Responder
     public static function testForJFToolAutoDoc()
     {
         if ( JFTOOL != 'appdoc' )
-        {
             return;
-        }
 
         $doc            = [];
 

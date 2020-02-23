@@ -13,6 +13,41 @@ trait PageMakerJS
      * Inclue um script marcando o tempo de modificação do arquivo,
      * para forçar atualização pelo navegador do cliente.
      */
+    public function minifyJS( $js_path, $use_route_path = false )
+    {
+        $real_path                  = $this->getRealPath( $js_path, $use_route_path );
+        $file_source                = $use_route_path
+            ? DIR_VIEWS . '/' . $real_path
+            : DIR_UI . '/' . $real_path;
+        $real_path                  = preg_replace( '@.js$@', '.min.js', $real_path );
+        $js_name                    = substr( $file_source, strlen( DIR_BASE ) + 1 );
+
+        $this->depends[ $js_name ]  = null;
+
+        if ( !file_exists( $file_source ) )
+        {
+            return ENV_DEV
+                ? "<!-- ARQUIVO DO SCRIPT NÃO ENCONTRADO: $file_source -->"
+                : '';
+        }
+
+        $ui_target                  = $use_route_path
+            ? 'pages/' . preg_replace( '@@', '', $real_path )
+            : $real_path;
+        
+        $content                    = \App\App::minifyJS( $file_source );
+        $this->copyJsFileToTarget( $use_route_path, $content, $ui_target, true );
+
+        $filetime                   = filemtime( $file_source );
+        $this->depends[ $js_name ]  = $filetime;
+
+        return $this->mountJsScript( $use_route_path, $ui_target, $filetime );
+    }
+
+    /**
+     * Inclue um script marcando o tempo de modificação do arquivo,
+     * para forçar atualização pelo navegador do cliente.
+     */
     public function js( $js_path, $use_route_path = false )
     {
         $real_path                  = $this->getRealPath( $js_path, $use_route_path );
@@ -46,27 +81,27 @@ trait PageMakerJS
     /**
      * Copia o arquivo da pasta das views para a pasta pública.
      */
-    private function copyJsFileToTarget( $use_route_path, $file_source, $ui_target )
+    private function copyJsFileToTarget( $use_route_path, $source, $ui_target, $source_is_content = false )
     {
-        if ( !$use_route_path )
-        {
+        if ( !$use_route_path && !$source_is_content )
             return;
-        }
 
         $filetarget     = DIR_UI . '/' . $ui_target;
         $target_path    = dirname( $filetarget );
         
         if ( !file_exists( $target_path ) )
-        {
             Dir::makeDir( $target_path );
-        }
+
+        if ( !$use_route_path )
+            return file_put_contents( $filetarget, $source );
         
         if ( file_exists( $filetarget ) )
-        {
             @unlink( $filetarget );
-        }
         
-        copy( $file_source, $filetarget );
+        if ( !$source_is_content )
+            return copy( $source, $filetarget );
+
+        file_put_contents( $filetarget, $source );
     }
 
     /**

@@ -163,4 +163,25 @@ final class ParserHTML
         $mixin_content  = "var permissionsRequired = $permissions;";
         file_put_contents( $file_mixin, $mixin_content );
     }
+
+    /**
+     * Cria a documentação da página.
+     */
+    public static function makeDoc( $route )
+    {
+        $content    = [];
+        $path_route = DIR_VIEWS . '/' . $route . '/';
+        $http_route = '/pages/ui/' . $route . '.html';
+        $content[]  = '#' . $http_route;
+        $content[]  = '';
+        
+        if ( file_exists( $path_route . 'view.md' ) )
+        {
+            $content[]  = "Descrição" . PHP_EOL . '---------' . PHP_EOL;
+            $content[]  = file_get_contents( $path_route . 'view.md' );
+        }
+
+        $content    = implode( PHP_EOL, $content );
+        file_put_contents( $path_route . '.doc-view', $content );
+    }
 }

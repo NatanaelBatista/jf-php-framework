@@ -276,13 +276,14 @@ final class PageMaker
      */
     private function getRealPath( $relative_path, $use_route_path )
     {
-        $js_absolute_path   = preg_replace( '@\.\./+@', '', $relative_path );
-        $diff_levels        = strlen( $relative_path ) - strlen( $js_absolute_path );
+        $absolute_path      = preg_replace( '@\.\./+@', '', $relative_path );
+        $diff_levels        = strlen( $relative_path ) - strlen( $absolute_path );
+        $level_len          = 3; // strlen( '../' )
         $levels_up          = $diff_levels
-            ? $diff_levels / 3
+            ? $diff_levels / $level_len
             : 0;
 
-        $route              = $this->route
+        $local_route        = $this->route
             ? $this->route . '/'
             : $this->route;
 
@@ -290,14 +291,14 @@ final class PageMaker
         {
             $route_parts    = explode( '/', $this->route );
             $route_parts    = array_splice( $route_parts, 0, -$levels_up );
-            $route          = implode( '/', $route_parts );
-            $route         .= $route
+            $local_route    = implode( '/', $route_parts );
+            $local_route   .= $local_route
                 ? '/'
                 : '';
         }
 
         $real_path          = $use_route_path
-            ? $route . $js_absolute_path
+            ? $local_route . $absolute_path
             : $relative_path;
         
         return $real_path;
@@ -355,7 +356,9 @@ final class PageMaker
         
         sort( $this->usedWebcomponents );
         $used_wc        = implode( "\n   ", $this->usedWebcomponents );
-        $wc_content     = "/*\nUSED WEB COMPONENTS:\n   {$used_wc}\n*/" . N . N . implode( N, $wc_content );
+        $wc_content     = implode( N, $wc_content );
+        $wc_content     = \App\App::minifyJS( $wc_content );
+        $wc_content     = "/*\nUSED WEB COMPONENTS:\n   {$used_wc}\n*/" . N . $wc_content;
         $wc_path        = DIR_UI . '/pages/' . $this->route;
 
         Dir::makeDir( $wc_path );
@@ -413,7 +416,8 @@ final class PageMaker
 
         if ( file_exists( $file_template ) )
         {
-            $template                       = N . trim( file_get_contents( $file_template ) );
+            $template                       = file_get_contents( $file_template );
+            $template                       = \App\App::minifyHTML( $template );
             $wc_content                     = str_replace( '{$template}', $template, $wc_content );
             $this->depends[ $depend_html ]  = filemtime( $file_template );
         }
