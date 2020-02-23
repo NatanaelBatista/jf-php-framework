@@ -27,15 +27,11 @@ class RuleDocParser extends DocBlockParser
         $tags   = $parser->getTags();
 
         if ( isset( $tags[ 'ignore' ] ) )
-        {
             return null;
-        }
 
         $desc   = $parser->getDescription();
         
-        $doc    = [
-            'desc'      => $desc,
-        ];
+        $doc    = [ 'desc' => $desc ];
 
         return (object) $doc;
     }

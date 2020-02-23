@@ -50,7 +50,8 @@ class API
         if ( !in_array( $method, $methods ) )
             throw new Error( "Método $method não permitido para a chamada do serviço \"{$route}\"." );
 
-        \JF\Domain\DocFeature::instance( $feature )->make();
+        \JF\Domain\FeatureDocWriter::instance( $feature )->make();
+        \JF\Domain\FeatureCodeAnalyser::instance( $feature )->analyse();
 
         return (object) [
             'feature'   => $feature,

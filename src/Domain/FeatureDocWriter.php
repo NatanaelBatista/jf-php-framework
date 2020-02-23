@@ -5,7 +5,7 @@ namespace JF\Domain;
 /**
  * Monta a documentação da funcionalidade.
  */
-class DocFeature
+class FeatureDocWriter
 {
     /**
      * Nome da feature.

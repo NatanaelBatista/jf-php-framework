@@ -230,9 +230,7 @@ class Feature
         foreach ( $dir_rules as $item )
         {
             if ( !$item->isFile() )
-            {
                 continue;
-            }
 
             $filename   = $item->getFileName();
             $ruleclass  = $rule_ns . '\\' . substr( $filename, 0, -4 );
