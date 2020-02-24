@@ -13,14 +13,19 @@ class FeatureCodeAnalyser
     public $feature;
 
     /**
+     * Números dos métodos.
+     */
+    private $errors         = [];
+
+    /**
      * Números da classe.
      */
-    private $classNumbers = [];
+    private $classNumbers   = [];
 
     /**
      * Números dos métodos.
      */
-    private $methodNumbers = [];
+    private $methodNumbers  = [];
 
     /**
      * Método construtor.
@@ -46,7 +51,6 @@ class FeatureCodeAnalyser
         $this->getAnalyseFile();
         $this->getClassNumbers();
         $this->getMethodNumbers();
-        print_r( $this );exit;
         $this->makeAnalyse();
     }
 
@@ -56,8 +60,9 @@ class FeatureCodeAnalyser
     public function getAnalyseFile()
     {
         $classpath      = \JF\Autoloader::getClassFilename( $this->feature );
-        $classpath      = dirname( $classpath );
-        $this->docfile  = $classpath . '/.analyse-feature';
+        $source         = file_get_contents( $classpath );
+        $this->source   = explode( PHP_EOL, $source );
+        $this->docfile  = dirname( $classpath ) . '/.analyse-feature';
     }
 
     /**
@@ -88,6 +93,12 @@ class FeatureCodeAnalyser
             'lines'             => $this->classReflection->getEndLine(),
             'numMethods'        => count( $this->classMethods ),
         ];
+
+        if ( $this->classReflection->getEndLine() > 200 )
+            $this->errors[]     = '<Feature> Classe com mais de 200 linhas';
+
+        if ( count( $this->classMethods ) > 20 )
+            $this->errors[]     = '<Feature> Classe com mais de 20 métodos';
     }
 
     /**
@@ -97,12 +108,84 @@ class FeatureCodeAnalyser
     {
         foreach ( $this->classMethods as $method )
         {
-            $method_name = $method->getName();
-            
+            $method_name    = $method->getName();
+            $docblock       = preg_replace( '@/\*\*[\s\t]*(.*)[\s\t]*\*/@', '$1', $method->getDocComment() );
+            $lines          = $this->getMethodLines( $method );
+            $max_idents     = 0;
+            $max_cols       = 0;
+
+            foreach ( $lines as $i => $line )
+            {
+                $line       = preg_replace( '@(?:)(\t|\s{4})@', '    ', $line );
+                preg_match( '@^\s*@', $line, $match );
+                $tabs       = $match[ 0 ]
+                    ? strlen( $match[ 0 ] ) / 4
+                    : 0;
+                $max_idents = max( $max_idents, $tabs );
+                $max_cols   = max( $max_cols, strlen( $line ) );
+            }
+
+            if ( !isset( $method_name[ 7 ] ) )
+                $this->errors[]     = "[$method_name] Método com menos de 7 caracteres";
+
+            if ( isset( $method_name[ 25 ] ) )
+                $this->errors[]     = "[$method_name] Método com mais de 25 caracteres";
+
+            if ( !$docblock )
+                $this->errors[]     = "[$method_name] Método sem DockBlock";
+
+            if ( isset( $lines[ 20 ] ) )
+                $this->errors[]     = "[$method_name] Método tem mais de 20 linhas";
+
+            if ( $max_cols > 80 )
+                $this->errors[]     = "[$method_name] Método tem linha com mais de 80 colunas";
+
+            if ( $max_idents - 1 > 3 )
+                $this->errors[]     = "[$method_name] Método tem mais de 3 níveis de identação";
+
             $this->methodNumbers[ $method_name ] = [
-                'params'            => $method->getNumberOfParameters(),
-                'lines'             => $method->getEndLine() - $method->getStartLine(),
+                'lenName'           => strlen( $method_name ),
+                'totalParams'       => $method->getNumberOfParameters(),
+                'totalLines'        => count( $lines ),
+                'hasDocBlock'       => !!$docblock,
+                'maxIdents'         => $max_idents,
+                'maxCols'           => $max_cols,
             ];
         }
+    }
+
+    /**
+     * Obtém as linhas de um método.
+     */
+    public function getMethodLines( $method )
+    {
+        $len_lines      = $method->getEndLine() - $method->getStartLine() + 1;
+        $lines          = array_slice( $this->source, $method->getStartLine() - 1, $len_lines );
+
+        foreach ( $lines as $i => $line )
+        {
+            if ( !preg_match( '@{@', $line ) )
+                continue;
+
+            $line       = trim( preg_replace( '@({.*?)(//.*|/\*\*.*)@', '$1', $line ) );
+            $lines      = $line == '{'
+                ? array_slice( $lines, $i + 1 )
+                : array_slice( $lines, $i );
+            break;
+        }
+
+        if ( trim( $lines[ count( $lines ) - 1 ] )[0] == '}' )
+            array_pop( $lines );
+
+        return $lines;
+    }
+
+    /**
+     * Grava os erros encontrados na qualidade do código.
+     */
+    public function makeAnalyse()
+    {
+        $data = implode( PHP_EOL, $this->errors );
+        file_put_contents( $this->docfile, $data );
     }
 }

@@ -102,11 +102,11 @@ final class Autoloader
 
         foreach ( $namespaces as $namespace => $path )
         {
-            if ( strpos( $classname, $namespace ) === 0 )
-            {
-                $new_classname = $path . substr( $classname, strlen( $namespace ) );
-                break;
-            }
+            if ( strpos( $classname, $namespace ) !== 0 )
+                continue;
+
+            $new_classname = $path . substr( $classname, strlen( $namespace ) );
+            break;
         }
 
         $class_path     = str_replace( '\\', '/', $new_classname );
