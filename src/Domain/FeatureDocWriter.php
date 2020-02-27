@@ -211,6 +211,22 @@ class FeatureDocWriter
         $content[]  = '';
         $content[]  = $this->desc;
 
+        if ( $this->params )
+        {
+            $content[]  = '';
+            $content[]  = '';
+            $content[]  = 'Parâmetros da funcionalidade';
+            $content[]  = '----------------------------';
+            $content[]  = '';
+            $i          = 0;
+
+            foreach ( $this->params as $name => $param )
+            {
+                $i++;
+                $content[] = $i . '. ' . $name . ' - ' . $param;
+            }
+        }
+
         if ( $this->workflow )
         {
             $content[]  = '';

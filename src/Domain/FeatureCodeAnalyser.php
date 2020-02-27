@@ -18,16 +18,6 @@ class FeatureCodeAnalyser
     private $errors         = [];
 
     /**
-     * Números da classe.
-     */
-    private $classNumbers   = [];
-
-    /**
-     * Números dos métodos.
-     */
-    private $methodNumbers  = [];
-
-    /**
      * Método construtor.
      */
     public function __construct( $feature )
@@ -49,8 +39,8 @@ class FeatureCodeAnalyser
     public function analyse()
     {
         $this->getAnalyseFile();
-        $this->getClassNumbers();
-        $this->getMethodNumbers();
+        $this->checkClassCode();
+        $this->checkMethodsCode();
         $this->makeAnalyse();
     }
 
@@ -60,15 +50,15 @@ class FeatureCodeAnalyser
     public function getAnalyseFile()
     {
         $classpath      = \JF\Autoloader::getClassFilename( $this->feature );
-        $source         = file_get_contents( $classpath );
-        $this->source   = explode( PHP_EOL, $source );
+        $this->source   = file_get_contents( $classpath );
+        $this->lines    = explode( PHP_EOL, $this->source );
         $this->docfile  = dirname( $classpath ) . '/.analyse-feature';
     }
 
     /**
      * Obtém os números da classe.
      */
-    public function getClassNumbers()
+    public function checkClassCode()
     {
         $this->classReflection  = new \ReflectionClass( $this->feature );
         $this->classMethods     = [];
@@ -89,43 +79,34 @@ class FeatureCodeAnalyser
             $this->classMethods[] = $method;
         }
 
-        $this->classNumbers     = [
-            'lines'             => $this->classReflection->getEndLine(),
-            'numMethods'        => count( $this->classMethods ),
-        ];
-
-        if ( $this->classReflection->getEndLine() > 200 )
-            $this->errors[]     = '<Feature> Classe com mais de 200 linhas';
+        if ( $this->classReflection->getEndLine() > 300 )
+            $this->errors[]     = '<Feature> Classe com mais de 300 linhas';
 
         if ( count( $this->classMethods ) > 30 )
             $this->errors[]     = '<Feature> Classe com mais de 30 métodos';
+
+        if ( preg_match( '@\?>@', $this->source ) )
+            $this->errors[]     = '<Feature> A tag de fechamento (?>) deve ser removida';
+
+        foreach ( $this->lines as $line => $content )
+        {
+            if ( preg_match( '@^\s*\t+\s*@', $content, $match ) )
+                $this->errors[] = "<Feature:$line> identação com TAB - substitua por 4 espaços";
+        }
     }
 
     /**
      * Obtém os números dos métodos.
      */
-    public function getMethodNumbers()
+    public function checkMethodsCode()
     {
         foreach ( $this->classMethods as $method )
         {
             $method_name    = $method->getName();
             $docblock       = preg_replace( '@/\*\*[\s\t]*(.*)[\s\t]*\*/@', '$1', $method->getDocComment() );
             $lines          = $this->getMethodLines( $method );
-            $max_idents     = 0;
-            $max_cols       = 0;
 
-            foreach ( $lines as $i => $line )
-            {
-                $line       = preg_replace( '@(?:)(\t|\s{4})@', '    ', $line );
-                preg_match( '@^\s*@', $line, $match );
-                $tabs       = $match[ 0 ]
-                    ? strlen( $match[ 0 ] ) / 4
-                    : 0;
-                $max_idents = max( $max_idents, $tabs );
-                $max_cols   = max( $max_cols, strlen( $line ) );
-            }
-
-            if ( !isset( $method_name[ 7 ] ) )
+            if ( !isset( $method_name[ 7 - 1 ] ) )
                 $this->errors[]     = "[$method_name] Método com menos de 7 caracteres";
 
             if ( isset( $method_name[ 25 ] ) )
@@ -134,23 +115,38 @@ class FeatureCodeAnalyser
             if ( !$docblock )
                 $this->errors[]     = "[$method_name] Método sem DockBlock";
 
-            if ( isset( $lines[ 20 ] ) )
-                $this->errors[]     = "[$method_name] Método tem mais de 20 linhas";
+            if ( isset( $lines[ 30 ] ) )
+                $this->errors[]     = "[$method_name] Método tem mais de 30 linhas";
 
-            if ( $max_cols > 100 )
-                $this->errors[]     = "[$method_name] Método tem linha com mais de 100 colunas";
+            foreach ( $lines as $line => $content )
+            {
+                $content       = preg_replace( '@(?:)(\t|\s{4})@', '    ', $content );
+                preg_match( '@^\s*@', $content, $match );
+                $tabs       = $match[ 0 ]
+                    ? strlen( $match[ 0 ] ) / 4
+                    : 0;
 
-            if ( $max_idents - 1 > 3 )
-                $this->errors[]     = "[$method_name] Método tem mais de 3 níveis de identação";
+                $line += $method->getStartLine();
 
-            $this->methodNumbers[ $method_name ] = [
-                'lenName'           => strlen( $method_name ),
-                'totalParams'       => $method->getNumberOfParameters(),
-                'totalLines'        => count( $lines ),
-                'hasDocBlock'       => !!$docblock,
-                'maxIdents'         => $max_idents,
-                'maxCols'           => $max_cols,
-            ];
+                if ( preg_match( '@;.*?;@', $content ) )
+                    $this->errors[] = "[$method_name:$line] mais de uma expressão por linha";
+    
+                if ( preg_match( '@(::|->)[\s\t]*[\w_\d]+[\s\t]*\(.*?\)[\s\t]*->@', $content ) )
+                    $this->errors[] = "[$method_name:$line] mais de um método por linha";
+    
+                if ( isset( $content[ 100 ] ) )
+                    $this->errors[] = "[$method_name:$line] mais de 100 colunas";
+
+                if ( $tabs - 1 > 3 )
+                {
+                    $this->errors[] = "[$method_name:$line] mais de 3 níveis de identação";
+                    continue;
+                }
+
+                // Nível hard
+                if ( $tabs - 1 > 2 )
+                    $this->errors[] = "[$method_name:$line] mais de 2 níveis de identação";
+            }
         }
     }
 
@@ -160,21 +156,19 @@ class FeatureCodeAnalyser
     public function getMethodLines( $method )
     {
         $len_lines      = $method->getEndLine() - $method->getStartLine() + 1;
-        $lines          = array_slice( $this->source, $method->getStartLine() - 1, $len_lines );
+        $lines          = array_slice( $this->lines, $method->getStartLine() - 1, $len_lines );
 
-        foreach ( $lines as $i => $line )
+        foreach ( $lines as $line => $content )
         {
-            if ( !preg_match( '@{@', $line ) )
-                continue;
-
-            $line       = trim( preg_replace( '@({.*?)(//.*|/\*\*.*)@', '$1', $line ) );
-            $lines      = $line == '{'
-                ? array_slice( $lines, $i + 1 )
-                : array_slice( $lines, $i );
-            break;
+            unset( $lines[ $line ] );
+            
+            if ( preg_match( '@{@', $content ) )
+                break;
         }
 
-        if ( trim( $lines[ count( $lines ) - 1 ] )[0] == '}' )
+        $last_line  = max( array_keys( $lines ) );
+
+        if ( trim( $lines[ $last_line ] ) == '}' )
             array_pop( $lines );
 
         return $lines;
@@ -185,7 +179,11 @@ class FeatureCodeAnalyser
      */
     public function makeAnalyse()
     {
-        $data = implode( PHP_EOL, $this->errors );
+        $data   = 'Análise realizada em ' . date( 'd/m/Y H:i:s' ) . '.' . PHP_EOL .PHP_EOL;
+        $data  .= $this->errors
+            ? implode( PHP_EOL, $this->errors )
+            : 'TUDO CERTO POR AQUI';
+
         file_put_contents( $this->docfile, $data );
     }
 }
