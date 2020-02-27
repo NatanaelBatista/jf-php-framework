@@ -19,7 +19,7 @@ class TXT_Responder extends Responder
      */
     public static function send( $data, $controller_obj )
     {
-        self::setHeader( 'txt', $controller_obj->charset );
+        self::setHeader( 'txt', $controller_obj->charset() );
         print_r( $data );
     }
 

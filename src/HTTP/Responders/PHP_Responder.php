@@ -19,7 +19,7 @@ class PHP_Responder extends Responder
      */
     public static function send( $data, $controller_obj )
     {
-        self::setHeader( 'php', $controller_obj->charset );
+        self::setHeader( 'php', $controller_obj->charset() );
         echo serialize( $data );
     }
 

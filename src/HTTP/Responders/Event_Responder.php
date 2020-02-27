@@ -19,16 +19,14 @@ class Event_Responder extends Responder
      */
     public static function send( $data, $controller )
     {
-        self::setHeader( 'event', $controller->charset );
+        self::setHeader( 'event', $controller->charset() );
         $id_event   = $controller->eventId
             ? $controller->eventId
             : time();
         $data       = $data;
 
         if ( !$data )
-        {
             return null;
-        }
         
         echo 'id: ' . $id_event . PHP_EOL;
         echo 'data: ' . json_encode( $data ) . PHP_EOL;

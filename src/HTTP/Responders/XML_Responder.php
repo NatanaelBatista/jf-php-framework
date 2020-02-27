@@ -21,7 +21,7 @@ class XML_Responder extends Responder
      */
     public static function send( $data, $controller_obj )
     {
-        self::setHeader( 'xml', $controller_obj->charset );
+        self::setHeader( 'xml', $controller_obj->charset() );
         echo XML::create( 'document', $data )->asXml();
     }
 

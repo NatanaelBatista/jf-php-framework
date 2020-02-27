@@ -132,6 +132,10 @@ class FeatureDocWriter
     public function getRulesDescription()
     {
         $rules_path     = dirname( $this->docfile ) . '/Rules';
+
+        if ( !file_exists( $rules_path ) )
+            return;
+
         $dir_rules      = new \FileSystemIterator( $rules_path );
 
         foreach ( $dir_rules as $rule_file )
@@ -152,6 +156,10 @@ class FeatureDocWriter
     public function getTestCasesContent()
     {
         $tests_path     = dirname( $this->docfile ) . '/TestCases';
+
+        if ( !file_exists( $tests_path ) )
+            return;
+
         $dir_tests      = new \FileSystemIterator( $tests_path );
 
         foreach ( $dir_tests as $test_file )
@@ -170,6 +178,8 @@ class FeatureDocWriter
 
             if ( isset( $tags[ 'then' ] ) )
                 $this->tests[]  = '    Então ' . implode( PHP_EOL . '    E ', $tags[ 'then' ] );
+            
+            $this->tests[]  = '';
         }
     }
 

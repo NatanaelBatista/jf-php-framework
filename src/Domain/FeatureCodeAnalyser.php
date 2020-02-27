@@ -97,8 +97,8 @@ class FeatureCodeAnalyser
         if ( $this->classReflection->getEndLine() > 200 )
             $this->errors[]     = '<Feature> Classe com mais de 200 linhas';
 
-        if ( count( $this->classMethods ) > 20 )
-            $this->errors[]     = '<Feature> Classe com mais de 20 métodos';
+        if ( count( $this->classMethods ) > 30 )
+            $this->errors[]     = '<Feature> Classe com mais de 30 métodos';
     }
 
     /**
@@ -137,8 +137,8 @@ class FeatureCodeAnalyser
             if ( isset( $lines[ 20 ] ) )
                 $this->errors[]     = "[$method_name] Método tem mais de 20 linhas";
 
-            if ( $max_cols > 80 )
-                $this->errors[]     = "[$method_name] Método tem linha com mais de 80 colunas";
+            if ( $max_cols > 100 )
+                $this->errors[]     = "[$method_name] Método tem linha com mais de 100 colunas";
 
             if ( $max_idents - 1 > 3 )
                 $this->errors[]     = "[$method_name] Método tem mais de 3 níveis de identação";

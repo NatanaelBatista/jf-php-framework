@@ -16,7 +16,7 @@ trait Attachment_Responder
     {
         if ( isset( $data[ 'error' ] ) || isset( $data->error ) )
         {
-            static::setHeader( 'json', $controller_obj->charset );
+            static::setHeader( 'json', $controller_obj->charset() );
             echo json_encode( $data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
             return;
         }

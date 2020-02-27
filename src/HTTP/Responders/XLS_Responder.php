@@ -23,7 +23,7 @@ class XLS_Responder extends Responder
      */
     public static function send( $data, $controller_obj )
     {
-        self::setHeader( 'xls', $controller_obj->charset );
+        self::setHeader( 'xls', $controller_obj->charset() );
         $reflection     = new \ReflectionClass( $controller_obj );
         $action         = $reflection->getName();
         $action         = str_replace( '\\', '_', $action );
