@@ -109,8 +109,8 @@ class FeatureCodeAnalyser
             if ( !isset( $method_name[ 7 - 1 ] ) )
                 $this->errors[]     = "[$method_name] Método com menos de 7 caracteres";
 
-            if ( isset( $method_name[ 25 ] ) )
-                $this->errors[]     = "[$method_name] Método com mais de 25 caracteres";
+            if ( isset( $method_name[ 30 ] ) )
+                $this->errors[]     = "[$method_name] Método com mais de 30 caracteres";
 
             if ( !$docblock )
                 $this->errors[]     = "[$method_name] Método sem DockBlock";
@@ -138,14 +138,7 @@ class FeatureCodeAnalyser
                     $this->errors[] = "[$method_name:$line] mais de 100 colunas";
 
                 if ( $tabs - 1 > 3 )
-                {
                     $this->errors[] = "[$method_name:$line] mais de 3 níveis de identação";
-                    continue;
-                }
-
-                // Nível hard
-                if ( $tabs - 1 > 2 )
-                    $this->errors[] = "[$method_name:$line] mais de 2 níveis de identação";
             }
         }
     }
