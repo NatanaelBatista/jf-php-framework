@@ -15,6 +15,9 @@ trait PageMakerJS
      */
     public function minifyJS( $js_path, $use_route_path = false )
     {
+        if ( ENV_DEV )
+            return $this->js( $js_path, $use_route_path );
+
         $real_path                  = $this->getRealPath( $js_path, $use_route_path );
         $file_source                = $use_route_path
             ? DIR_VIEWS . '/' . $real_path
