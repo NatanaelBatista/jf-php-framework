@@ -47,14 +47,10 @@ class Log
         $log_instance->logPathIsWritable();
 
         if ( $context === 'routine' )
-        {
-            $log_instance->saveRoutineLog( $options );
-            return;
-        }
+            return $log_instance->saveRoutineLog( $options );
 
         $log_instance->makeLogText();
         $log_instance->saveLogFeature();
-        $log_instance->saveLogRoute();
         $log_instance->saveLogDate();
     }
 
@@ -65,19 +61,14 @@ class Log
      */
     protected function logPathIsWritable()
     {
-        $dir_logs = $this->logPath();
+        $dir_logs   = $this->logPath();
+        $text_error = 'Estamos sem permissão para escrever na pasta "%s"';
         
         if ( !file_exists( $dir_logs ) )
-        {
-            mkdir( $dir_logs, 0777, true );
-            return;
-        }
+            return mkdir( $dir_logs, 0777, true );
 
         if ( !is_writable( $dir_logs ) )
-        {
-            $text = 'Estamos sem permissão para escrever na pasta "%s"';
-            exit( sprintf( $text, $dir_logs ) );
-        }
+            exit( sprintf( $text_error, $dir_logs ) );
     }
 
     /**
@@ -128,36 +119,18 @@ class Log
 
     /**
      * Método para escrever o log.
-     *
-     * @return  null
-     */
-    protected function saveLogRoute()
-    {
-        if ( defined( 'ROUTE' ) && ROUTE )
-        {
-            $path           = $this->logPath() . '/' . str_replace( '/', '_', ROUTE );
-            $this->saved    = $this->write( $path );
-        }
-    }
-
-    /**
-     * Método para escrever o log.
      */
     protected function saveLogFeature()
     {
         // Se já salvou o log, não executa novo salvamento
         if ( $this->saved || !( defined( 'ROUTE' ) && !ROUTE ) )
-        {
             return;
-        }
      
         $controller         = ControllerParser::controller();
         $controller_parts   = explode( '\\', ControllerParser::controller() );
 
         if ( array_pop( $controller_parts ) != 'Controller' )
-        {
             return;
-        }
 
         $namespaces         = Config::get( 'namespaces' );
         $new_classname      = $controller;
@@ -183,9 +156,7 @@ class Log
     {
         // Se já salvou o log, não executa novo salvamento
         if ( $this->saved )
-        {
             return;
-        }
 
         // Prepara os possíveis caminhos do arquivo de log
         $year_path      = $this->logPath()
@@ -210,9 +181,7 @@ class Log
         foreach ( $log_contexts as $freq => $path )
         {
             if ( $freq === 'day' )
-            {
                 return $this->write( $path );
-            }
 
             if ( !file_exists( $path ) )
             {
@@ -221,9 +190,7 @@ class Log
             }
             
             if ( !is_writable( $path ) )
-            {
                 exit( "Estamos sem permissão para criar a pasta '$path'!" );
-            }
         }
     }
 

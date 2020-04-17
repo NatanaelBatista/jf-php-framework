@@ -28,9 +28,7 @@ final class Config
     public static function get( $path, $default = null, array $opts = array() )
     {
         if ( is_array( $path ) )
-        {
             return self::getEach( $path, $default, $opts );
-        }
 
         // Define as variáveis básicas
         $separator      = !empty( $opts[ 'separator' ] )
@@ -115,14 +113,10 @@ final class Config
 
         // Se o contexto da configuração não existe
         if ( !array_key_exists( $context, self::$config ) )
-        {
             self::load( $context );
-        }
 
         if ( !self::$config )
-        {
             self::$config[ $context ] = (object) [];
-        }
 
         if ( !$path && !( is_array( $value ) || is_object( $value ) ) )
         {
@@ -131,19 +125,13 @@ final class Config
         }
 
         if ( !$path )
-        {
             self::$config[ $context ] = json_decode( json_encode( $value ) );
-        }
 
         if ( $path )
-        {
             self::setConfigInPath( $context, $path, $value );
-        }
 
         if ( $auto_save )
-        {
             self::save( $context );
-        }
     }
 
     /**
@@ -157,14 +145,10 @@ final class Config
         foreach ( $path as $key )
         {
             if ( $last_key )
-            {
                 $config = $config->$last_key;
-            }
 
             if ( !property_exists( $config, $key ) )
-            {
                 $config->$key = (object) [];
-            }
 
             $last_key = $key;
         }
@@ -197,9 +181,7 @@ final class Config
     private static function load( $context )
     {
         if ( !file_exists( DIR_CONFIG ) )
-        {
             Dir::makeDir( DIR_CONFIG );
-        }
 
         $file_config                = self::path( $context );
         self::$config[ $context ]   = file_exists( $file_config )
