@@ -61,7 +61,6 @@ class HTML_Responder
             return;
 
         $doc            = [];
-
         $metadata       = [];
 
         $routines       = [];

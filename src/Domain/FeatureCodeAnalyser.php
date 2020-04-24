@@ -150,7 +150,7 @@ class FeatureCodeAnalyser
     {
         $len_lines      = $method->getEndLine() - $method->getStartLine() + 1;
         $lines          = array_slice( $this->lines, $method->getStartLine() - 1, $len_lines );
-
+        
         foreach ( $lines as $line => $content )
         {
             unset( $lines[ $line ] );
@@ -158,7 +158,10 @@ class FeatureCodeAnalyser
             if ( preg_match( '@{@', $content ) )
                 break;
         }
-
+        
+        if ( !$lines )
+            return [];
+        
         $last_line  = max( array_keys( $lines ) );
 
         if ( trim( $lines[ $last_line ] ) == '}' )

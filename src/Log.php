@@ -108,10 +108,11 @@ class Log
         
         if ( !empty( $this->error[ 'stack' ] ) )
         {
-            $trace  = $this->error[ 'stack' ];
-            $trace  = str_replace( DIR_BASE, '..', $trace );
-            $trace  = preg_replace( '@[\n\r]+@', '|', $trace );
-            $log->addLine( 'trace',   $trace                                    );
+            $trace  = PHP_EOL . $this->error[ 'stack' ];
+            $trace  = preg_replace( '@^#@m', '    #', $trace );
+            $trace  = str_replace( DIR_CORE, '[DIR_CORE]', $trace );
+            $trace  = str_replace( DIR_BASE, '[DIR_BASE]', $trace );
+            $log->addLine( 'trace', $trace );
         }
 
         $this->text = $log->content();
