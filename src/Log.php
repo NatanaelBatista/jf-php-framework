@@ -106,6 +106,14 @@ class Log
         $log->addLine( 'request',   $request                                    );
         $log->addLine( 'referer',   $http_referer                               );
         
+        $aditional_data = [];
+
+        if ( method_exists( '\\App\\App', 'addExceptionData' ) )
+            $aditional_data = (array) \App\App::addExceptionData();
+
+        foreach ( $aditional_data as $key => $value )
+            $log->addLine( $key, $value );
+
         if ( !empty( $this->error[ 'stack' ] ) )
         {
             $trace  = PHP_EOL . $this->error[ 'stack' ];
