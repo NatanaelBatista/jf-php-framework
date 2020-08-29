@@ -1,0 +1,13 @@
+[5f4aab6b704660.69284842]
+
+date            = "2020-08-29"
+time            = "16:24:27"
+type            = "FATAL"
+message         = "include(): Failed opening \'vendor/autoload.php\' for inclusion (include_path=\'C:\\xampp\\php\\PEAR\')"
+basepath        = "C:/xampp/htdocs/jf/site"
+file            = "../index.php"
+line            = 7
+ip              = "127.0.0.1"
+request         = "/jf/site/ui/pages/home.html"
+referer         = ""
+

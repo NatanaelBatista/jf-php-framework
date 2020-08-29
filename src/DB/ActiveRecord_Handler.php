@@ -3,8 +3,7 @@
 namespace JF\DB;
 
 use JF\Config;
-use JF\Exceptions\InfoException;
-use JF\Exceptions\ErrorException;
+use JF\Exceptions\ErrorException as Error;
 
 /**
  * Classe que representa um registro no banco-de-dados.
@@ -124,7 +123,7 @@ trait ActiveRecord_Handler
         {
             $classe = get_called_class();
             $msg    = "Propriedade '$column' não encontrada na instância da classe '{$classe}'!";
-            throw new ErrorException( $msg );
+            throw new Error( $msg );
         }
 
         $target     = $relations->$column;
@@ -202,7 +201,6 @@ trait ActiveRecord_Handler
         // Itera com todas as propriedades e seus valores
         foreach ( $multi_prop as $prop => $val )
         {
-
             if ( !$unsafe )
             {
                 self::applyFilters( $props, $prop, $val );
@@ -257,7 +255,7 @@ trait ActiveRecord_Handler
         if ( !array_key_exists( $prop, $props ) )
         {
             $text   = "propriedade '$prop' desconhecida - $class.";
-            throw new \LogicException( $text );
+            throw new Error( $text );
         }
 
         // Se é requerido um valor para a propriedade e o valor está em branco
@@ -267,7 +265,7 @@ trait ActiveRecord_Handler
         if ( $required && $no_value )
         {
             $text   = "requerido um valor para '$prop' - $class";
-            throw new \LogicException( $text );
+            throw new Error( $text );
         }
 
         if ( $no_value )
@@ -333,7 +331,7 @@ trait ActiveRecord_Handler
         {
             $class  = get_called_class();
             $text   = "valor ($val) menor que o permitido ($minlength) - $class";
-            throw new \RangeException( $text );
+            throw new Error( $text );
         }
     }
 
@@ -346,7 +344,7 @@ trait ActiveRecord_Handler
         {
             $class  = get_called_class();
             $text   = "valor ($val) maior que o permitido ($minlength) - $class";
-            throw new \RangeException( $text );
+            throw new Error( $text );
         }
     }
 
@@ -359,14 +357,14 @@ trait ActiveRecord_Handler
 
         if ( $minlength < 0 )
         {
-            $text   = "quantidade máxima de caracteres menor do que zero ($minlength) - $class";
-            throw new \LengthException( $text );
+            $text   = "Quantidade máxima de caracteres menor do que zero ($minlength) - $class";
+            throw new Error( $text );
         }
 
         if ( $lenval < $minlength )
         {
-            $text   = "quantidade de caracteres ($lenval) menor que o permitido ($minlength) - $class";
-            throw new \RangeException( $text );
+            $text   = "Quantidade de caracteres ($lenval) menor que o permitido ($minlength) - $class";
+            throw new Error( $text );
         }
     }
 
@@ -381,14 +379,14 @@ trait ActiveRecord_Handler
 
         if ( $maxlength < 0 )
         {
-            $text   = "quantidade máxima de caracteres menor do que zero ($maxlength) - $class";
-            throw new \LengthException( $text );
+            $text   = "Quantidade máxima de caracteres menor do que zero ($maxlength) - $class";
+            throw new Error( $text );
         }
 
         if ( $lenval > $maxlength )
         {
-            $text   = "quantidade de caracteres ($lenval) maior que o permitido ($maxlength) - $class";
-            throw new \RangeException( $text );
+            $text   = "Quantidade de caracteres ($lenval) maior que o permitido ($maxlength) - $class";
+            throw new Error( $text );
         }
     }
 
@@ -471,7 +469,7 @@ trait ActiveRecord_Handler
         if ( !$options )
         {
             $text   = "valores permitidos não declarados para '{$label}'!";
-            throw new \LogicException( $text );
+            throw new Error( $text );
         }
 
         $type_val   = gettype( $val );
@@ -483,7 +481,7 @@ trait ActiveRecord_Handler
                 ? $props[ 'invalid_text' ]
                 : "valor '{$val}' não consta na lista de valores permitidos " .
                   "para '{$label}' - $class";
-            throw new \LogicException( $text );
+            throw new Error( $text );
         }
     }
 
@@ -507,7 +505,7 @@ trait ActiveRecord_Handler
             if ( !$has_only_digit )
             {
                 $text   = "valor informado não é um número válido para '{$label}' - $class";
-                throw new \LogicException( $text );
+                throw new Error( $text );
             }
             return;
         }
@@ -524,7 +522,7 @@ trait ActiveRecord_Handler
             {
                 $text   = 
                     "valor informado não é um valor monetário válido para '{$label}' - $class";
-                throw new \LogicException( $text );
+                throw new Error( $text );
             }
             return;
         }
@@ -536,7 +534,7 @@ trait ActiveRecord_Handler
             {
                 $text   =
                     "valor informado não é um número inteiro válido para '{$label}' - $class";
-                throw new \LogicException( $text );
+                throw new Error( $text );
             }
             return;
         }
@@ -561,7 +559,7 @@ trait ActiveRecord_Handler
         if ( !$is_time )
         {
             $text   = "valor informado não é um horário válida para '{$label}' - $class";
-            throw new \LogicException( $text );
+            throw new Error( $text );
         }
         return;
     }
@@ -580,7 +578,7 @@ trait ActiveRecord_Handler
         if ( !$is_date )
         {
             $text   = "valor informado não é uma data válida para '{$label}' - $class";
-            throw new \LogicException( $text );
+            throw new Error( $text );
         }
 
         return;
@@ -608,7 +606,7 @@ trait ActiveRecord_Handler
         if ( !$is_datetime )
         {
             $text   = "valor informado não é uma data e hora válida para '{$label}' - $class";
-            throw new \LogicException( $text );
+            throw new Error( $text );
         }
     }
 
@@ -644,7 +642,7 @@ trait ActiveRecord_Handler
         // Um registro recém-criado não tem valores de origem
         if ( $this->status === 'created' )
         {
-            throw new ErrorException( 'O registro ainda não foi salvo!' );
+            throw new Error( 'O registro ainda não foi salvo!' );
         }
 
         // Restaura os valores de origem

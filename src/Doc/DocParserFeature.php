@@ -16,9 +16,7 @@ class DocParserFeature
     public static function parse()
     {
         if ( !ENV_DEV )
-        {
             return;
-        }
 
         $controller     = ControllerParser::controller();
         $prefix         = 'Features';
@@ -28,9 +26,7 @@ class DocParserFeature
         $feature_class  = substr( $controller, 0, -$len_sufix ) . 'Feature';
 
         if ( substr( $controller, 0, $len_prefix ) != $prefix )
-        {
             return;
-        }
 
         $reflection     = new \ReflectionClass( $controller );
         $comment        = $reflection->getDocComment();
@@ -39,9 +35,7 @@ class DocParserFeature
         $doc            = DocBlockParser::parse( $comment );
 
         if ( !$doc )
-        {
             return;
-        }
 
         $url_controller     = substr( $reflection->name, $len_prefix, -$len_sufix );
         $url_controller     = strtolower( $url_controller );
@@ -79,9 +73,7 @@ class DocParserFeature
                 if ( $source == 'feature' )
                 {
                     if ( !array_key_exists( $index, $prop ) )
-                    {
                         die( "A propriedade ($index) não foi declarada na funcionalidade ($feature_class)." );
-                    }
 
                     $content   .= N . $key . ' = "' . $prop->$index . '"';
                 }
@@ -89,9 +81,7 @@ class DocParserFeature
                 if ( $source == 'entity' )
                 {
                     if ( !array_key_exists( $index, $prop ) )
-                    {
                         die( "A propriedade ($index) não foi declarada na entidade ($entity_class)." );
-                    }
 
                     $content    .= N . $key . ' = "' . $prop->$index->label . '"';
                 }
@@ -101,9 +91,7 @@ class DocParserFeature
         file_put_contents( $docpath . '/.doc-service', $content );
 
         if ( !class_exists( $feature_class ) )
-        {
             return;
-        }
 
         $reflection = new \ReflectionClass( $feature_class );
         $comment    = $reflection->getDocComment();

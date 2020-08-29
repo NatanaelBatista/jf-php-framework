@@ -16,23 +16,23 @@
     <meta name="description" content="<?= $this->data->description ?>" />
     <meta name="author" content="<?= $this->data->author ?>" />
     
-    <link href="<?= $this->ui( 'js/manifest.json' ) ?>" rel="manifest" />
     <link href="<?= $this->ui( 'img/favicon.png' ) ?>" rel="shortcut" type='image/png' />
     <link href="<?= $this->ui( 'img/favicon.png' ) ?>" rel="shortcut icon" type='image/png' />
-    <link href="<?= $this->ui( 'vendors/vuetify/vuetify-2.2.8.min.css' ) ?>" rel="stylesheet" type="text/css" />
+    <link href="<?= $this->ui( 'vendors/vuetify/vuetify-2.3.10.min.css' ) ?>" rel="stylesheet" type="text/css" />
     <link href="<?= $this->ui( 'vendors/google/md/googlefonts.min.css' ) ?>" rel="stylesheet" type="text/css" />
-    <?= $this->css( 'css/jf.css' ) ?>
+    <link href="<?= $this->ui( 'css/jf.css' ) ?>" rel="stylesheet" type="text/css" />
     <script src="<?= $this->ui( 'vendors/vuejs/vue.min.js' ) ?>"></script>
-    <script src="<?= $this->ui( 'vendors/vuetify/vuetify-2.2.8.min.js' ) ?>"></script>
+    <script src="<?= $this->ui( 'vendors/vue-i18n/vue-i18n.min.js' ) ?>"></script>
+    <script src="<?= $this->ui( 'vendors/vuetify/vuetify-2.3.10.min.js' ) ?>"></script>
   </head>
   <body>
     <div id="app">
       <v-app>
-        <?= $this->partial( 'topbar', true ) ?>
-        <?= $this->partial( 'sidebar', true ) ?>
-        <v-content>
+        <v-main>
+          <?= $this->partial( 'topbar', true ) ?>
+          <?= $this->partial( 'sidebar', true ) ?>
           <v-container fluid><?= $this->content() ?></v-container>
-        </v-content>
+        </v-main>
       </v-app>
     </div>
     <script src="<?= URL_UI ?>/vendors/axios/axios.min.js"></script>
