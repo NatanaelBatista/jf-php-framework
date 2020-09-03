@@ -27,7 +27,7 @@
           </v-list-item>
         </template>
         <?php foreach ( $module->pages as $pg_name => $page ) { ?>
-          <v-list-item href="<?= URL_PAGES . "/$mod_name/$pg_name.html" ?>">
+          <v-list-item href="<?= URL_PAGES . "/$mod_name/$pg_name.html" ?>" dense>
             <v-list-item-content class="primary--text"><?= $page ?></v-list-item-content>
           </v-list-item>
         <?php } ?>

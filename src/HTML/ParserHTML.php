@@ -16,7 +16,7 @@ final class ParserHTML
     public static function isUpdated( $route )
     {
         $html_path              = self::getPagePath( $route );
-        $log_path               = self::path( $route, '.build' );
+        $log_path               = self::path( $route, 'view.build' );
         $view_ini               = self::path( $route, 'view.ini' );
         $view_md                = self::path( $route, 'view.md' );
 
@@ -83,7 +83,7 @@ final class ParserHTML
 
         self::makePagePath( $route );
         $page_path  = self::getPagePath( $route );
-        $log_path   = self::path( $route, '.build' );
+        $log_path   = self::path( $route, 'view.build' );
 
         file_put_contents( $page_path, $result->html );
         file_put_contents( $log_path, json_encode( $new_parse ) );
