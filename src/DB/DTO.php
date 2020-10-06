@@ -242,17 +242,13 @@ class DTO
     public function set( $key, $value )
     {
         if ( !isset( $this->$key ) )
-        {
             $this->$key             = null;
-        }
 
         $old_value                  = $this->$key;
         $this->$key                 = $value;
 
         if ( $old_value === $value )
-        {
             return $this;
-        }
 
         $prop_changed               = array_key_exists( $key, $this->_changed );
 
@@ -264,13 +260,10 @@ class DTO
 
         $record_is_saved            = $this->_status == 'saved';
         $column_exists              = array_key_exists( $key, static::$columns );
+        $value_changed              = array_key_exists( $key, $this->_changed );
 
-        if ( $record_is_saved && $column_exists )
-        {
-            $this->_changed[ $key ] = array_key_exists( $key, $this->_changed )
-                ? $this->_changed[ $key ]
-                : $old_value;
-        }
+        if ( $record_is_saved && $column_exists && !$value_changed )
+            $this->_changed[ $key ] = $old_value;
 
         return $this;
     }
@@ -303,19 +296,23 @@ class DTO
         array_walk( $data, function( $value, $key ) use ( $record )
         {
             if ( in_array( $key, static::$hide ) )
-            {
                 return;
-            }
 
             if ( !array_key_exists( $key, static::$columns ) )
-            {
                 return;
-            }
 
             $record->$key = $value;
         });
 
         return $record;
+    }
+
+    /**
+     * Retorna as alterações não salvas de um registro.
+     */
+    public function changes()
+    {
+        return array_intersect_key( (array) $this->values(), $this->_changed );
     }
 
     /**
@@ -341,6 +338,15 @@ class DTO
     }
 
     /**
+     * Retorna uma nova instância do próprio objeto, com os valores originais na tabela.
+     */
+    public function reload()
+    {
+        $pk = static::primaryKey();
+        return static::dao()->find( $this->$pk );
+    }
+
+    /**
      * Salva o registro na tabela (cria um novo ou atualiza o registro existente).
      */
     public function save()
@@ -352,7 +358,7 @@ class DTO
             $values         = $this->values();
 
         if ( $this->_status != 'created' )
-            $values         = array_intersect_key( (array) $this->values(), $this->_changed );
+            $values         = $this->changes();
 
         $key                = static::primaryKey();
         $count              = static::dao()
@@ -376,9 +382,7 @@ class DTO
             ->count();
 
         if ( $count )
-        {
             $this->_status  = 'deleted';
-        }
 
         return $count;
     }
