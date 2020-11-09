@@ -3,7 +3,7 @@
 namespace JF\DB;
 
 use JF\Config;
-use JF\Exceptions\ErrorException;
+use JF\Exceptions\ErrorException as Error;
 use JF\Messager;
 
 /**
@@ -34,17 +34,15 @@ class DB_Migrator
         if ( !$success )
         {
             $msg    = Messager::get( 'db', 'migration_unexecuted', $schema_source );;
-            throw new ErrorException( $msg );
+            throw new Error( $msg );
         }
         
         // $pdo_target->setAttribute( \PDO::ATTR_EMULATE_PREPARES, true );
 
         while ( $row = $stmt->fetchObject() )
         {
-            
             // Prepara os dados
             $sql            = self::makeInsert( $table_target, $row, !$active_row );
-
             $sqls[]         = $sql;
         
             // Incrementa uma linha lida
@@ -52,7 +50,7 @@ class DB_Migrator
             
             // Grava os dados no arquivo e reinicia a contagem
             if ( $active_row === self::MAX_ROWS_PER_SQL )
-                {
+            {
                 $active_row = 0;
 
                 $sql        = implode( ",\n", $sqls ) . ';';
